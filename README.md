@@ -1,8 +1,8 @@
-# LiDeHouse
+# LiDeCo
 
-Liquid Democracy comes to your doorsteps.
+Liquid Democracy comes to your community.
 
-This software allows you to manage the community of your building online,
+This software allows you to manage the community life online,
 discussing issues on a forum and voting on them using liquid democracy.
 
 ### Running the app
