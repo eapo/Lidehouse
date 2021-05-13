@@ -5,3 +5,6 @@ A _LiDeCo_ szoftver használata indokolt amennyiben a társasház/közösség eg
 - [x] egyszerű kommunikáció
 - [x] hatékony döntéshozatal
 - [x] átlátható pénzügyek
+
+---
+
