@@ -8,3 +8,4 @@ A _LiDeCo_ szoftver használata indokolt amennyiben a társasház/közösség eg
 
 ---
 
+[LiDeCo/hu_kezikonyv.md at master · eapo/LiDeCo](https://github.com/eapo/LiDeCo/blob/master/manual/hu_kezikonyv.md)
