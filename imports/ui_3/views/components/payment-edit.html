@@ -1,0 +1,141 @@
+<template name="Payment_edit">
+    {{#let afDoc=afDoc}}
+    <div class="row">
+        <!-- hidden, needed for autoform doc data -->
+        {{> afQuickField name="communityId" type="hidden"}}
+        {{> afQuickField name="category" type="hidden"}}
+        {{> afQuickField name="defId" type="hidden"}}
+        {{> afQuickField name="relation" type="hidden"}}
+        <!-- hidden, needed for autoform doc data -->
+        <div class="col-sm-6 col-md-6 js-autofill">
+            {{> afQuickField name="valueDate" type=hiddenWhenReconciling defaultValue=defaultDate}}
+            {{> afQuickField name="payAccount" type=hiddenWhenReconciling}}
+            {{#if reconciling}}
+            <div class="form-group">
+                <label>{{_ 'schemaStatementEntries.original.label'}}</label><br>
+                <div class="well">   
+                    {{>Doc_view doc=originalStatementEntry}}
+                </div>
+            </div>
+            {{/if}}
+        </div>
+        <div class="col-sm-6 col-md-4 pull-right js-autofill">
+            {{#if afDoc.serialId}}
+                <h4>{{_ afDoc.txdef.name}}:
+                <span class="text-navy">{{afDoc.serialId}}</span></h4>
+            {{/if}}
+            {{> afQuickField name="partnerId"}}
+            {{> afQuickField name="contractId"}} <!--type=showContractField}}-->
+            {{> afQuickField name="amount"}}
+        </div>
+    </div>
+    {{#if billsView}}
+    <div class="table-responsive m-t">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>{{_ 'Reconcile to bills'}}
+                      <button type="button" class="btn btn-xs btn-default pull-right js-create" data-entity="bill"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'bill'}}</button>
+                    </th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#afEachArrayItem name="bills"}}
+                <!--{{#if notNullLine this}}-->
+                <tr class="js-autofill">
+                    <td class="text-left">
+                      <button type="button" class="btn btn-info autoform-remove-item">
+                          <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                    <td>
+                    {{#if docField this.current.id}}
+                      {{> afFormGroup name=this.current.id type='hidden'}}
+                      <div>
+                        <strong>{{displayBill this.current.id}}</strong>
+                      </div>                                
+                    {{else}} 
+                      {{> afFormGroup name=this.current.id}}
+                    {{/if}}
+                    </td>
+                    <!--td data-line="{{this.name}}">
+                      <button type="button" class="btn btn-default js-full-amount"><i class="fa fa-arrow-right"></i> {{_ 'Full'}} <i class="fa fa-arrow-right"></i></button>
+                    </td-->
+                    <td>{{> afFormGroup name=this.current.amount}}</td>
+                </tr>
+                {{/afEachArrayItem}}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="bills">
+            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
+        </button>
+    </div>
+    {{/if}}
+
+    <div class="table-responsive m-t">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>{{#if billsView}}
+                          {{_ 'schemaPayments.lines.label'}}
+                        {{else}}
+                          <button type="button" class="btn btn-xs btn-outline btn-info js-view-mode pull-right">{{_ "Reconcile to bills"}}</button>
+                        {{/if}}
+                    </th>
+                    <th></th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#afEachArrayItem name="lines"}}
+                <!--{{#if notNullLine this}}-->
+                <tr class="js-autofill">
+                    <td class="text-left">
+                      <button type="button" class="btn btn-info autoform-remove-item">
+                          <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                    <td>{{> afFormGroup name=this.current.account}}</td>
+                    <td>{{> afFormGroup name=this.current.localizer}}</td>
+                    <!--td data-line="{{this.name}}">
+                      <button type="button" class="btn btn-default js-remainder-amount"><i class="fa fa-arrow-down"></i> {{_ 'Remainder'}} <i class="fa fa-arrow-right"></i></button>
+                    </td-->
+                    <td>{{> afFormGroup name=this.current.amount}}</td>
+                </tr>
+                {{/afEachArrayItem}}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
+            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
+        </button>
+    </div>
+
+    {{#if billsView}}
+    <table class="table invoice-total">
+        <tbody>
+        <tr>
+            <td><strong>{{_ 'Allocated to bills'}} :</strong></td>
+            <td class="nowrap">{{displayMoney afDoc.allocatedToBills}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'Allocated to no bills'}} :</strong></td>
+            <td class="nowrap">{{displayMoney afDoc.allocatedToNonBills}}</td>
+        </tr>
+        {{#if cashPayAccount}}
+        <tr>
+            <td><strong>{{_ 'schemaTransactions.rounding.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney afDoc.rounding}}</td>
+        </tr>
+        {{/if}}
+        </tbody>
+    </table>
+    {{/if}}
+
+    <div class="well m-t">
+        {{> afQuickField name="notes"}}
+    </div>
+    {{/let}}
+</template>

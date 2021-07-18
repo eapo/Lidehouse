@@ -1,0 +1,79 @@
+<template name="Message_history">
+    {{#each messages}}
+        {{#if ownMessage this}}    <!-- box for my messages -->
+            <div class="chat-message right">
+                <img class="message-avatar" src="{{absoluteUrl creator.avatar}}" alt="avatar" >
+                <div class="message">
+                    <a class="message-author" href=""> {{creator.displayOfficialName}} </a>
+                    <span class="message-date"> {{displayTimeFrom createdAt}} </span>
+                    <span class="message-content newlines">{{text}}</span>
+                </div>
+            </div>
+        {{else}}                  <!-- box for recived messages -->
+            <div class="chat-message left">
+                <img class="message-avatar" src="{{absoluteUrl creator.avatar}}" alt="avatar" >
+                <div class="message">
+                    <a class="message-author" href=""> {{creator.displayOfficialName}} </a>
+                    <span class="message-date"> {{displayTimeFrom createdAt}} </span>
+                    <span class="message-content newlines">{{text}}</span>
+                </div>
+            </div>
+        {{/if}}
+    {{/each}}
+</template>
+
+<template name="Message_send">
+    <div class="chat-form">
+        <form role="form">
+            <div class="form-group">
+                <textarea class="form-control js-focused" placeholder={{_ 'messengerMessagePlaceholder'}}></textarea>
+            </div>
+            <div class="text-right">
+                <span class="js-send btn btn-sm btn-primary m-t-n-xs"><strong>{{_ 'Send message'}}</strong></span>
+            </div>
+        </form>
+    </div>
+</template>
+
+<template name="Room_show">
+    <div class="wrapper wrapper-content animated fadeInUp">
+
+        {{#if selectedRoom}}
+        <div class="row">
+            <div class="col-md-3 visible-md visible-lg pull-right">
+                {{> Contact_long selectedPerson}}
+            </div>
+            <div class="col-md-9">
+                <div class="ibox chat-view messages">
+                    <div class="ibox-title">
+                        {{#if hasMessages}}
+                        <small class="pull-right text-muted">{{_ 'Last message'}}: 
+                            <br class="rwd-break">{{selectedRoom.updatedAt.toLocaleString}}</small>
+                        {{/if}}
+                        <strong>{{selectedPerson.displayOfficialName}} [{{_ selectedRoom.title}}]</strong>
+                    </div>
+
+                    <div class="ibox-content">
+                        <div class="chat-discussion">
+                            {{#if hasMessages}}
+                            <div class="messages">
+                                {{> Message_history}}
+                            </div>
+                            {{else}}
+                            <div class="messages text-center empty">
+                                {{{_ 'messengerHistoryPlaceholder'}}}
+                            </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="ibox-footer">
+                        {{> Message_send}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <div>{{_ 'noSelectedPerson'}}</div>
+        {{/if}}
+    </div>    
+</template>

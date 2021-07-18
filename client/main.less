@@ -1,5 +1,6 @@
-@import "{}/imports/ui/stylesheets/reset.less";
+//@import "{}/imports/ui/stylesheets/reset.less";
 
+/*
 // Global namespace
 @import "{}/imports/ui/stylesheets/base.less";
 @import '{}/imports/ui/stylesheets/button.less';
@@ -22,13 +23,12 @@
 @import '{}/imports/ui_2/stylesheets/custom_base.less';
 @import '{}/imports/ui_2/stylesheets/custom_tooltip.less';
 @import '{}/imports/ui_2/stylesheets/custom_prettify.less';
-@import '{}/imports/ui_2/stylesheets/styleguide.less';
 @import '{}/imports/ui_2/stylesheets/custom_progressbar.less';
 @import '{}/imports/ui_2/stylesheets/custom_dropdown.less';
-@import '{}/imports/ui_2/stylesheets/custom_section.less';
+
 @import '{}/imports/ui_2/stylesheets/custom_form.less';
-@import '{}/imports/ui_2/stylesheets/custom_sortvote.less';
 @import '{}/imports/ui_2/stylesheets/custom_tabs.less';
+@import '{}/imports/ui_2/stylesheets/custom_table.less';
 @import '{}/imports/ui_2/stylesheets/page_housing.less';
 @import '{}/imports/ui_2/stylesheets/page_report.less';
 @import '{}/imports/ui_2/stylesheets/page_board.less';
@@ -36,9 +36,20 @@
 @import '{}/imports/ui_2/stylesheets/page_docs.less';
 @import '{}/imports/ui_2/stylesheets/page_vote_topics.less';
 @import '{}/imports/ui_2/stylesheets/page_comm_membership.less';
-@import '{}/imports/ui_2/stylesheets/page_finances.less';
 @import '{}/imports/ui_2/stylesheets/datatables.less';
 @import '{}/imports/ui_2/stylesheets/page_comm_show';
 
 // TODO: Please remove later
 @import '{}/imports/ui_2/stylesheets/droka-temp-hacks.less';
+*/
+
+@import '{}/imports/ui_3/theme/style.less';
+
+// Carried over from the old UI
+//@import '{}/imports/ui_2/stylesheets/custom_sortvote.less';
+@import '{}/imports/ui_2/stylesheets/custom_section.less';
+@import '{}/imports/ui_2/stylesheets/page_intro.less';
+
+// Customizations
+@import '{}/imports/ui_3/stylesheets/customize.less';
+@import '{}/imports/ui_3/stylesheets/style.less';

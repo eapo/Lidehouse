@@ -1,44 +1,46 @@
 /* eslint-disable no-console */
 
-import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 import { chai } from 'meteor/practicalmeteor:chai';
 
+import '/imports/startup/both/index.js';
+// only this one needed from startup/server
+import '/imports/startup/server/email-sender.js';
+import '/imports/startup/server/validated-method.js';
+
 import { initializePermissions } from '/imports/api/permissions/config.js';
-import { insertDemoFixture } from '/imports/api/fixtures.js';
-import { Communities } from '/imports/api/communities/communities.js';
-import { Roles } from '/imports/api/permissions/roles.js';
-import { Permissions } from '/imports/api/permissions/permissions.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
-import { Topics } from '/imports/api/topics/topics.js';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
-import { Payments } from '/imports/api/payments/payments.js';
+import { insertUnittestFixture } from '/imports/fixture/fixtures.js';
+import { defineAccountTemplates } from '/imports/api/transactions/accounts/template.js';
+import { defineLocalizerTemplates } from '/imports/api/parcels/template.js';
+import { defineTxdefTemplates } from '/imports/api/transactions/txdefs/template.js';
+import { initializeBuiltinFolders } from '/imports/api/shareddocs/sharedfolders/builtin.js';
 
 chai.config.truncateThreshold = Infinity;
 
 export function logDB() {
-  console.log('Communities:', '\n', Communities.find().fetch());
-  console.log('Users:', '\n', Meteor.users.find().fetch());
-  console.log('Roles:', '\n', Roles.find().fetch());
-  console.log('Permissions:', '\n', Permissions.find().fetch());
-  console.log('Parcels:', '\n', Parcels.find().fetch());
-  console.log('Memberships:', '\n', Memberships.find().fetch());
-  console.log('Agendas:', '\n', Agendas.find().fetch());
-  console.log('Topics:', '\n', Topics.find().fetch());
-  console.log('PayAccounts:', '\n', PayAccounts.find().fetch());
-  console.log('Payments:', '\n', Payments.find().fetch());
+  const collections = Mongo.Collection.getAll();
+  collections.forEach((collection) => {
+    console.log(collection.name, '\n', collection.instance.find().fetch());
+  });
+}
+
+function initializeDatabase() {
+  initializePermissions();
+  defineAccountTemplates();
+  defineLocalizerTemplates();
+  defineTxdefTemplates();
+  initializeBuiltinFolders();
 }
 
 export function emptyFixture() {
   resetDatabase();
-  initializePermissions();
+  initializeDatabase();
 }
 
 export function freshFixture() {
   resetDatabase();
-  initializePermissions();
-  const result = insertDemoFixture('en');
+  initializeDatabase();
+  const result = insertUnittestFixture('en');
   return result;
 }

@@ -1,0 +1,31 @@
+<template name="afQuickField">
+  {{#if isGroup}}
+    {{> afObjectField}}
+  {{else}}
+    {{#if isFieldArray}}
+      {{> afArrayField}}
+    {{else}}
+      {{#if isHiddenInput}}
+        {{! if input type is defined as hidden, we don't render a form group}}
+        {{> afFieldInput groupAtts}}
+      {{else}}
+        {{#if relation}} <!--### droka extension ###-->
+          <div class="pull-right">
+          {{#if getReactiveValue}}
+            <button type="button" class="btn btn-xs btn-default js-view"><i class="fa fa-eye"></i></button>
+            <button type="button" class="btn btn-xs btn-default js-edit text-capitalize"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+            {{! >Action_buttons_group collection=collection actions='view' size='sm'}}
+            {{! >Action_buttons_group collection=collection actions='edit' size='lg'}}
+          {{else}}
+            {{#unless isDisabled}}
+              <button type="button" class="btn btn-xs btn-default pull-right js-create"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
+              {{! >Action_buttons_group collection=collection actions='create' size='lg' options=entityObj}}
+            {{/unless}}
+          {{/if}}
+          </div>
+        {{/if}}
+        {{> afFormGroup groupAtts}}
+      {{/if}}
+    {{/if}}
+  {{/if}}
+</template>

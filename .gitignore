@@ -1,9 +1,14 @@
 **/bin/**
 **/build/*
 **/node_modules/*
+**/packages/jalik-ufs/*
 **/tmp/*
 **/.meteor/dev_bundle
+**/logs/*
+**/.passenger/*
+/public/**/brand/*
 /private/certs/*
+/client/x-*
 *.bak
 *.iml
 *.ipr
@@ -70,4 +75,7 @@ tramp
 ecosystem.json
 pm2.json
 settings.json
+mobile-settings.json
+mobile-config.js
 build.sh
+.vscode

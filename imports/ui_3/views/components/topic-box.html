@@ -1,0 +1,96 @@
+<template name="Attached_shareddocs">
+    {{#if shareddocs.count}}
+    <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="glyphicon glyphicon-paperclip"></i> 
+      {{_ 'Attachments'}} ({{shareddocs.count}})
+      <b class="caret"></b>
+    </button>
+    <ul class="slim-menu dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
+      {{#each doc in shareddocs}}
+      <li><a class="filename" target="_blank" href="{{doc.url}}">{{doc.name}}</a></li>
+      {{/each}}
+    </ul>
+    {{/if}}
+</template>
+
+<template name="Topic_reactions">
+    <div class="btn-group">
+        <button class="btn btn-white btn-xs js-like">
+            <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+            {{_ 'important'}}!
+            ({{this.likesCount}})
+        </button>
+        <button class="btn btn-white btn-xs">
+            <i class="fa fa-comments"></i>
+            {{_ 'Comment'}}
+            ({{commentCounter}})
+        </button>
+    </div>
+</template>
+
+<template name="Topic_header">
+    <!-- creator avatar at the left corner -->
+    <a href="" class="pull-left">
+        <img alt="avatar" class="message-avatar" src={{absoluteUrl creator.avatar}}>
+    </a>
+    <!-- editing options at the right corner -->
+    <div class="pull-right social-action">
+        {{> Action_buttons_dropdown collection='topics' doc=this size='sm'}}
+    </div>
+    <!-- create time before the right corner -->
+    <div class="pull-right">
+        <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+    </div>
+    <!-- creator details after the left corner -->
+    <div class="media-body">
+        <a href="{{pathFor 'User show' _id=creatorId}}">
+            {{creator.displayOfficialName}}
+        </a>                  
+        <small class="text-muted" title="{{_ 'memberships'}}">
+            {{join (translateArray (creator.activeRoles activeCommunityId null))}}
+        </small>
+    </div>
+</template>
+
+<template name="Topic_body">
+    <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
+        <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
+    </a>
+    <div class="text-dark">{{>Chopped text=text chars=600 markdown=true}}</div>
+    <!-- {{>Attached_shareddocs shareddocs=this.getShareddocs}} -->
+    {{>Attachments doc=this}}
+    <br>
+    <!-- {{#if photo}}<img src="{{Meteor.absoluteUrl photo}}" class="img-embed">{{/if}} -->
+</template>
+
+<template name="Topic_box">
+   {{#let commentsIncluded=commentsIncluded}}
+   {{#with topic}}
+   <div class="social-feed-box">
+        <div class="social-avatar">
+            {{> Template.dynamic template=(concat 'Topic_' this.category '_header') data=this}}
+        </div>
+        {{#hideable}}
+        <div class="social-body">
+            {{> Template.dynamic template=(concat 'Topic_' this.category '_body') data=this}}
+            {{> Topic_reactions}}
+        </div>
+        {{/hideable}}
+        <!-- Board boxes need to contain its comment section, so it is attached to it -->
+        {{#if commentsIncluded}}
+            {{> Comments_section this}}
+        {{/if}}
+    </div>
+    {{/with}}
+    {{/let}}
+</template>
+
+<!-- Some categories will want to override some subcomponenents, others leave it generic -->
+
+<template name="Topic_forum_header">
+  {{>Topic_header}}
+</template>
+
+<template name="Topic_forum_body">
+  {{>Topic_body}}
+</template>

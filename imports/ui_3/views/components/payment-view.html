@@ -1,0 +1,103 @@
+<template name="Payment_view">
+  {{#let rDoc=reactiveDoc}}
+    <div class="row">
+        <div class="col-sm-12 col-md-8 pull-right text-right">
+            <h4>
+              {{{displayTxStatus rDoc.status rDoc}}} 
+              {{_ (or rDoc.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{rDoc.serialId}}</span>
+            </h4>
+            <h5>{{_ 'partner'}}:</h5>
+            <address>
+                {{rDoc.partner}}
+                {{#if rDoc.contractId}}<br>[{{rDoc.contract}}]{{/if}}
+            </address>
+            <p>
+                <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate rDoc.valueDate}}</span><br/>
+                <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount rDoc.payAccount}}}</span><br/>
+            </p>
+        </div>
+    </div>
+
+    {{#if showBills}}
+    <div class="table-responsive m-t">
+        <table class="table invoice-table">
+            <thead>
+                <tr>
+                    <th>{{_ 'schemaPayments.bills.label'}}</th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each bp in rDoc.getBills}}
+                {{#if bp}}
+                <tr>
+                    <td>
+                      <strong>{{displayBill bp}}</strong>
+                      {{> Action_buttons_group collection='transactions' actions='view' doc=bp.id size='sm'}}
+                    </td>
+                    <td class="nowrap">{{displayMoney bp.amount}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div><!-- /table-responsive -->
+    {{/if}}
+    {{#if showLines}}
+    <div class="table-responsive m-t">
+        <table class="table invoice-table">
+            <thead>
+                <tr>
+                    <th>{{_ 'schemaPayments.lines.label'}}</th>
+                    <th></th>
+                    <th>{{_ 'schemaTransactions.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each line in rDoc.getLines}}
+                {{#if line}}
+                <tr>
+                    <td>{{{displayAccount line.account}}}</td>
+                    <td>{{{displayLocalizer line.localizer}}}</td>
+                    <td class="nowrap">{{displayMoney line.amount}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{/if}}
+
+    <table class="table invoice-total">
+        <tbody>
+        {{#if rDoc.rounding}}
+        <tr>
+            <td><strong>{{_ 'schemaTransactions.rounding.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.rounding}}</td>
+        </tr>
+        {{/if}}
+        {{#if (and showBills showLines) }}
+        <tr>
+            <td><strong>{{_ 'Overpayment'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
+        </tr>
+        {{/if}}
+        <tr>
+            <td><strong>{{_ 'schemaTransactions.amount.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="text-right" data-id="{{rDoc._id}}">
+      {{>Action_buttons_group collection='transactions' doc=rDoc actions='edit,delete,post' size='xl'}}
+    </div>
+
+    {{#if rDoc.notes}}
+    <div class="well m-t"><strong>{{_ 'schemaNoted.notes.label'}}:</strong><br>
+        {{rDoc.notes}}
+    </div>
+    {{/if}}
+  {{/let}}
+</template>

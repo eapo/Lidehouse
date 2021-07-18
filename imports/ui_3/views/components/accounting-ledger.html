@@ -1,0 +1,25 @@
+<template name="Accounting_ledger">
+    {{#if currentUserHasPermission 'balances.ofAccounts'}}
+     <div class="row">
+        <p class="col-sm-9">
+            {{_ 'Válasszon időszakot, amire a naplófőkönyvet megtekinti.'}}<br>
+            {{_ 'Az egyes cellákra kattintva, az ahhoz az értékhez tartozó számlatörténetet tekintehti meg.'}}<br>
+        </p>
+        <div class="col-sm-3 form-group">
+            <label class="control-label" for="period">{{_ 'period'}}</label>
+            <select id="period" name="period" {{b 'options: periodOptions, value: periodSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+        </div>
+    </div>
+    <!--{{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}-->
+    {{> Ledger_report accounts=accounts tag=yearMonthTag }}
+    {{/if}}
+
+    {{#if currentUserHasPermission 'transactions.inCommunity'}}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <button class="btn btn-default js-journals"><i class="fa fa-list"></i> {{_ 'Full journal list'}}</button>
+            <!--button class="btn btn-default js-income-statement"><i class="fa fa-list"></i> {{_ 'Income statement'}}</button-->
+        </div>
+    </div>
+    {{/if}}
+</template>

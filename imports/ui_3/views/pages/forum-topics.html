@@ -1,0 +1,61 @@
+<template name="Forum_topics">
+
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Forum') }}
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="ibox">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="btn-group">
+                {{#each group in groups}}
+                <button type="button" class="btn {{activeClass group}} text-capitalize js-filter" data-value="{{group}}">{{_ group}}</button>
+                {{/each}}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <input type="text" placeholder="{{_ 'search'}}" class="input-sm form-control js-search">
+                    <span class="input-group-addon">
+                        <i class="fa fa-search"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-2 text-right">
+                <button class="btn btn-primary btn-sm js-create topics" data-entity="forum"><i class="fa fa-plus"></i> {{_ 'Start new topic'}}</button>
+            </div>        
+        </div>
+        </div>
+        <div class="m-b-md">
+            {{#each forumTopics}}
+            <div class="vote-item" data-id={{_id}}>
+                <div class="row">
+                    <div class="col-sm-10">
+                        <div class="vote-actions">
+                            {{#let liked=(this.isLikedBy currentUser._id) }}
+                            <a href="" class="{{#if liked}}invisible{{/if}} js-like"><i class="fa fa-hand-o-up"> </i></a>
+                            <div>{{this.likesCount}}</div>
+                            <a href="" class="{{#unless liked}}invisible{{/unless}} js-like"><i class="fa fa-hand-o-down"> </i></a>
+                            {{/let}}
+                        </div>
+                        <a href="{{pathFor 'Topic show' _tid=_id}}" class="vote-title">
+                            {{title}}
+                            {{> Badge color='info' value=(this.unseenCommentCountBy currentUser._id Meteor.users.SEEN_BY.EYES)}}
+                        </a>
+                        <div class="vote-info">
+                            <i class="fa fa-comments-o"></i> <a class="text-capitalize" href="{{pathFor 'Topic show' _tid=_id}}">{{_ 'Comment'}} ({{commentCounter}})</a>
+                            <i class="fa fa-clock-o"></i> <a href="">{{displayTimeFrom createdAt}}</a>
+                            <i class="fa fa-user"></i> <a href="">{{creator.displayOfficialName}}</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 ">
+                        <div class="vote-icon">
+                            <i class="fa fa-compass"> </i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</template>

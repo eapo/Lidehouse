@@ -1,0 +1,105 @@
+<template name="Board">
+  <div id="board" class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+
+      <!-- right side -->
+      <div class="col-xs-12 col-lg-4 pull-right">
+        {{> Balance_widget}}
+        {{> News}}
+      </div>
+
+      <div class="col-xs-12 col-lg-8">
+        {{#Collapse_section id='vote' title=activeVotingsTitle }}
+          {{#each topic in (topics 'vote')}}
+            {{> Topic_box topic=topic commentsIncluded=true}}
+          {{else}}
+            <!-- ha nincs szavazás ~ empty state -->
+            <div class="vote-container white-box text-center">
+              <h3>
+                {{_ 'No active votes'}}
+              </h3>
+              <h4 class="m2em">
+                {{_ 'Latest votes'}}: <br /><span class="b"><a href="{{pathFor 'Votings'}}"><span class="em b">{{_ 'Votings'}}</span></a> &gt; <span class="em">{{_ 'Closed votings'}}</span></span>
+              </h4>
+          </div>
+          {{/each}}
+        {{/Collapse_section}}
+
+        {{#Collapse_section id='forum' title='Forum' notFirst=true}}
+          {{> New_forum_topic}}
+          {{#each topic in (topics 'forum')}}
+            {{> Topic_box topic=topic commentsIncluded=true}}
+          {{/each}}
+        {{/Collapse_section}}
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<template name="News_topic">
+    <div class="feed-element">
+        <div class="news-elem" data-id="{{_id}}">
+            <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
+            <strong>{{title}}</strong>
+            <div>{{>Chopped text=text chars=600 markdown=true}}</div>
+            <!-- {{#if photo}}<img src="{{absoluteUrl photo}}" class="img-embed">{{/if}} -->
+            {{>Attachments doc=this}}
+            {{#if currentUserHasPermission 'news.update'}}
+            <div class="pull-right m-t-sm">
+              {{>Action_buttons_group collection='topics' doc=this actions='edit,delete' size='lg'}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name="News_topic_sticky">
+    <div class="feed-element">
+    <div class="news-elem" data-id="{{_id}}">
+        <div class="full-width">
+            <strong>{{title}}</strong>
+            <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
+            {{>Chopped text=text chars=600 markdown=true}}
+            <!--  {{#if photo}}<img src="{{absoluteUrl photo}}" class="img-embed">{{/if}} -->
+            {{>Attachments doc=this}}
+            {{#if currentUserHasPermission 'news.update'}}
+            <div class="pull-right m-t-sm">
+                {{>Action_buttons_group collection='topics' doc=this actions='edit,delete' size='lg'}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    </div>
+</template>
+
+<template name="News">
+    {{#Collapse_section id='news' title='News board' }}
+    <div class="ibox float-e-margins">
+      <!--div class="ibox-content ibox-heading">
+          <h3><i class="fa fa-envelope-o"></i> New messages</h3>
+          <small><i class="fa fa-tim"></i> You have 22 new messages and 16 waiting in draft folder.
+          </small>
+      </div-->
+      <div class="ibox-content">
+          <div class="feed-activity-list">
+              <div class="text-right">
+                  {{>Action_buttons_group collection='topics' actions='create' options=(obj '{ "entity": "news" }') size='md'}}
+              </div>
+              {{#each topics 'news' false}}
+                  {{>News_topic this}}
+              {{/each}}
+          </div>
+      </div>
+    </div>
+    {{/Collapse_section}}
+
+    {{#each topics 'news' true}}
+    <div class="ibox infos">
+    <div class="ibox-content">
+        {{>News_topic_sticky this}}
+    </div>
+    </div>
+    {{/each}}
+</template>

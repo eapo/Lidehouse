@@ -1,0 +1,31 @@
+<template name="Confirmation">
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel">
+    <div class="modal-dialog {{#if size}}modal-{{size}}{{/if}}" role="document">
+      <div class="modal-content">
+        {{> Modal_guard}}
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="confirmModalLabel">{{_ 'Are you sure you want to'}} 
+            {{_ (concat 'actions.' action '.do') }} {{_ (concat 'entities.' entity '.it') }}?
+          </h4>
+        </div>
+        <div class="modal-body">
+          {{#if message}}
+          <div class="panel panel-default">
+          <div class="panel-body bg-warning">
+            {{{_ message}}}
+          </div>
+          </div>
+          {{/if}}
+          {{#if body}}
+            {{> Template.dynamic template=body data=bodyContext}}
+          {{/if}}
+        </div>
+        <div class="modal-footer">
+          <button id="btn-cancel" type="button" class="btn btn-default" data-dismiss="modal">{{_ 'cancel'}}</button>
+          <button id="btn-ok" type="button" class="btn btn-primary" data-dismiss="modal">{{okButtonText action}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

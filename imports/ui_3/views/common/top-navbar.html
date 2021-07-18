@@ -1,0 +1,92 @@
+<template name="Top_navbar">
+    <div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                {{#if currentUser}}
+                    <a id="navbar-minimalize" class="minimalize-styl-2 btn btn-primary " href=""><i class="fa fa-bars"></i> </a>
+                    <!--form role="search" class="navbar-form-custom" action="search_results">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                        </div>
+                    </form-->
+                {{else}}
+                <a href="{{pathFor 'App intro'}}" id="logo" class="minimalize-styl-2">
+                    <img src="/images/logo-duo-text.png" width="80" alt="Logo">
+                </a>
+                <a class="minimalize-styl-2 btn btn-primary " href="{{pathFor 'signin'}}">
+                    <i class="fa fa-sign-in"></i> {{_ 'login'}}
+                </a>
+                {{/if}}
+            </div>
+            <ul class="nav navbar-top-links navbar-right">
+                {{#if currentUser}}
+                <li>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="">
+                        <strong id="active-community-name" class="text-muted text-xs width-adjust">
+                            {{#if activeCommunity}}
+                                {{activeCommunity.name}}
+                            {{else}}
+                                {{_ 'No active' }} {{_ 'community'}}
+                            {{/if}}
+                        </strong>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInDown m-t-xs">
+                        {{#each userCommunities}}
+                        <li><a href="" class="js-switch-community">{{name}}</a></li>
+                        {{/each}}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{pathFor 'Communities list'}}"> + {{_ 'Join a community'}} </a></li>
+                        <li><a class="js-create community" href=""> + {{_ 'Create a community'}} </a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span>
+                            <strong id="username" class="font-bold hidden-xs hidden-sm">{{currentUser.displayProfileName}}</strong>                            
+                            <img alt="image" class="img-circle" src="{{absoluteUrl currentUser.avatar}}" width="32"/>
+                            <b class="caret"></b>
+                        </span>                        
+                        {{> Badge color=nameMismatchSeriousity title=(_ 'Name mismatch') value=nameMismatchCounter class="profil-badge"}}
+                    </a>
+                    <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="user-menu-dropdown">
+                        <li>                
+                            <a href="{{pathFor 'User data page' _id=currentUser._id}}">
+                                <i class="glyphicon glyphicon-cog" aria-hidden="true"></i> 
+                                {{_ 'Profile settings'}}
+                                {{> Badge color=nameMismatchSeriousity title=(_ 'Name mismatch') value=nameMismatchCounter style="vertical-align: text-bottom"}}
+                            </a>
+                        </li>
+                        <li>                
+                            <a href="{{pathFor 'changePwd'}}">
+                                <i class="glyphicon glyphicon-lock" aria-hidden="true"></i> 
+                                {{t9n 'updateYourPassword'}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" class="js-logout">
+                                <i class="glyphicon glyphicon-log-out" aria-hidden="true"></i>
+                                {{t9n 'signOut'}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a id="privatechat" class="right-sidebar-toggle count-info" href="">
+                        <i class="fa fa-envelope"></i>  
+                        {{> Badge color='danger' title=(_ 'Unread') value=(unseenEventsCount 'private chat') class="label"}}
+                    </a>                    
+                </li>
+                {{#if currentUserHasPermission 'do.techsupport'}}
+                <li>
+                    <a id="techsupport" class="right-sidebar-toggle count-info" href="">
+                        <i class="fa fa-lg fa-question-circle"></i>
+                        {{> Badge color='danger' title=(_ 'Unread') value=(unseenEventsCount 'tech support') class="label"}}
+                    </a>                    
+                </li>   
+                {{/if}}
+                {{/if}}
+            </ul>
+        </nav>
+    </div>
+</template>

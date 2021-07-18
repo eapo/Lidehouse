@@ -1,0 +1,30 @@
+<template name="Page_heading">
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-8">
+            <h2>{{title}}</h2>
+            {{#unless noBreadcrumbs}}
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{{pathFor 'Board'}}">{{_ 'Board'}}</a>
+                </li>
+                {{#each crumbs}}
+                <li>
+                    <a href="{{this.url}}" class="cap-first">{{this.title}}</a>
+                </li>
+                {{/each}}
+                <li class="active">
+                    <strong class="cap-first">{{smallTitle}}</strong>
+                </li>
+            </ol>
+            {{/unless}}
+        </div>
+        <div class="col-lg-4">
+            {{#if pageIsPrintable}}
+                <div class="title-action">
+                {{>Action_button action=print size='xl'}}
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</template>

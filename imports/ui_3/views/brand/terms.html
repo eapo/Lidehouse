@@ -1,0 +1,7 @@
+<template name="Terms_page">
+  {{#if (equals (fromSettings 'deployment') 'marina')}}
+  {{> Terms_local}}
+  {{else}}
+  {{> Terms_generic}}
+  {{/if}}
+</template>

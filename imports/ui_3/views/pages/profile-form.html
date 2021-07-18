@@ -1,0 +1,24 @@
+<template name="Profile_form">
+     <!-- Page heading -->
+    {{> Page_heading title=(_ 'User data page') noBreadcrumbs=true}}
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+      <div class="page-slim">
+        <div class="panel panel-info">
+          <!--div class="panel-heading"><i class="fa fa-info-circle"></i> {{_ 'Warning'}}</div-->
+          <div class="panel-body">{{_ 'youNeedToSaveYourChanges'}}!</div>
+        </div>
+        {{#autoForm id="af.user.edit" collection=users schema=schema omitFields="emails" doc=document type="method-update" meteormethod="user.update" singleMethodArgument=true}}
+        {{> afQuickFields}}
+        <div class="row normalize">
+          <div class="pull-left">
+            <button type="button" class="btn btn-danger btn-outline js-delete">{{_ "Delete user account"}}</button>
+          </div>
+          <div class="pull-right">
+            <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+          </div>
+          </div>
+        {{/autoForm}}
+      </div>
+    </div>
+</template>

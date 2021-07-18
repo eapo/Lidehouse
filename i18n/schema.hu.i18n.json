@@ -1,16 +1,135 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaTimestamped": {
+    "creatorId": {
+      "label": "Létrehozta"
+    },
+    "createdAt": {
+      "label": "Létrehozva"
+    },
+    "updatedAt": {
+      "label": "Utolsó aktivitás"
+    },
+    "updaterId": {
+      "label": "Módosította"
+    }
+  },
+  "schemaSerialId": {
+    "serialId": {
+      "label": "Azonosító"
+    }
+  },
+  "schemaNoted": {
+    "notes": {
+      "label": "Megjegyzések"
+    }
+  },
+  "schemaAttachmentField": {
+    "attachments": {
+      "label": "Fénykép vagy fájl (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      },
+      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      },
+      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
+    }
+  },
+  "schemaActivePeriod": {
+    "activeTime": {
+      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
+      }
+    }
+  },
+  "schemaAccounts": {
+    "category": {
+      "label": "Számla típus",
+      "options": {
+        "asset": "Eszköz",
+        "liability": "Forrás",
+        "equity": "Saját tőke",
+        "income": "Bevétel",
+        "expense": "Kiadás",
+        "technical": "Technikai",
+        "payable": "Tartozás",
+        "receivable": "Követelés",
+        "bank": "Bank",
+        "cash": "Pénztár"
+      }
+    },
+    "name": {
+      "label": "Elnevezése",
+      "placeholder": "(pl. Megtakarítási számla)"
+    },
+    "code": {
+      "label": "Kód",
+      "placeholder": "(pl. 245)",
+      "help": "Egyedinek kell lennie. Ha már lett tranzakció ezen a főkönyvi számon könyvelve, utána már nem módosítható."
+    },
+    "bank": {
+      "label": "Bank neve",
+      "placeholder": "(pl. OTP)"
+    },
+    "BAN": {
+      "label": "Bankszámlaszám",
+      "placeholder": "(pl. 12345678-00000000-00000525)"
+    },
+    "sync": {
+      "label": "Bankkivonatok feltöltése",
+      "options": {
+        "none": "Nincs",
+        "manual": "Manuális",
+        "auto": "Automatikus"
+      }
+    },
+    "protocol": {
+      "label": "Bank protokol (ha van kivonat feltöltés)"
+    },
+    "primary": {
+      "label": "Elsődleges"
+    }
+  },
   "schemaUsers": {
+    "email": {
+      "label": "Regisztrált e-mail cím",
+      "placeholder": "(pl. margitka21@ingyenmail.com)",
+      "help": "Ezzel az e-mail címmel tud belépni a rendszerbe, és erre az email címre mennek az értesítők."
+    },
     "username": {
       "label": "Felhasználónév",
-      "placeholder": "(pl. Miki75)"
+      "placeholder": "(pl. Miki75)",
+      "help": "A felhasználónév csak egy becenév. A belépéshez a regiszrált e-mail címet kell használni."
+    },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "E-mail cím",
+          "placeholder": "(pl. margitka21@ingyenmail.com)"
+        },
+        "verified": {
+          "label": "Ellenőrzött"
+        }
+      }
     },
     "avatar": {
-      "label": "Avatár",
-      "placeholder": "(pl. kockásfülünyúl.jpg)"
+      "label": "Profilkép",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "profile": {
-      "label": "Profil",
+      "label": "Profil [Az itt megadott adatokat a közösség többi tagjai is látják]",
+      "help": "Az itt megadott adatokat a közösség többi tagjai is látják.",
 
       "firstName": {
         "label": "Keresztnév",
@@ -20,9 +139,10 @@
         "label": "Vezetéknév",
         "placeholder": "(pl. Galambos)"
       },
-      "nick": {
-        "label": "Becenév",
-        "placeholder": "(pl. Miki75)"
+      "publicEmail": {
+        "label": "Publikus email cím",
+        "placeholder": "(pl. Miki75@leveledjott.hu)",
+        "help": "Ezt az e-mail címet fogja látni a közösség többi tagja. Ez különbözhet a regisztrált e-mail címtől, de lehet ugyanaz is. Ha itt nem ad meg címet, akkor a többiek nem látnak ön mellett e-mail címet, de az alkalmazáson belül azért tudnak önnek üzenetet küldeni."
       },
       "address": {
         "label": "Kapcsolati cím",
@@ -39,57 +159,173 @@
     },
     "settings": {
       "label": "Beálítások",
+      "language": {
+        "label": "Nyelv"
+      },
       "delegatee": {
         "label": "Bejövő meghatalmazások engedélyezése"
+      },
+      "notiFrequency": {
+        "label": "Email értesítések gyakorisága a házban történő eseményekről",
+        "options": {
+          "never": "Soha",
+          "weekly": "Hetente legfeljebb egyszer",
+          "daily": "Naponta legfeljebb egyszer",
+          "frequent": "Naponta akár töbször is"
+        }
+      },
+      "notiLevel": {
+        "label": "Email értesítéseket mely eseményekről kérek a házban",
+        "options": {
+          "never": "Semmiről",
+          "high": "Csak a legfontosabbakról (szavazások, üzenetek, faliújság)",
+          "medium": "Minden új felvetett témáról, de a hozzászólásokról nem",
+          "low": "Minden témáról, hozzászólásról és téma változásról"
+        }
+      },
+      "getBillEmail": {
+        "label": "Email értesítést kérek a számomra kiállított számlákról"
+      },
+      "newsletter": {
+        "label": "Szeretnék feliratkozni az applikációval kapcsolatos hírlevélre"
+      }
+    }
+  },
+  "schemaMeters" : {
+    "service": {
+      "label": "Szolgáltatás",
+      "placeholder": "(pl. Hideg víz vagy Fűtés)",
+      "coldWater": "Hideg víz",
+      "hotWater": "Meleg víz",
+      "electricity": "Áram",
+      "gas": "Gáz",
+      "heating": "Fűtés",
+      "cooling": "Hűtés"
+    },
+    "parcelId": {
+      "label": "Albetét"
+    },
+    "identifier": {
+      "label": "Gyári azonosító"
+    },
+    "uom": {
+      "label": "Fogyasztási egység",
+      "placeholder": "(pl. kW)"
+    },
+    "decimals": {
+      "label": "Tizedesjegyek száma az órán",
+      "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését.",
+      "placeholder": "(pl. 3 vagy 0 ha csak egész értéket lehessen megadni)"
+    },
+    "readings": {
+      "label": "Leolvasások",
+      "$": {
+        "date": {
+          "label": "Leolvasás időpontja",
+          "placeholder": "éééé-hh-nn"
+        },
+        "value": {
+          "label": "Óraállás",
+          "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
+          "placeholder": "(pl. 1234,205)"
+        },
+        "photo": {
+          "label": "Fénykép (ha csatolni szeretne)",
+          "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+        }
       }
     },
-    "emails": {
+    "billings": {
+      "label": "Kiszámlázások",
       "$": {
-        "address": {
-          "label": "E-mail cím",
-          "placeholder": "(pl. margitka21@ingyenmail.com)"
+        "date": {
+          "label": "Kiszámlázás időpontja",
+          "placeholder": "éééé-hh-nn"
         },
-        "verified": {
-          "label": "Ellenőrzött"
+        "type": {
+          "label": "Számlázás típusa"
+        },
+        "value": {
+          "label": "Óraállás",
+          "placeholder": "(mérőn olvasható érték)"
+        },
+        "readingId": {
+          "label": "Leolvasás",
+          "placeholder": "(ha nincs megadva, akkor becslés)"
         }
+      }
+    },
+    "lastRead": {
+      "label": "Leolvasva"
+    },
+    "lastBilled": {
+      "label": "Számlázva"
+    },
+    "activeTime": {
+      "label": "Aktív időszak",
+      "begin": {
+        "label": "Felszerelés ideje",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Leszerelés ideje",
+        "placeholder": "éééé-hh-nn"
+      }
+    }
+  },
+  "schemaReadings": {
+    "reading": {
+      "label": "Leolvasás",
+      "date": {
+        "label": "Leolvasás időpontja",
+        "placeholder": "éééé-hh-nn"
+      },
+      "value": {
+        "label": "Óraállás",
+        "help": "Kérjük figyeljen a tizedesvessző megfelelő helyére, hogy a helyes állást rögzítsük",
+        "placeholder": "(pl. 1234,05)"
+      },
+      "photo": {
+        "label": "Fénykép (ha csatolni szeretne)",
+        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
       }
     }
   },
   "schemaMemberships" : {
+    "_": {
+      "label": "Tagság"
+    },
     "role": {
-      "label": "Szerep"
-    },
-    "userId": {
-      "label": "Felhasználó (a regisztráltak közül)"
-    },
-    "userEmail": {
-      "label": "Felhasználó email címe (ha nem regisztrált)",
-      "placeholder": "(pl. tibi45@dmail.com)"
-    },
-    "idCard": {
-      "label" : "Ellenőrzött adatok",
-      "type": {
-        "label": "Entitás típusa"
-      },
-      "name": {
-        "label": "Név",
-        "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
-      },
-      "address": {
-        "label": "Bejelentett cím",
-        "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
-      },
-      "identifier": {
-        "label": "Szig. szám ill. cégjegyzékszám",
-        "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
-      },
-      "mothersName": {
-        "label": "Anyja leánykori neve",
-        "placeholder": "(csak magánszemély esetén)"
-      },
-      "dob": {
-        "label": "Születési idő"
+      "label": "Tisztség",
+      "options": {
+        "admin": "admin",
+        "manager": "közös képviselő",
+        "board": "intéző",
+        "owner": "tulajdonos",
+        "benefactor": "használó",
+        "moderator": "moderátor",
+        "accountant": "könyvelő",
+        "treasurer": "pénztáros",
+        "overseer": "számvizsgáló",
+        "delegate": "meghatalmazott",
+        "maintainer": "gondnok",
+        "guest": "vendég"
       }
+    },
+    "rank": {
+      "label": "Kiegészítő titulus",
+      "placeholder": "(pl. elnök vagy helyettes)",
+      "help": "Általában nincs rá szükség. A jogosultságokat nem befolyásolja. Csak egy szócska, ami segíthet árnyalni a személy szerepkörét a nyilvános tisztség listában.",
+      "chairman": "elnök",
+      "lead": "vezető",
+      "assistant": "asszisztens",
+      "substitute": "helyettes"
+    },
+    "partnerId": {
+      "label": "Partner"
+    },
+    "parcelId": {
+      "label": "Albetét"
     },
     "ownership": {
       "label": "Tulajdon",
@@ -98,32 +334,43 @@
         "placeholder": "(pl. 1/1 vagy 1/2)"
       },
       "representor": {
-        "label": "Képviselője?"
+        "label": "Képviselője?",
+        "help": "Az albetét tulajdonos, ha Képviselője az albetétnek, akkor a teljes albetét tulajdonrésszel szavaz (akkor is ha ő csak 1/2 rész tulajdonosa az albetétnek), és ő fogja megkapni az albetéthez kapcsolodó közös költség számlákat."
       }
     },
     "benefactorship": {
       "label": "Használat",
       "type": {
-        "label": "Típus"
+        "label": "Típus",
+        "options": {
+          "rental": "Bérlet",
+          "favor": "Szívességi használat",
+          "right": "Haszonélvezeti jog"
+        }
       }
     }
   },
   "schemaDelegations": {
-    "sourceUserId": {
+    "sourceId": {
       "label": "Meghatalmazó",
       "placeholder": "(pl. Miki75)"
     },
-    "targetUserId": {
+    "targetId": {
       "label": "Meghatalmazott",
       "placeholder": "(pl. Miki75)"
     },
     "scope": {
       "label": "Meghatalmazás köre",
-      "placeholder": "(pl. Ház ügyei)"
+      "placeholder": "(pl. Ház ügyei)",
+      "options": {
+        "community": "a ház ügyeire",
+        "agenda": "egy közgyűlés ügyeire",
+        "topic": "egyetlen ügyre"
+      }
     },
-    "objectId": {
-      "label": "Meghatalmazás tárgya (tulajdon)",
-      "placeholder": "(pl. Demo ház)"
+    "scopeObjectId": {
+      "label": "Meghatalmazás kör célpontja",
+      "placeholder": "Először válassza ki a meghatalmazás kört"
     }
   },
   "schemaAgendas": {
@@ -135,7 +382,67 @@
       "label": "Napirendi pontok"
     }
   },
+  "schemaContracts": {
+    "_": {
+      "label": "Szerződés"
+    },
+    "title": {
+      "label": "Név",
+      "placeholder": "(pl. Lift karbantartási szerződés)"
+    },
+    "text": {
+      "label": "Leírás",
+      "placeholder": "(pl. 2012 CXXL. kormányrendelet alapján kötelező)"
+    },
+    "partnerId": {
+      "label": "Partner"
+    },
+    "accounting": {
+      "label": "Alapértelmezett könyvelés",
+      "account": {
+        "label": "Főkönyvi szám",
+        "help": "A rendszer automatikusan ezt fogja elsőként felajánlani ehhez a szerződéshez, amikor az egyeztetés során ez a szerződés kerül kiválasztásra. Így gyorsabban lehet dolgozni."
+      },
+      "localizer": {
+        "label": "Könyvelési hely"
+      }
+    },
+    "delegateId": {
+      "label": "Fizető partner",
+      "help": "Akkor adja meg, ha a számlát nem a tulajonos fogja fizetni, hanem egy másik, megbízott személy. Az itt beállított személy részére szintén meg lesznek küldve a számlák."
+    },
+    "topicIds": {
+      "label": "Munkalapok"
+    },
+    "parcelId": {
+      "label": "Albetét"
+    },
+    "leadParcelId": {
+      "label": "Vezető albetét",
+      "help": "Ha vezető albetétet ad meg, akkor ez az albetét nem kerül külön számlára, hanem az előírásai a vezető albetét számlájához adódnak, plusz tételként. Vezető albetét esetén a szavazati jogokat is átadja az albetét a vezető albetétnek. Tipikusan parkolóhelyek, tárolók szokták megjelölni azt a lakást vezető albetétként, amelyikhez tartoznak."
+    },
+    "membershipId": {
+      "label": "Tagság"
+    },
+    "habitants": {
+      "label": "Lakók száma (fő)",
+      "placeholder": "(pl. 4)",
+      "help": "Csak akkor szükséges megadni, ha ez alapján szeretne előírni."
+    }
+  },
   "schemaTopics": {
+    "category": {
+      "label": "Kategória",
+      "options": {
+        "general": "téma",
+        "forum": "fórum téma",
+        "vote": "szavazás",
+        "news": "hirdetmény",
+        "ticket": "hibajegy",
+        "room": "szoba",
+        "feedback": "visszajelzés"
+      }
+    },
     "title": {
       "label": "Cím",
       "placeholder": "Rövid összefoglalás"
@@ -144,40 +451,179 @@
       "label": "Részletek",
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
     },
+    "shareddocs": {
+      "label": "Dokumentumok (ha csatolni szeretne)",
+      "$": {
+        "placeholder": "Link megadása (pl. /uploads/document.pdf)"
+      }
+    },
     "sticky" : {
-      "label": "Kiemelt"
+      "label": "Rögzített"
+    },
+    "status": {
+      "label": "Státusz",
+      "options": {
+        "announced": "Kitűzve",
+        "opened": "Nyitott",
+        "scheduled": "Ütemezve",
+        "reported": "Bejelentve",
+        "confirmed": "Betervezve",
+        "toApprove": "Jóváhagyásra",
+        "toVote": "Megszavazásra",
+        "progressing": "Folyamatban",
+        "suspended": "Felfüggesztve",
+        "finished": "Elvégezve",
+        "votingFinished": "Szavazás lezárva",
+        "closed": "Lezárt",
+        "deleted": "Törölt"
+      }
+    },
+    "closed": {
+      "label": "Lezárt"
+    },
+    "closesAt": {
+      "label": "Lezárulás ideje"
     }
   },
   "schemaVotings": {
     "title": {
-      "label": "Szavazás",
+      "label": "Kérdés",
       "placeholder": "(pl. Fessük-e a falat kékre?)"
     },
     "text": {
       "label": "Részletek",
-      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+      "placeholder": "A szavazás kérdésének bővebb kifejtése ..."
+    },
+    "agendaId": {
+      "label": "Közgyűlés (aminek része)"
+    },
+    "opensAt": {
+      "label": "Szavazás kezdete"
+    },
+    "closesAt": {
+      "label": "Szavazás lezárulása"
+    },
+    "vote": {
+      "choices": {
+        "label": "Választási lehetőségek",
+        "help": "A szavazás típusa meghatározhatja a választási lehetőségeket (például igen-nem szavazás esetén). Amikor nem, akkor ön adhatja meg a lehetséges válaszokat. Előszőr tehát mindenképpen válassza meg a típust."
+      },
+      "procedure": {
+        "label": "Szavazás menete",
+        "help": "Az írásos szavazás esetén nincs közgyűlés a szavazás végén.",
+        "options": {
+          "online": "Írásos",
+          "meeting": "Közgyűlési"
+        }
+      },
+      "effect": {
+        "label": "Szavazás hatása",
+        "help": "A közvéleménykutató szavazásnak nincsen jogi következménye, nem eredményez jogerős határozatot, csak előkészít egy későbbi jogerős szavazást, vagy felméri az álláspontokat.\nJogerős szavazást csak erre jogosult tisztségviselő indíthat, közvéleménykutatót viszont bárki.",
+        "options": {
+          "poll": "Közvéleménykutatás",
+          "legal": "Jogerős szavazás"
+        }
+      },
+      "type": {
+        "label": "Szavazás típusa",
+        "help": "A szavazás típusát célszerű jól megválasztani, hogy a közösség számára optimális döntés születhessen.",
+        "options": {
+          "yesno": "Igen-nem",
+          "choose": "Egyszerű választásos",
+          "preferential": "Preferencia szerint sorba rendező",
+          "petition": "Támogatásgyűjtő",
+          "multiChoose": "Több választási lehetőséges"
+        }
+      },
+      "voters": {
+        "label": "Szavazatot leadók"
+      }   
     }
   },
   "schemaTickets": {
+    "id": {
+      "label": "Azonosító"
+    },
     "title": {
-      "label": "Hiba rövid leírása",
+      "label": "Rövid leírás",
       "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
-      "label": "Részletek",
-      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+      "label": "Megjegyzések",
+      "placeholder": "Hozzáfűznivaló..."
+    },
+    "status": {
+      "label": "Státusz"
     },
     "ticket": {
-      "label": "Hibajegy",
+      "label": "Hibajegy adatok",
       "type": {
-        "label": "Hiba típusa"
+        "label": "Típus",
+        "options": {
+          "issue": "Hiba",
+          "upgrade": "Felújítás",
+          "maintenance": "Karbantartás"
+        }
       },
       "urgency": {
-        "label": "Sürgősség"
+        "label": "Sürgősség",
+        "options": {
+          "high": "sürgős",
+          "normal": "közepes",
+          "low": "alacsony"
+        }
       },
-      "status": {
-        "label": "Státusz"
+      "localizer": {
+        "label": "Hiba helye"
+      },
+      "partnerId": {
+        "label": "Szolgáltató partner"
+      },
+      "chargeType": {
+        "label": "Költség vonzat",
+        "options" : {
+          "oneoff": "Egyedi megrendelés",
+          "lumpsum": "Átalánydíjas",
+          "warranty": "Garanciális",
+          "insurance": "Biztosító fizeti"
+        }
+      },
+      "contractId" : {
+        "label": "Szerződés"
+      },
+      "txId": {
+        "label": "Pénzügyi tranzakció"
+      },
+      "expectedCost": { 
+        "label": "Várható költség"
+      },
+      "expectedStart": { 
+        "label": "Várható kezdés"
+      },
+      "expectedFinish": { 
+        "label": "Várható befejezés"
+      },
+      "expectedContinue": { 
+        "label": "Várható folytatás"
+      },
+      "waitingFor": {
+        "label": "Mire várakozik"
+      },
+      "actualCost": { 
+        "label": "Tényleges költség"
+      },
+      "actualStart": { 
+        "label": "Tényleges kezdés"
+      },
+      "actualFinish": { 
+        "label": "Tényleges befejezés"
+      },
+      "actualContinue": { 
+        "label": "Tényleges folytatás"
       }
+    },
+    "moreDates": {
+      "label": "További kezdés dátumok (ha több jegyet visz fel egyszerre)"
     }
   },
   "schemaFeedback": {
@@ -198,56 +644,708 @@
       }
     }
   },
-  "schemaPayAccounts": {
+  "schemaComments": {
+    "text": {
+      "label": "Szöveg",
+      "placeholder": "Arra gondoltam hogy..."
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+    },
+    "destinationId": {
+      "label": "Áthelyezés ehhez a témához:"
+    }
+  },
+  "schemaStatusChanges": {
+    "text": {
+      "label": "Megjegyzések",
+      "placeholder": "Azért váltok állapotot mert..."
+    }
+  },
+  "schemaBreakdowns": {
+    "digit": {
+      "label": "Kód"
+    },
     "name": {
       "label": "Elnevezés",
       "placeholder": "(pl. Kifizetési hely)"
     },
-    "type": {
-      "label": "Típus"
+    "sign": {
+      "label": "Előjel (Tartozik +, Követel -)"
+    },
+    "include": {
+      "label": "Behivatkozás"
     },
     "children": {
-      "label": "Gyűjtő fiókok",
+      "label": "Kategória fiókok",
       "$": {
-        "name": {
-          "label": "Elnevezés (vagy * ha nem kell)",
-          "placeholder": "(pl. B. lépcsőház)"
-        },
-        "children": {
-          "label": "Al fiókok",
+          "digit": {
+            "label": "Kód"
+          },    
+          "name": {
+            "label": "Elnevezés"
+          },
+          "include": {
+            "label": "Behivatkozás"
+          },
+          "children": {
+          "label": "Gyűjtő fiókok",
           "$": {
+            "digit": {
+              "label": "Kód"
+            },    
             "name": {
-              "label": "Elnevezés (vagy albetét száma)",
-              "placeholder": "(pl. Kert vagy 114)"
+              "label": "Elnevezés"
+            },
+            "include": {
+              "label": "Behivatkozás"
+            },
+            "children": {
+              "label": "Al fiókok",
+              "$": {
+                "digit": {
+                  "label": "Kód"
+                },    
+                "name": {
+                  "label": "Elnevezés",
+                  "placeholder": "(Számla név vagy Albetét ref)"
+                },
+                "include": {
+                  "label": "Behivatkozás"
+                }  
+              }
             }
           }
         }
       }
     }
   },
-  "schemaPayments": {
-    "phase": {
-      "label": "Fázis"
-      //"Tranzakció típusa"
+  "schemaTransactions": {
+    "_": {
+      "label": "Tranzakció"
     },
-    "date": {
-      "label": "Könyvelési dátum",
+    "category": {
+      "label": "Tranzakció főtípus",
+      "options": {
+        "bill": "számla",
+        "payment": "fizetés",
+        "remission": "elengedés",
+        "receipt": "elszámolás",
+        "transfer": "átvezetés számlák között",
+        "exchange": "átvezetés partnerek között",
+        "opening": "nyitás/zárás",
+        "freeTx": "könyvelési tranzakció"
+      }
+    },
+    "defId": {
+      "label": "Gazdasági esemény"
+    },
+    "status": {
+      "label": "Státusz",
+      "options": {
+        "draft": "Könyvelendő",
+        "posted": "Könyvelt",
+        "void": "Sztornózott",
+        "storno": "Sztornó"
+      }
+    },
+    "valueDate": {
+      "label": "Értéknap",
       "placeholder": "(pl. 2017-05-06)"
     },
     "amount": {
       "label": "Összeg",
       "placeholder": "(pl. 14560)"
     },
+    "rounding": {
+      "label": "Kerekítés",
+      "placeholder": "(pl. 2)"
+    },
+    "serial": {
+      "label": "Sorszám"
+    },
+    "serialId": {
+      "label": "Egyedi azonosító"
+    },
+    "createdAt": {
+      "label": "Rögzítés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "postedAt": {
+      "label": "Könyvelés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "partnerId": {
+      "label": "Partner"
+    },
+    "contractId": {
+      "label": "Szerződés",
+      "placeholder": "Először válassza ki a partnert",
+      "help": "Csak akkor szükséges megadni, ha egy partner több különböző viszonyban is áll a társasházzal. Vagy ha szerződés feltételeit vagy leírását szeretnénk rögzíteni a rendszerben.\nAlbetét tulajdonos esetében a szerződés az maga az az albetét, amelyre számlázunk (vezér albetét)."
+    },
+    "sourceId": {
+      "label": "Forrás tranzakció azonosítója"
+    },
+    "batchId": {
+      "label": "Batch azonosító"
+    },
+    "reconciled": {
+      "label": "Egyeztetve"
+    },
+    "allocated": {
+      "label": "Számlákhoz egyeztetve"
+    },
+    "debit": {
+      "label": "Tartozik",
+      "$": {
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "Hagyja üresen, ha megegyezik a teljes összeggel"
+        },
+        "account": {
+          "label": "Főkönyvi számla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }         
+      }
+    },
+    "credit": {
+      "label": "Követel",
+      "$": {
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "Hagyja üresen, ha megegyezik a teljes összeggel"
+        },
+        "account": {
+          "label": "Főkönyvi számla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }
+      }
+    },
+    "pEntries": {
+      "label": "Partner tételek",
+      "$": {
+        "amount": {
+          "label": "Összeg"
+        },
+        "side": {
+          "label": "Oldal",
+          "options": {
+            "debit": "Tartozik",
+            "credit": "Követel"
+          }
+        },
+        "partner": {
+          "label": "Partner/Szerződés"
+        }         
+      }
+    },
+    // Following lines are for the different txdefs
+    "supplierBillId": {
+      "label": "Bejövő számla, amit beszámítunk"
+    },
+    "customerBillId": {
+      "label": "Kimenő számla, amibe beszámítunk"
+    },
+    "fromAccount": {
+      "label": "Átvezetés innen (K)"
+    },
+    "toAccount": {
+      "label": "Átvezetés ide (T)"
+    },
+    "fromPartner": {
+      "label": "Átvezetés innen (K)"
+    },
+    "toPartner": {
+      "label": "Átvezetés ide (T)"
+    },
+    "side": {
+      "label": "Oldal",
+      "options": {
+        "debit": "Tartozik",
+        "credit": "Követel"
+      }
+    },
+    "account": {
+      "label": "Főkönyvi számla"
+    },
+    "relationAccount": {
+      "label": "Könyvelési számla"
+    },
+    "payAccount": {
+      "label": "Pénz számla"
+    },
+    "localizer": {
+      "label": "Könyvelési hely (amennyiben megadható)"
+    }
+  },
+  "schemaStatementEntries": {
+    "_": {
+      "label": "Kivonat tétel"
+    },
+    "time": {
+      "label": "Tranzakció időpontja",
+      "placeholder": "(pl. 2017-05-06 14:56:04)"
+    },
+    "valueDate": {
+      "label": "Könyvelési nap",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Összeg",
+      "placeholder": "(pl. 14560)"
+    },
+    "account": {
+      "label": "Főkönyvi számla"
+    },
+    "name": {
+      "label": "Partner neve"
+    },
+    "contraBAN": {
+      "label": "Ellenoldali bankszámlaszám"
+    },
     "ref": {
-      "label": "Referencia azonosító",
-      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
+      "label": "Banki tranzakció azonosító"
+    },
+    "refType": {
+      "label": "Banki tranzakció típus"
     },
     "note": {
-      "label": "Megjegyzés",
-      "placeholder": "(pl. emlékeztető)"
+      "label": "Közlemény"
     },
-    "accounts": {
-      "label": "Könyvelési fiókok"
+    "row": {
+      "label": "Kivonat sor"
+    },
+    "original": {
+      "label": "Eredeti kivonat adatok"
+    },
+    "match": {
+      "label": "Ajánlott társított tranzakció"
+    },
+    "txId": {
+      "label": "Kapcsolandó tranzakció",
+      "help": "Amennyiben a kivonat tételhez tartozó tranzakció már létre lett hozva, válassza ki a listából, ha még nem létezik, akkor hozza létre most új tranzakcióként."
+    }
+  },
+  "schemaRecognitions": {
+    "names": {
+      "label": "Banki partner nevek felismerése",
+      "help": "Itt beállíthatja hogy a bal oldalon megadott banki partner nevek, milyen társasházi partner névként ismerődjenek fel."
+    },
+    "BANs": {
+      "label": "Bankszámlaszámok felismerése",
+      "help": "Itt beállíthatja hogy a bal oldalon megadott bankszámlaszámok, milyen társasházi bankszámlaszámként ismerődjenek fel."
+    }
+  },
+  "schemaTxdefs": {
+    "name": {
+      "label": "Gazdasági esemény neve",
+      "placeholder": "(pl. Áru számla)"
+    },
+    "category": {
+      "label": "Főtípus",
+      "options": {
+        "bill": "számla",
+        "payment": "fizetés",
+        "remission": "elengedés",
+        "receipt": "elszámolás",
+        "transfer": "átvezetés számlák között",
+        "exchange": "átvezetés partnerek között",
+        "opening": "nyitás/zárás",
+        "freeTx": "könyvelési tranzakció"
+      }
+    },
+    "data": {
+      "label": "Megadható paraméterek",
+      "relation": {
+        "label": "Partner viszony",
+        "placeholder": "(Válasszon a listából)",
+        "help": "Akkor szükséges ha a főtípus számla vagy fizetés.",
+        "options": {
+          "supplier": "Szállító",
+          "customer": "Vevő",
+          "member": "Tulajdonos"
+        }
+      },
+      "side": {
+        "label": "Oldal",
+        "placeholder": "(Válasszon a listából)",
+        "help": "Akkor szükséges ha a főtípus nyitás/zárás.",
+        "options": {
+          "debit": "Tartozik",
+          "credit": "Követel"
+        }
+      },
+      "remission": {
+        "label": "Elengedés?",
+        "help": "Akkor szükséges ha a főtípus fizetés."
+      }      
+    },
+    "debit": {
+      "label": "Tartozik",
+      "placeholder": ""
+    },
+    "credit": {
+      "label": "Követel",
+      "placeholder": ""
+    }
+  },
+  "schemaPartners": {
+    "_": {
+      "label": "Partner"
+    },
+    "ref": {
+      "label": "Azonosító"
+    },
+    "relation": {
+      "label": "Partner viszony",
+      "placeholder": "(Válasszon a listából)",
+      "help": "A szállítók és vevők a közösség gazdasági partnerei, a tulajdonosok fizetik a közös költségeket. Egy személy egyszerre több fajta partneri viszonyban is lehet a közösséggel. Ha nincs a pertnerrel pénzügyi viszony, akkor nem kell egyiket sem megjelölni.",
+      "options": {
+        "supplier": "Szállító",
+        "customer": "Vevő",
+        "member": "Tulajdonos"
+      }
+    },
+    "userId": {
+      "label": "Kapcsolt felhasználó (ha már regisztrált)"
+    },
+    "idCard": {
+      "label" : "Személyi adatok",
+      "type": {
+        "label": "Személy típusa",
+        "placeholder": "(Válasszon a listából)",
+        "options": {
+          "natural": "természetes személy",
+          "legal": "jogi személy",
+          "other": "egyéb"
+        }
+      },
+      "name": {
+        "label": "Név",
+        "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
+      },
+      "address": {
+        "label": "Bejelentett cím",
+        "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+      },
+      "identifier": {
+        "label": "Szig vagy cégjegyzékszám",
+        "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
+      },
+      "dob": {
+        "label": "Születési vagy alapítási idő"
+      },
+      "mothersName": {
+        "label": "Anyja leánykori neve",
+        "placeholder": "(csak magánszemély esetén)"
+      }
+    },
+    "contact": {
+      "label" : "Kapcsolattartási adatok",
+      "address": {
+        "label": "Levelezési cím",
+        "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+      },
+      "phone": {
+        "label": "Telefonszám",
+        "placeholder": "(pl. +36 30 123 4567)"
+      },
+      "email": {
+        "label": "Email cím",
+        "placeholder": "(pl. tibi45@dmail.com)"
+      }
+    },
+    "BAN": { 
+      "label": "Bankszámlaszám",
+      "placeholder": "(pl 12345678-00000000-00000078)"
+    },
+    "taxNo": {
+      "label": "Adószám",
+      "placeholder": "(pl 123456-2-42)",
+      "help": "Nem szükséges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
+    },
+    "destinationId": {
+      "label": "Beleolvasztás ebbe a partnerbe:"
+    }
+  },
+  "schemaBills": {
+    "relation": {
+      "label": "Oldal",
+      "options": {
+        "supplier": "Bejövő számla",
+        "customer": "Kimenő számla",
+        "member": "Előírás"
+      }
+    },
+    "issueDate": {
+      "label": "Számla kelte",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "deliveryDate": {
+      "label": "Teljesítés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "dueDate": {
+      "label": "Fizetési határidő",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "disco": {
+      "label": "Kedvezmény"
+    },
+    "paymentMethod": {
+      "label": "Fizetés módja",
+      "options": {
+        "cash": "készpénz",
+        "bank": "átutalás"
+      }
+    },
+    "paymentDate": {
+      "label": "Kifizetés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "net": {
+      "label": "Nettó összeg"
+    },
+    "tax": {
+      "label": "ÁFA"
+    },
+    "amount": {
+      "label": "ÖSSZEG",
+      "placeholder": "(pl. 14560)"
+    },
+    "outstanding": {
+      "label": "Kifizetetlen",
+      "placeholder": "(pl. 14560)"
+    },
+    "title": { 
+      "label": "Termék vagy szolgáltatás neve",
+      "placeholder": "(pl. Kerti pad)"
+    },
+    "lines" : {
+      "label": "Tételek",
+      "$" : {
+        "title": { 
+          "label": "Termék vagy szolgáltatás neve",
+          "placeholder": "(pl. Kerti pad)"
+        },
+        "details": { 
+          "label": "Részletezés",
+          "placeholder": "(amennyiben szükséges)"
+        },
+        "uom": {
+          "label": "Mennyiségi egység",
+          "placeholder": "(pl. db)"
+        },
+        "quantity": {
+          "label": "Mennyiség",
+          "short": "M.e.",
+          "placeholder": "(pl. 5)"
+        },
+        "unitPrice": {
+          "label": "Egységár",
+          "placeholder": "(pl. 15400)"
+        },
+        "discoPct": {
+          "label": "Kedvezmény%",
+          "placeholder": "(pl. 20)",
+          "help": "Van lehetőség egy százalékos kedvezményt adni a számlából."
+        },
+        "disco": {
+          "label": "Kedvezmény"
+        },
+        "taxPct": {
+          "label": "ÁFA%",
+          "placeholder": "(pl. 27,5)"
+        },
+        "tax": {
+          "label": "ÁFA"
+        },
+        "amount": {
+          "label": "Összeg"
+        },
+        "account": {
+          "label": "Főkönyvi számla",
+          "short": "Szla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }
+      }
+    },
+    "payments": {
+      "label": "Pénzügyi teljesítés",
+      "$": {
+        "valueDate": {
+          "label": "Teljesítés ideje",
+          "placeholder": "(pl. 2017-05-06)"
+        },
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        },
+        "account": {
+          "label": "Pénz számla"
+        }
+      }
+    }
+  },
+  "schemaPayments": {
+    "bills": {
+      "label": "Kapcsolt számlák",
+      "$": {
+        "id": {
+          "label": "Számla"
+        },
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        }
+      }
+    },
+    "lines": {
+      "label": "Számla megjelölés nélkül",
+      "$": {
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        },
+        "contractId": {
+          "label": "Szerződés"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        },
+        "parcelId": {
+          "label": "Albetét"
+        }
+      }
+    },
+    "outstanding": {
+      "label": "Egyeztetendő",
+      "placeholder": "(pl. 14560)"
+    }
+  },
+  "schemaParcelBillings": {
+    "ids": {
+      "label": "Kivetendő előírások"
+    },
+    "date": {
+      "label": "Kivetési időszak - kivetési nap",
+      "placeholder": "(pl. 2017-05-06)",
+      "help": "Válassza meg a kivetési napot. Ez automatikusan meghatározza a kivetési időszakot is (ami a kivetési nap hónapja)."
+    },
+    "year": {
+      "label": "Melyik év",
+      "placeholder": "(pl. 2017)"
+    },
+    "month": {
+      "label": "Melyik hónapjára",
+      "placeholder": "(pl. 11)"
+    },
+    "title": {
+      "label": "Megnevezés",
+      "placeholder": "(pl. Közös költség)"
+    },
+    "consumption": {
+      "label": "Fogyasztási előírás (ha van mérőóra)",
+      "service": {
+        "help": "Csak akkor töltse ki, ha az előírást mért fogyasztáshoz szeretné kötni azoknál az albetéteknél, ahol van felszerelve mérőóra.",
+        "label": "Mért szolgáltatatás"
+      },
+      "charges": {
+        "label": "Kivetett díj",
+        "$": {
+          "uom": {
+            "label": "Fogyasztási egység",
+            "placeholder": "(pl. kW)"
+          },
+          "unitPrice": {
+            "label": "Fogyasztási egységár (Ft)",
+            "placeholder": "(pl. 250)"
+          },
+          "decimals": {
+            "label": "Tizedesjegyek száma a számlákban",
+            "help": "A rendszer az itt beállított tizedesjegyszámig fogja a számlákon az értéket megjeleníteni.",
+            "placeholder": "(pl. 3 vagy 0 ha csak egész értéket lehessen megadni)"
+          }
+        }
+      }
+    },
+    "projection": {
+      "label": "Vetítési előírás (ha nincs mérőóra)",
+      "base": {
+        "help": "Csak akkor töltse ki, ha az előírást vetítéssel kívánja meghatározni azoknál az albetéteknél, ahol nincs felszerelve mérőóra.",
+        "label": "Vetítési alap",
+        "options": {
+          "absolute": "abszolút (Ft)",
+          "area": "terület (/m2)",
+          "volume": "légköbméter (/m3)",
+          "habitants": "lakók száma (/fő)"
+        }
+      },
+      "unitPrice": {
+        "label": "Vetítési egységár (Ft)",
+        "placeholder": "(pl. 14560)"
+      }
+    },      
+    "digit": {
+      "label": "Előírás könyvelési kódja"
+    },
+    "localizer": {
+      "label": "Előírás helye",
+      "help": "Az előírás kivetésre kerül egy adott albetétre, ha egy albetétet választ ki, vagy egy adott csoport minden elemére, ha egy csoprtot választ ki."
+    },
+    "withFollowers": {
+      "label": "És a vezetett albetétekre is",
+      "help": "Amennyiben ez be van jelölve, akkor nem csak a fent megjelölt helyekre, hanem minden ahhoz kapcsolt vezetett albetétre is előírunk."
+    },
+    "type": {
+      "label": "Típus, amire előírunk",
+      "help": "Válasszon típust, ha csak egy adott típusra kell előírni a költséget, a többire nem."
+    },
+    "group": {
+      "label": "Csoport, amire előrunk",
+      "help": "Válasszon csoportot, ha csak egy adott csoportra kell előírni a költséget, a többire nem."
+    },
+    "rank": {
+      "label": "Rangsorszám",
+      "help": "A kivetés a rangsorszám szerint halad. A díjbekérő számlán ebben a sorrendben lesznek a sorok."
+    },
+    "appliedAt": {
+      "label": "Kivetések ideje"
+    },
+    "lastAppliedAt": {
+      "label": "Utolsó kivetés ideje"
+    },
+    "applyCount": {
+      "label": "Kivetések száma"
+    },
+    "activeTime": {
+      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
+      }
+    }
+  },
+  "schemaSharedfolders": {
+    "name": {
+      "label": "Név",
+      "placeholder": "(pl. Jogi papírok)"
+    },
+    "externalUrl": {
+      "label": "Google drive link",
+      "placeholder": "(pl. https://drive.google.com/drive/folders/1DNs0_ELHYHUjdhK7VQ9cyTYPZ11CO6xY)",
+      "help": "Amennyiben azt szeretné, hogy mappa a google drive egy mappáját mutassa, akkor adja meg itt a mappa linkjét"
     }
   }
 }

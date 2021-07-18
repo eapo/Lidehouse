@@ -2,14 +2,18 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 
 export const Agendas = new Mongo.Collection('agendas');
 
+/*
 const chooseTopic = {
   options() {
     return Topics.find({ category: 'vote' }).map(function option(v) {
@@ -17,12 +21,20 @@ const chooseTopic = {
     });
   },
 };
+*/
 
 Agendas.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  live: { type: Boolean, optional: true, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
-  topicIds: { type: Array, optional: true },
-  'topicIds.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTopic },
+//  topicIds: { type: Array, defaultValue: [] },
+//  'topicIds.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTopic },
+});
+
+Meteor.startup(function indexAgendas() {
+  if (Meteor.isServer) {
+    Agendas._ensureIndex({ communityId: 1, createdAt: -1 });
+  }
 });
 
 Agendas.helpers({
@@ -30,22 +42,20 @@ Agendas.helpers({
     return Communities.findOne(this.communityId);
   },
   topics() {
-    return Topics.find({ _id: { $in: this.topicIds } }).fetch();
+//    return Topics.find({ _id: { $in: this.topicIds } }).fetch();
+    return Topics.find({ communityId: this.communityId, agendaId: this._id }).fetch();
   },
   closed() {
-    return _.any(this.topics(), topic => topic.closed);
+    if (!this.topics().length) return 'empty';
+    return _.all(this.topics(), topic => topic.closed);
   },
 });
 
 Agendas.attachSchema(Agendas.schema);
-Agendas.attachSchema(Timestamps);
+Agendas.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Agendas.simpleSchema().i18n('schemaAgendas');
-});
+Agendas.simpleSchema().i18n('schemaAgendas');
 
-Agendas.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
+Factory.define('agenda', Agendas, {
+  title: () => `New agenda on ${faker.random.word()}`,
 });

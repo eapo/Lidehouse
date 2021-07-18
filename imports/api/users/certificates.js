@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 /*
 const PersonIdentifierSchema = new SimpleSchema({
@@ -45,17 +45,15 @@ Certificates.schema = new SimpleSchema([
   IdentifierSchema,
   {
     witnessId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
     userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   },
 ]);
 
 Certificates.attachSchema(Certificates.schema);
-Certificates.attachSchema(Timestamps);
+Certificates.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Certificates.simpleSchema().i18n('schemaCertificates');
-});
+Certificates.simpleSchema().i18n('schemaCertificates');
 
 Certificates.allow({
   insert() { return true; },

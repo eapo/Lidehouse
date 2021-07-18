@@ -1,47 +1,130 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { UploadFS } from 'meteor/jalik:ufs';
-import { GridFSStore } from 'meteor/jalik:ufs-gridfs';
-import './config.js';
+import { _ } from 'meteor/underscore';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Log } from '/imports/utils/log.js';
+import { debugAssert } from '/imports/utils/assert.js';
 
-// Declare store collection
 export const Shareddocs = new Mongo.Collection('shareddocs');
 
-function hasPermissionToUpload(userId, doc) {
+function permissionsByFolders(userId, doc, permissions) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  return user.hasPermission('shareddocs.upload', doc.communityId);
+  debugAssert(permissions.default, 'default folder permission required');
+  const folder = doc.folderId;
+  if (permissions[folder]) return user.hasPermission(permissions[folder], doc);
+  else return user.hasPermission(permissions.default, doc);
 }
 
-// Setting up collection permissions
+Shareddocs.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
+  const permissions = {
+    community: 'shareddocs.upload',
+    voting: 'poll.insert',
+    agenda: 'agendas.insert',
+    default: 'shareddocs.upload',
+  };
+  return permissionsByFolders(userId, doc, permissions);
+};
+
+Shareddocs.hasPermissionToUpdate = function hasPermissionToUpdate(userId, doc) {
+  const permissions = {
+    community: 'shareddocs.upload',
+    voting: 'poll.update',
+    agenda: 'agendas.update',
+    default: 'shareddocs.upload',
+  };
+  return permissionsByFolders(userId, doc, permissions);
+};
+
+Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploaded(userId, doc) {
+  const permissions = {
+    community: 'shareddocs.remove',
+    voting: 'poll.remove',
+    agenda: 'agendas.remove',
+    default: 'shareddocs.remove',
+  };
+  return permissionsByFolders(userId, doc, permissions);
+};
+
+// Can be manipulated only through the ShareddocStore interface
 Shareddocs.allow({
-  insert(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
+  insert() { return false; },
   update(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
+    return Shareddocs.hasPermissionToUpdate(userId, doc);
   },
   remove(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
+    return Shareddocs.hasPermissionToRemoveUploaded(userId, doc);
   },
 });
 
-// Declare store
-const ShareddocsStore = new GridFSStore({
-  collection: Shareddocs,
-  name: 'shareddocs',
-  chunkSize: 1024 * 255,
-});
+Shareddocs.attachBehaviour(Timestamped);
 
-// Setting up store permissions
-ShareddocsStore.setPermissions(new UploadFS.StorePermissions({
-  insert(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
-  update(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
-  remove(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
-}));
+//--------------------------------------
+
+Shareddocs.upload = function upload(extraFields) {
+  UploadFS.selectFiles(function (file) {
+    // Prepare the file to insert in database, note that we don't provide a URL,
+    // it will be set automatically by the uploader when file transfer is complete.
+    const shareddoc = {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      ...extraFields,
+    };
+
+    // Create a new Uploader for this file
+    const uploader = new UploadFS.Uploader({
+      // This is where the uploader will save the file
+      // since v0.6.7, you can pass the store instance or the store name directly
+      store: 'shareddocs',
+      // Optimize speed transfer by increasing/decreasing chunk size automatically
+      adaptive: true,
+      // Define the upload capacity (if upload speed is 1MB/s, then it will try to maintain upload at 80%, so 800KB/s)
+      // (used only if adaptive = true)
+      capacity: 0.8, // 80%
+      // The size of each chunk sent to the server
+      chunkSize: 8 * 1024, // 8k
+      // The max chunk size (used only if adaptive = true)
+      maxChunkSize: 128 * 1024, // 128k
+      // This tells how many tries to do if an error occurs during upload
+      maxTries: 5,
+      // The File/Blob object containing the data
+      data: file,
+      // The document to save in the collection
+      file: shareddoc,
+      // The error callback
+      onError(err, file) {
+        Log.error(err);
+      },
+      onAbort(file) {
+        Log.warning(file.name + ' upload has been aborted');
+      },
+      onComplete(file) {
+        Log.info(file.name + ' has been uploaded');
+      },
+      onCreate(file) {
+        Log.info(file.name + ' has been created with ID ' + file._id);
+      },
+      onProgress(file, progress) {
+        Log.info(file.name + ' ' + (progress*100) + '% uploaded');
+      },
+      onStart(file) {
+        Log.info(file.name + ' started');
+      },
+      onStop(file) {
+        Log.info(file.name + ' stopped');
+      },
+    });
+
+    // Starts the upload
+    uploader.start();
+
+    // Stops the upload
+    // uploader.stop();
+
+    // Abort the upload
+    // uploader.abort();
+  });
+};

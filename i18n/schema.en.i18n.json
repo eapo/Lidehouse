@@ -1,16 +1,135 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaTimestamped": {
+    "creatorId": {
+      "label": "Created by"
+    },
+    "createdAt": {
+      "label": "Created at"
+    },
+    "updatedAt": {
+      "label": "Last activity at"
+    },
+    "updaterId": {
+      "label": "Last activity by"
+    }
+  },
+  "schemaSerialId": {
+    "serialId": {
+      "label": "Identifier"
+    }
+  },
+  "schemaNoted": {
+    "notes": {
+      "label": "Megjegyzések"
+    }
+  },
+  "schemaAttachmentField": {
+    "attachments": {
+      "label": "Photo or file (if applicable)",
+      "$": {
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+      },
+      "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
+    }, 
+    "photo": {
+      "label": "Photo (if applicable)",
+      "$": {
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+      },
+      "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
+    }
+  },
+  "schemaActivePeriod": {
+    "activeTime": {
+      "label": "Active time (Can leave blank, if no time constraint)",
+      "begin": {
+        "label": "From",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "end": {
+        "label": "Until",
+        "placeholder": "yyyy-mm-dd"
+      }
+    }
+  },
+  "schemaAccounts": {
+    "category": {
+      "label": "Account category",
+      "options": {
+        "asset": "Asset",
+        "liability": "Liability",
+        "equity": "Equity",
+        "income": "Income",
+        "expense": "Expense",
+        "technical": "Technical",
+        "payable": "Payable",
+        "receivable": "Receivable",
+        "bank": "Bank",
+        "cash": "Cash"
+      }
+    },
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Savings account)"
+    },
+    "code": {
+      "label": "Code",
+      "placeholder": "(pl. 2)", 
+      "help": "It needs to be unique. If there is already a transaction under this code, it is not modifiable."
+    },
+    "bank": {
+      "label": "Bank name",
+      "placeholder": "(pl. HSBC)"
+    },
+    "BAN": {
+      "label": "Bank account number",
+      "placeholder": "(eg 12345678-00000000-00000525)"
+    },
+    "sync": {
+      "label": "Bank statement uploading",
+      "options": {
+        "none": "None",
+        "manual": "Manual",
+        "auto": "Automatic"
+      }
+    },
+    "protocol": {
+      "label": "Bank protocol (if uploading)"
+    },
+    "primary": {
+      "label": "Primary"
+    }
+  },
   "schemaUsers": {
+    "email": {
+      "label": "Registered e-mail address",
+      "placeholder": "(pl. margitka21@ingyenmail.com)",
+      "help": "This is the e-mail address you use to log in with, and notifications are sent to this address."
+    },
     "username": {
       "label": "Username",
-      "placeholder": "(eg. Mike75)"
+      "placeholder": "(eg. Mike75)",
+      "help": "The username is just a nick name. You need to use your registered e-mail address to log in."
+    },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "Address",
+          "placeholder": "(eg. margaret21@freemail.com)"
+        },
+        "verified": {
+          "label": "Verified"
+        }
+      }
     },
     "avatar": {
-      "label": "Avatar",
-      "placeholder": "(eg. heart.jpg)"
+      "label": "Profile picture",
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
     },
     "profile": {
-      "label": "Profile",
+      "label": "Profile [This data is publicly shown to the members of your community]",
+      "help": "This data is publicly shown to the members of your community",
 
       "firstName": {
         "label": "First name",
@@ -20,9 +139,10 @@
         "label": "Last name",
         "placeholder": "(eg. Keaton)"
       },
-      "nick": {
-        "label": "Nick name",
-        "placeholder": "(eg. Mikey75)"
+      "publicEmail": {
+        "label": "Public email",
+        "placeholder": "(eg. Mikey75@cats.com)",
+        "help": "Members of your community can see this e-mail address. This can be different from your registered address, or be the same. If you leave this blank, others will not see an e-mail address for you, but can still conatct you within the app's messaging system."
       },
       "address": {
         "label": "Contact address",
@@ -39,57 +159,173 @@
     },
     "settings": {
       "label": "Settings",
+      "language": {
+        "label": "Language"
+      },
       "delegatee": {
         "label": "Allow incoming delegations"
+      },
+      "notiFrequency": {
+        "label": "Email notification frequency about the events in the community",
+        "options": {
+          "never": "Never",
+          "weekly": "Once a week maximum",
+          "daily": "Once a day maximum",
+          "frequent": "Several times a day"
+        }
+      },
+      "notiLevel": {
+        "label": "Email notifications I'd like about these types of events in the community",
+        "options": {
+          "never": "Nothing",
+          "high": "Most important events only (votings, messages, newsboard)",
+          "medium": "Every new topic created, but not the comments",
+          "low": "Every new comment and status update on topics"
+        }
+      },
+      "getBillEmail": {
+        "label": "I would like to receive emails about the invoices issued to me"
+      },
+      "newsletter": {
+        "label": "I would like to receive the newsletter about the application"
+      }
+    }
+  },
+  "schemaMeters" : {
+    "service": {
+      "label": "Service",
+      "placeholder": "(eg. Cold water or Heating)",
+      "coldWater": "Cold water",
+      "hotWater": "Hot water",
+      "electricity": "Electricity",
+      "gas": "Gas",
+      "heating": "Heating",
+      "cooling": "Cooling"
+    },
+    "parcelId": {
+      "label": "Parcel"
+    },
+    "identifier": {
+      "label": "Serial number"
+    },
+    "uom": {
+      "label": "Unit of consumption",
+      "placeholder": "(eg. kW)"
+    },
+    "decimals": {
+      "label": "Number of decimal places on meter",
+      "help": "A rendszer az itt beállított tizedesjegyszámig fogja engedni a mérőóraállások rögzítését.",
+      "placeholder": "(eg. 3 or 0 if you want to supply only the whole number part)"
+    },
+    "readings": {
+      "label": "Meter readings",
+      "$": {
+        "date": {
+          "label": "Date of reading",
+          "placeholder": "yyyy-mm-dd"
+        },
+        "value": {
+          "label": "Reading value",
+          "help": "Please put in the decimal separator correctly",
+          "placeholder": "(eg 1234.205)"
+        },
+        "photo": {
+          "label": "Photo (if applicable)",
+          "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+        }
       }
     },
-    "emails": {
+    "billings": {
+      "label": "Meter billings",
       "$": {
-        "address": {
-          "label": "Address",
-          "placeholder": "(eg. margaret21@freemail.com)"
+        "date": {
+          "label": "Date of billing",
+          "placeholder": "yyyy-mm-dd"
         },
-        "verified": {
-          "label": "Verified"
+        "type": {
+          "label": "Billing type"
+        },
+        "value": {
+          "label": "Billing value",
+          "placeholder": "(value on the meter)"
+        },
+        "readingId": {
+          "label": "Reading",
+          "placeholder": "(if not given, its an estimate)"
         }
+      }
+    },
+    "lastRead": {
+      "label": "Last read"
+    },
+    "lastBilled": {
+      "label": "Last billed"
+    },
+    "activeTime": {
+      "label": "Active time period",
+      "begin": {
+        "label": "Installation",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "end": {
+        "label": "Uninstallation",
+        "placeholder": "yyyy-mm-dd"
+      }
+    }
+  },
+  "schemaReadings": {
+    "reading": {
+      "label": "Reading",
+      "date": {
+        "label": "Date of reading",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "value": {
+        "label": "Reading value",
+        "help": "Please put in the decimal separator correctly",
+        "placeholder": "(eg 1234,05)"
+      },
+      "photo": {
+        "label": "Photo (if applicable)",
+        "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
       }
     }
   },
   "schemaMemberships" : {
+    "_": {
+      "label": "Membership"
+    },
     "role": {
-      "label": "Role"
-    },
-    "userId": {
-      "label": "User (from registered users)"
-    },
-    "userEmail": {
-      "label": "User's email address (if not registered)",
-      "placeholder": "(eg. jsmith45@dmail.com)"
-    },
-    "idCard": {
-      "label" : "Verified identification",
-      "type": {
-        "label": "Entity type"
-      },
-      "name": {
-        "label": "Name",
-        "placeholder": "(eg. John Smith or ACME Inc.)"
-      },
-      "address": {
-        "label": "Official address",
-        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
-      },
-      "identifier": {
-        "label": "Official identifier",
-        "placeholder": "(id card number or company registration number)"
-      },
-      "mothersName": {
-        "label": "Mother's maiden name",
-        "placeholder": "(only for person)"
-      },
-      "dob": {
-        "label": "Date of birth"
+      "label": "Role",
+      "options": {
+        "admin": "admin",
+        "manager": "manager",
+        "board": "board member",
+        "owner": "owner",
+        "benefactor": "benefactor",
+        "moderator": "moderator",
+        "accountant": "accountant",
+        "treasurer": "treasurer",
+        "overseer": "overseer",
+        "delegate": "delegate",
+        "maintainer": "maintainer",
+        "guest": "guest"
       }
+    },
+    "rank": {
+      "label": "Rank extension",
+      "placeholder": "(eg. chairman or assistant)",
+      "help": "Usually not necessary. It has no effect on the permissions. Just a free text, that may help to slightly differentiate between the roles on the officers page.",
+      "chairman": "chairman",
+      "lead": "lead",
+      "assistant": "assistant",
+      "substitute": "substitute"
+    },
+    "partnerId": {
+      "label": "Partner"
+    },
+    "parcelId": {
+      "label": "Parcel"
     },
     "ownership": {
       "label": "Owner",
@@ -98,32 +334,43 @@
         "placeholder": "(eg. 1/1 or 1/2)"
       },
       "representor": {
-        "label": "Representor?"
+        "label": "Representor?",
+        "help": "If owner is Representor of the parcel, she carries the vote of the full ownership share, even if she is only 1/2 part owner. Also, she will be receiving the common cost bills."
       }
     },
     "benefactorship": {
       "label": "Benefactor",
       "type": {
-        "label": "Type"
+        "label": "Type",
+        "options": {
+          "rental": "Rental",
+          "favor": "Favor",
+          "right": "Right"
+        }
       }
     }
   },
   "schemaDelegations": {
-    "sourceUserId": {
+    "sourceId": {
       "label": "Delegator",
       "placeholder": "(eg. Mike75)"
     },
-    "targetUserId": {
+    "targetId": {
       "label": "Delegatee",
       "placeholder": "(eg. Mike75)"
     },
     "scope": {
       "label": "Scope of Delegation",
-      "placeholder": "(pl. Community issues)"
+      "placeholder": "(pl. Community issues)",
+      "options": {
+        "community": "all issues of the community",
+        "agenda": "issues in a certain agenda",
+        "topic": "one specific issue"
+      }
     },
-    "objectId": {
+    "scopeObjectId": {
       "label": "Object of delegation",
-      "placeholder": "(eg. Demo community)"
+      "placeholder": "Choose delegation scope first"
     }
   },
   "schemaAgendas": {
@@ -135,7 +382,67 @@
       "label": "Agenda topics"
     }
   },
+  "schemaContracts": {
+    "_": {
+      "label": "Contract"
+    },
+    "title": {
+      "label": "Name",
+      "placeholder": "(eg. Elevator regular maintenance)"
+    },
+    "text": {
+      "label": "Decription",
+      "placeholder": "(eg. 2012 CXXL. regulation makes it mandatory)"
+    },
+    "partnerId": {
+      "label": "Partner"
+    },
+    "accounting": {
+      "label": "Default accounting",
+      "account": {
+        "label": "Account",
+        "help": "The system will try to save you typing, by offering this account, when this contract is identified at recociliation."
+      },
+      "localizer": {
+        "label": "Location"
+      }
+    },
+    "delegateId": {
+      "label": "Paying partner",
+      "help": "Fill this if the bill is not paid bz the owner, but another delegated person. This person will get a copy of every bill."
+    },
+    "topicIds": {
+      "label": "Worksheets"
+    },
+    "parcelId": {
+      "label": "Parcel"
+    },
+    "leadParcelId": {
+      "label": "Lead parcel",
+      "help": "If you appoint a lead parcel, then this parcel will not get billed separately, but its fees will be added to the lead parcel's bills. Also the lead parcel can use the voting power of the parcel. Tipically a garage or a storage room would specify the flat it belongs to, as its lead parcel."
+    },
+    "membershipId": {
+      "label": "Membership"
+    },
+    "habitants": {
+      "label": "Habitants",
+      "placeholder": "(eg. 4)",
+      "help": "Needed only if there is a billing based on this."
+    }
+  },
   "schemaTopics": {
+    "category": {
+      "label": "Category",
+      "options": {
+        "general": "topic",
+        "forum": "forum topic",
+        "vote": "voting",
+        "news": "news post",
+        "ticket": "error ticket",
+        "room": "room",
+        "feedback": "feedback"
+      }
+    },
     "title": {
       "label": "Title",
       "placeholder": "Short summary"
@@ -144,8 +451,38 @@
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
     },
+    "shareddocs": {
+      "label": "Documents (if applicable)",
+      "$": {
+        "placeholder": "File link (eg. /uploads/document.pdf)"
+      }
+    },
     "sticky" : {
       "label": "Sticky"
+    },
+    "status": {
+      "label": "Status",
+      "options": {
+        "announced": "Announced",
+        "opened": "Opened",
+        "scheduled": "Scheduled",
+        "reported": "Reported",
+        "confirmed": "Planned",
+        "toApprove": "To approve",
+        "toVote": "To vote on",
+        "progressing": "Progressing",
+        "suspended": "Suspended",
+        "finished": "Done",
+        "votingFinished": "Voting finished",
+        "closed": "Closed",
+        "deleted": "Deleted"
+      }
+    },
+    "closed": {
+      "label": "Closed"
+    },
+    "closesAt": {
+      "label": "Closes At"
     }
   },
   "schemaVotings": {
@@ -156,28 +493,137 @@
     "text": {
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
+    },
+    "agendaId": {
+      "label": "Agenda (of which it is part of)"
+    },
+    "opensAt": {
+      "label": "Voting starts at"
+    },
+    "closesAt": {
+      "label": "Voting closes at"
+    },
+    "vote": {
+      "choices": {
+        "label": "Vote choices",
+        "help": "The voting type may already define the choices (like in the yes/no case). When it does not, you can define the choices yourself. So always choose the voting type first."
+      },
+      "procedure": {
+        "label": "Voting procedure",
+         "help": "There is no owner's meeting at the end of online voting.",
+        "options": {
+          "online": "Online",
+          "meeting": "Owner's meeting"
+        }
+      },
+      "effect": {
+        "label": "Voting effect",
+        "help": "Poll does not have a legal effect, it is a preparation for a legal voting or survey on opinions.\nAnyone can start a poll, but only officers with the proper rights can start a legal voting.",
+        "options": {
+          "poll": "Poll",
+          "legal": "Legal power"
+        }
+      },
+      "type": {
+        "label": "Voting type",
+        "help": "Choose the optimal type for the decision.",
+        "options": {
+          "yesno": "Yes-no",
+          "choose": "Simple selection",
+          "preferential": "Rank choices by preference",
+          "petition": "Petition",
+          "multiChoose": "Multiple choice"
+        }
+      },
+      "voters": {
+        "label": "Voters"
+      }
     }
   },
   "schemaTickets": {
+    "id": {
+      "label": "Identifier"
+    },
     "title": {
-      "label": "Problem description",
-      "placeholder": "(eg. Elevator out of order)"
+      "label": "Short summary",
+      "placeholder": "(eg. Elevator not working)"
     },
     "text": {
-      "label": "Details",
-      "placeholder": "Longer description (if needed)..."
+      "label": "Remarks",
+      "placeholder": "Remarks..."
+    },
+    "status": {
+      "label": "Status"
     },
     "ticket": {
-      "label": "Ticket",
+      "label": "Ticket data",
       "type": {
-        "label": "Type of problem"
+        "label": "Type",
+        "options": {
+          "issue": "Issue",
+          "upgrade": "Upgrade",
+          "maintenance": "Maintenance"
+        }
       },
       "urgency": {
-        "label": "Urgency"
+        "label": "Urgency",
+        "options": {
+          "high": "High",
+          "normal": "Normal",
+          "low": "Low"
+        }
       },
-      "status": {
-        "label": "Status"
+      "localizer": {
+        "label": "Location"
+      },
+      "partnerId": {
+        "label": "Servicing partner"
+      },
+      "chargeType": {
+        "label": "Charge type",
+        "options": {
+          "oneoff": "One-off",
+          "lumpsum": "Lump sum contract",
+          "warranty": "Under warranty",
+          "insurance": "Covered by insurance"
+        }
+      },
+      "contractId" : {
+        "label": "Contract"
+      },
+      "txId": {
+        "label": "Payment transaction"
+      },
+      "expectedCost": { 
+        "label": "Expected cost"
+      },
+      "expectedStart": { 
+        "label": "Expected start"
+      },
+      "expectedFinish": { 
+        "label": "Expected finish"
+      },
+      "expectedContinue": { 
+        "label": "Expected continuation"
+      },
+      "waitingFor": {
+        "label": "Waiting for"
+      },
+      "actualCost": { 
+        "label": "Actual cost"
+      },
+      "actualStart": { 
+        "label": "Actual start"
+      },
+      "actualFinish": {
+        "label": "Actual finish"
+      },
+      "actualContinue": { 
+        "label": "Actual continuation"
       }
+    },
+    "moreDates": {
+      "label": "More start dates (if adding more than one occasions)"
     }
   },
   "schemaFeedback": {
@@ -198,39 +644,113 @@
       }
     }
   },
-  "schemaPayAccounts": {
+  "schemaComments": {
+    "text": {
+      "label": "Text",
+      "placeholder": "My comment here..."
+    },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "File link (eg. https://imgbb.com/pic.jpg)"
+    },
+    "destinationId": {
+      "label": "Move this over to:"
+    }
+  },
+  "schemaStatusChanges": {
+    "text": {
+      "label": "Notes",
+      "placeholder": "The reason for changing the state is..."
+    }
+  },
+  "schemaBreakdowns": {
+    "digit": {
+      "label": "Code"
+    },
     "name": {
       "label": "Name",
-      "placeholder": "(eg. Payment target)"
+      "placeholder": "(eg. Division breakdown)"
     },
-    "type": {
-      "label": "Type"
+    "sign": {
+      "label": "Sign (Debit +, Credit -)"
+    },
+    "include": {
+      "label": "Include"
     },
     "children": {
-      "label": "Container account",
+      "label": "Cathegory account",
       "$": {
+        "digit": {
+          "label": "Code"
+        },
         "name": {
-          "label": "Name (or * if not needed)",
-          "placeholder": "(eg. Building C.)"
+          "label": "Name"
+        },
+        "include": {
+          "label": "Include"
         },
         "children": {
-          "label": "Sub account",
+          "label": "Container account",
           "$": {
+            "digit": {
+              "label": "Code"
+            },
             "name": {
-              "label": "Name (or serial no. of parcel)",
-              "placeholder": "(eg. Garden or 114)"
+              "label": "Name"
+            },
+            "include": {
+              "label": "Include"
+            },
+            "children": {
+              "label": "Sub account",
+              "$": {
+                "digit": {
+                  "label": "Code"
+                },
+                "name": {
+                  "label": "Name",
+                  "placeholder": "(Account name or Parcel ref)"
+                },
+                "include": {
+                  "label": "Include"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "schemaPayments": {
-    "phase": {
-      "label": "Phase"
-      //"Payment type"
+  "schemaTransactions": {
+    "_": {
+      "label": "Transaction"
     },
-    "date": {
+    "category": {
+      "label": "Category",
+      "options": {
+        "bill": "bill",
+        "payment": "payment",
+        "remission": "remission",
+        "receipt": "receipt",
+        "transfer": "transfer",
+        "exchange": "exchange",
+        "opening": "opening/closing",
+        "freeTx": "free transaction"
+      }
+    },
+    "defId": {
+      "label": "Transaction type"
+    },
+    "status": {
+      "label": "Status",
+      "options": {
+        "draft": "Draft",
+        "posted": "Posted",
+        "void": "Void",
+        "storno": "Storno"
+      }
+    },
+    "valueDate": {
       "label": "Accounting date",
       "placeholder": "(eg. 2017-05-06)"
     },
@@ -238,16 +758,578 @@
       "label": "Amount",
       "placeholder": "(eg. 14560)"
     },
+    "rounding": {
+      "label": "Rounding",
+      "placeholder": "(eg. 0.1)"
+    },
+    "serial": {
+      "label": "Serial"
+    },
+    "serialId": {
+      "label": "Unique id"
+    },
+    "createdAt": {
+      "label": "Register date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "postedAt": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "partnerId": {
+      "label": "Partner"
+    },
+    "contractId": {
+      "label": "Contract",
+      "placeholder": "Choose partner first",
+      "help": "Only needed when a partner has more than one associations with the community.\nIn case of a pacel owner, the contract is the parcel itself, which is billed (lead parcel)."
+    },
+    "sourceId": {
+      "label": "Source transaction id"
+    },
+    "batchId": {
+      "label": "Batch id"
+    },
+    "reconciled": {
+      "label": "Reconciled"
+    },
+    "allocated": {
+      "label": "Reconciled to bills"
+    },
+    "debit": {
+      "label": "Debit",
+      "$": {
+        "amount": {
+          "label": "Amount",
+          "placeholder": "Leave blank if its the whole amount"
+        },
+        "account": {
+          "label": "Account"
+        },
+        "localizer": {
+          "label": "Accounting location"
+        }
+      }
+    },
+    "credit": {
+      "label": "Credit",
+      "$": {
+        "amount": {
+          "label": "Amount",
+          "placeholder": "Leave blank if its the whole amount"
+        },
+        "account": {
+          "label": "Account"
+        },
+        "localizer": {
+          "label": "Accounting location"
+        }
+      }
+    },
+    "pEntries": {
+      "label": "Partner entries",
+      "$": {
+        "amount": {
+          "label": "Amount"
+        },
+        "side": {
+          "label": "Side",
+          "options": {
+            "debit": "Debit",
+            "credit": "Credit"
+          }
+        },
+        "partner": {
+          "label": "Partner/Contract"
+        }         
+      }
+    },
+    // Following lines are for the different txdefs
+    "supplierBillId": {
+      "label": "Supplier bill being bartered"
+    },
+    "customerBillId": {
+      "label": "Customer bill being bartered"
+    },
+    "fromAccount": {
+      "label": "Moving from (Cr)"
+    },
+    "toAccount": {
+      "label": "Moving to (Dr)"
+    },
+    "fromPartner": {
+      "label": "Moving from (Cr)"
+    },
+    "toPartner": {
+      "label": "Moving to (Dr)"
+    },
+    "side": {
+      "label": "Side",
+      "options": {
+        "debit": "Debit",
+        "credit": "Credit"
+      }
+    },
+    "account": {
+      "label": "Account"
+    },
+    "relationAccount": {
+      "label": "Account"
+    },
+    "payAccount": {
+      "label": "Money account"
+    },
+    "localizer": {
+      "label": "Accounting location (when applicable)"
+    }
+  },
+  "schemaStatementEntries": {
+    "_": {
+      "label": "Statement Entry"
+    },
+    "time": {
+      "label": "Time of transaction",
+      "placeholder": "(eg. 2017-05-06 14:56:04)"
+    },
+    "valueDate": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(eg. 14560)"
+    },
+    "account": {
+      "label": "Account"
+    },
+    "name": {
+      "label": "Partner name"
+    },
+    "contraBAN": {
+      "label": "Contra bank account number"
+    },
     "ref": {
-      "label": "Reference id",
-      "placeholder": "(eg. transaction no. from bank statement)"
+      "label": "Bank transaction id"
+    },
+    "refType": {
+      "label": "Bank transaction type"
     },
     "note": {
-      "label": "Note",
-      "placeholder": "(eg. reminder)"
+      "label": "Note to payee"
     },
-    "accounts": {
-      "label": "Könyvelési fiókok"
+    "row": {
+      "label": "Statement row"
+    },
+    "original": {
+      "label": "Original statement data"
+    },
+    "match": {
+      "label": "Suggested matched transaction"
+    },
+    "txId": {
+      "label": "Match to this transaction",
+      "help": "Select an existing (unreconciled) transaction, or create a new one now, that you will reconcile with."
+    }
+  },
+  "schemaRecognitions": {
+    "names": {
+      "label": "Bank partner name recognition",
+      "help": "You can set here, how the bank partner names on the left will be recognized among the registered partner names of the community."
+    },
+    "BANs": {
+      "label": "Bank account number recognition",
+      "help": "You can set here, how the bank account numbers on the left will be recognized among the registered bank account numbers of the community."
+    }
+  },
+  "schemaTxdefs": {
+    "name": {
+      "label": "Transaction type name",
+      "placeholder": ""
+    },
+    "category": {
+      "label": "Main category",
+      "options": {
+        "bill": "bill",
+        "payment": "payment",
+        "remission": "remission",
+        "receipt": "receipt",
+        "transfer": "transfer between accounts",
+        "exchange": "exchange between partners",
+        "opening": "opening/closing",
+        "freeTx": "free accounting operation"
+      }
+    },
+    "data": {
+      "label": "Optional parameters",
+      "relation": {
+        "label": "Partner relation",
+        "help": "Needed if main category is bill or payment.",
+        "options": {
+          "supplier": "Supplier",
+          "customer": "Customer",
+          "member": "Member"
+        }
+      },
+      "side": {
+        "label": "Oldal",
+        "help": "Needed if main category is opening/closing.",
+        "options": {
+          "debit": "Tartozik",
+          "credit": "Követel"
+        }
+      },
+      "remission": {
+        "label": "Remission?",
+        "help": "Can be used if main category is payment."
+      }      
+    },
+    "debit": {
+      "label": "Debited",
+      "placeholder": ""
+    },
+    "credit": {
+      "label": "Credited",
+      "placeholder": ""
+    }
+  },
+  "schemaPartners": {
+    "_": {
+      "label": "Partner"
+    },
+    "ref": {
+      "label": "Reference id"
+    },
+    "relation": {
+      "label": "Partner relation",
+      "help": "A person can have multiple partner relations with a community. Leave empty, if there is no financial relationship with this partner.",
+      "options": {
+        "supplier": "Supplier",
+        "customer": "Customer",
+        "member": "Member"
+      }
+    },
+    "userId": {
+      "label": "Linked user account (if already registered)"
+    },
+    "idCard": {
+      "label" : "Person's official data",
+      "type": {
+        "label": "Person type",
+        "options": {
+          "natural": "natural person",
+          "legal": "legal person",
+          "other": "other"
+        }
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "(eg. John Smith or ACME Inc.)"
+      },
+      "address": {
+        "label": "Official address",
+        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
+      },
+      "identifier": {
+        "label": "Official identifier",
+        "placeholder": "(id card / company reg number)"
+      },
+      "dob": {
+        "label": "Date of birth or formation"
+      },
+      "mothersName": {
+        "label": "Mother's maiden name",
+        "placeholder": "(only for natural person)"
+      }
+    },
+    "contact": {
+      "label" : "Person's contact",
+      "address": {
+        "label": "Mailing address",
+        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
+      },
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "(pl. +36 30 123 4567)"
+      },
+      "email": {
+        "label": "Email address",
+        "placeholder": "(eg. jsmith45@dmail.com)"
+      }
+    },
+    "BAN": { 
+      "label": "Bank account number",
+      "placeholder": "(eg. 12345678-00000000-00000078)"
+    },
+    "taxNo": { 
+      "label": "Tax number",
+      "placeholder": "(eg. international VAT number)",
+      "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
+    },
+    "destinationId": {
+      "label": "Merge into this partner:"
+    }
+  },
+  "schemaBills": {
+    "relation": {
+      "label": "Relation",
+      "options": {
+        "supplier": "Bill",
+        "customer": "Invoice",
+        "member": "Contribution"      
+      }
+    },
+    "issueDate": {
+      "label": "Issue date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "deliveryDate": {
+      "label": "Delivery date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "dueDate": {
+      "label": "Due date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "disco": {
+      "label": "Discount"
+    },
+    "paymentMethod": {
+      "label": "Payment method",
+      "options": {
+        "cash": "cash",
+        "bank": "bank"
+      }
+    },
+    "paymentDate": {
+      "label": "Payment date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "net": {
+      "label": "Net Total"
+    },
+    "tax": {
+      "label": "TAX"
+    },
+    "amount": {
+      "label": "TOTAL",
+      "placeholder": "(eg. 14560)"
+    },
+    "outstanding": {
+      "label": "Outstanding",
+      "placeholder": "(eg. 14560)"
+    },
+    "title": { 
+      "label": "Name of product or service",
+      "placeholder": "(eg. Garden chair)"
+    },
+    "lines" : {
+      "label": "Line items",
+      "$" : {
+        "title": { 
+          "label": "Name of product or service",
+          "placeholder": "(eg. Garden chair)"
+        },
+        "details": { 
+          "label": "Description",
+          "placeholder": "(if needed)"
+        },
+        "uom": {
+          "label": "Unit of measurement",
+          "short": "U.o.m.",
+          "placeholder": "(eg. piece)"
+        },
+        "quantity": {
+          "label": "Quantity",
+          "placeholder": "(eg. 5)"
+        },
+        "unitPrice": {
+          "label": "Unit price",
+          "placeholder": "(eg. 15420)"
+        },
+        "discoPct": {
+          "label": "Discount%",
+          "placeholder": "(eg. 20)",
+          "help": "You may apply a percentage discount to the bill."
+        },
+        "disco": {
+          "label": "Discount"
+        },
+        "taxPct": {
+          "label": "Tax%",
+          "placeholder": "(eg. 7.5)"
+        },
+        "tax": {
+          "label": "Tax"
+        },
+        "amount": {
+          "label": "Total price"
+        },
+        "account": {
+          "label": "Expense type"
+        },
+        "localizer": {
+          "label": "Accounting location"
+        }
+      }
+    },
+    "payments": {
+      "label": "Payments",
+      "$": {
+        "valueDate": {
+          "label": "Delivery date",
+          "placeholder": "(eg. 2017-05-06)"
+        },
+        "amount": {
+          "label": "Amount",
+          "placeholder": "(eg. 14560)"
+        },
+        "account": {
+          "label": "Money account"
+        }
+      }
+    }
+  },
+  "schemaPayments": {
+    "bills": {
+      "label": "Connected bills",
+      "$": {
+        "id": {
+          "label": "Bill"
+        },
+        "amount": {
+          "label": "Amount",
+          "placeholder": "(eg. 14560)"
+        }
+      }
+    },
+    "lines": {
+      "label": "Without bill allocations",
+      "$": {
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        },
+        "contractid": {
+          "label": "Contract"
+        },
+        "localizer": {
+          "label": "Accounting location"
+        },
+        "parcelId": {
+          "label": "Parcel"
+        }
+      }
+    },
+    "outstanding": {
+      "label": "Unreconciled amount",
+      "placeholder": "(eg. 14560)"
+    }
+  },
+  "schemaParcelBillings": {
+    "ids": {
+      "label": "Applied billings"
+    },
+    "date": {
+      "label": "Billing period - billing day",
+      "placeholder": "(eg. 2017-05-06)",
+      "help": "Provide the billing day, which automatically implies the billing period (which is the period that includes the billing day)."
+    },
+    "year": {
+      "label": "For which year",
+      "placeholder": "(eg. 2017)"
+    },
+    "month": {
+      "label": "For which month",
+      "placeholder": "(eg. 11)"
+    },
+    "title": {
+      "label": "Title",
+      "placeholder": "(eg. Common cost)"
+    },
+    "consumption": {
+      "label": "Consumption basis (where a meter is installed)",
+      "service": {
+        "help": "Fill this if you would like to bill according to measured consumption in places where a meter is available.",
+        "label": "Measured service"
+      },
+      "charges": {
+        "label": "Charges",
+        "$": {
+          "uom": {
+            "label": "Unit of consumption",
+            "placeholder": "(eg. kW)"
+          },
+          "unitPrice": {
+            "label": "Unit price of consumption",
+            "placeholder": "(eg. 250)"
+          },
+          "decimals": {
+            "label": "Number of decimal places in bills",
+            "help": "A rendszer az itt beállított tizedesjegyszámig fogja a számlákon az értéket megjeleníteni.",
+            "placeholder": "(eg. 3 or 0 if you want to supply only the whole number part)"
+          }
+        }
+      }
+    },
+    "projection": {
+      "label": "Projection basis (where no meter installed)",
+      "base": {
+        "help": "Fill this if you would like to bill based on projection in places where a meter is not available.",
+        "label": "Projection base",
+        "options": {
+          "absolute": "absolute ($)",
+          "area": "area (/m2)",
+          "volume": "volume (/m3)",
+          "habitants": "habitants (/person)"
+        }
+      },
+      "unitPrice": {
+        "label": "Unit price of projection",
+        "placeholder": "(eg. 14560)"
+      }
+    },
+    "digit": {
+      "label": "Payin accounting code"
+    },
+    "localizer": {
+      "label": "Payin location",
+      "help": "Billing will be applied to an individual parcel if an individual parcel is selected, or to all parcels that are under the selected group if a group is selected."
+    },
+    "withFollowers": {
+      "label": "Also for the follower parcels",
+      "help": "If this is checked, we not only apply it to the above selected parcels, but also to all follower parcels linked to those."
+    },
+    "type": {
+      "label": "Type, the billing applies to",
+      "help": "Choose a type if you'd like to apply to that type, but not the others."
+    },
+    "group": {
+      "label": "Group, the billing applies to",
+      "help": "Choose a group if you'd like to apply to that group, but not the others."
+    },
+    "rank": {
+      "label": "Rank",
+      "help": "Billing will be applied in the order of ranks, the lines will be in this order on the bill."
+    },
+    "appliedAt": {
+      "label": "Applied at"
+    },
+    "lastAppliedAt": {
+      "label": "Last applied at"
+    },
+    "applyCount": {
+      "label": "Apply count"
+    }
+  },
+  "schemaSharedfolders": {
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Legal documents)"
+    },
+    "externalUrl": {
+      "label": "External folder link",
+      "placeholder": "(pl. https://drive.google.com/drive/folders/1DNs0_ELHYHUjdhK7VQ9cyTYPZ11CO6xY)",
+      "help": "If you have a folder at an external provider (like a google drive)"
     }
   }
 }

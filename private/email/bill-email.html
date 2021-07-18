@@ -1,0 +1,75 @@
+<div>
+    <table class="table table-hover">
+        <tbody>    
+            <tr>
+                <td class="project-title">
+                    <p><strong>{{_ 'email.Dear'}} {{bill.partner.displayName}}{{_ 'email.glyphAfterDear'}}</strong></p>
+                    <br>
+                    {{#let link=(urlFor 'Parcels finances')}}
+                    <p>{{{_ 'email.BillText' link=link}}}</p>
+                    {{/let}}
+                    <br>
+                    <!--p><strong>{{_ 'schemaBills.amount.label'}}: {{bill.amount}}</strong></p>
+                    <p><strong>{{_ 'schemaSerialId.serialId.label'}}: {{bill.serialId}}</strong></p>
+                    <p><strong>{{_ 'schemaBills.dueDate.label'}}: {{displayValue bill.dueDate}}</strong></p-->
+
+                    <table class="aligncenter" width="100%" cellpadding="0" cellspacing="0">
+                        <tbody>
+                        <tr>
+                            <td class="content-block">
+                                <h2 class="indigo text-capitalize">{{_ 'parcel_bill'}} - {{bill.serialId}}</h2>
+                            </td>
+                        </tr>
+                        <tr><td class="content-block">
+                            <table class="invoice">
+                            <tbody>
+                                <tr>
+                                    <td>{{_ 'email.Client'}}: {{bill.partner.displayName}}
+                                    <br>{{_ 'schemaBills.dueDate.label'}}: {{displayValue bill.dueDate}}</td>
+                                </tr>
+                                <tr><td>
+                                    <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                        {{#each line in bill.lines}}
+                                        <tr>
+                                            <td>{{line.title}}
+                                            {{#if (equals bill.relation 'member')}}
+                                                {{#if line.parcelId}} - {{parcelRef line.parcelId}}{{/if}}
+                                            {{/if}}
+                                            </td>
+                                            <td class="alignright nowrap">{{displayMoney line.amount}}</td>
+                                        </tr>
+                                        {{/each}}
+                                        <tr class="total">
+                                            <td class="alignright" width="80%">{{_ 'schemaBills.amount.label'}}: </td>
+                                            <td class="alignright nowrap">{{displayMoney bill.amount}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td></tr>
+                            </tbody>
+                            </table>
+                        </td></tr>
+                        <tr><td class="content-block">
+                            <a href="{{transactionUrlFor bill}}">{{_ 'View details'}}</a>
+                        </td></tr>
+                        <tr><td class="content-block">
+                            {{community.officialName}}<br>
+                            {{community.displayAddress}}
+                        </td></tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <p>{{_ 'email.PaymentMethods'}}:<br>
+                        {{#let account=community.primaryBankAccount}}
+                        <strong>{{_ 'schemaPartners.BAN.label'}}: {{account.BAN}}{{#if account.bank}} ({{account.bank}}){{/if}}</strong>
+                        {{/let}}
+                    </p>
+                    <p>{{_ 'email.PaymentInstructions'}}:<br>
+                        <strong>{{_ 'schemaStatementEntries.note.label'}}: {{bill.serialId}}</strong>
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

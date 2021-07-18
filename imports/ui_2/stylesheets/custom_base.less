@@ -22,9 +22,25 @@
 .text-alt {
   color: @text-alt;
 }
-
+.larger-icon::before {
+  font-size: 17px;
+}
+.comment-icon {
+  color: @base-link-color;
+  cursor: pointer;
+}
+.comment-icon-hearted {
+  color: @hearted-icon;
+  cursor: pointer;
+  &-text {
+    margin-right: 7px;
+  }
+}
+.glyphicon {
+  vertical-align: bottom;
+}
 body {
-  background-color: unset;
+  background-color: #eae5e2;
   background-image: unset;
 }
 a {
@@ -40,17 +56,8 @@ a {
 @media screen and (min-width: 40em) {
   // nav { display: none; }
 }
-.topmenu {
-  &-right {
-    float: right;
-    height: 100%;
-    padding-top: 5px;
-    margin-right: 10px;
-    img {
-      margin-left: 7px;
-      border-radius: 50%;
-    }
-  }
+.no-sidebar {
+  left: 0 !important;
 }
 #container {
   @media screen and (min-width: 60em) {
@@ -66,37 +73,136 @@ a {
     bottom: 2em;
   }
 }
-.right-orange {
-  background-color: #dac39a;
-  position: absolute;
+.topbar {
+  //background-color: #dac39a;
+  background-color: white;
+  //position: absolute;
+  position: sticky;
+  top: 0;
   z-index: 1;
-  padding: 7px 13px;
   border-radius: 0 0 0 0;
   left: 0;
   right: 0;
-  height: 55px;
+  height: 77px !important;
   box-shadow: @nav-shadow;
+  //display: none;
+  @media screen and (max-width: 40em) {
+    display: block;
+  }
+  &-left {
+    background-color: #998072;
+    border-top-right-radius: 60px 100px;
+    border-bottom-right-radius: 60px 100px;
+    height: 100%;
+    width: 67%;
+    &.logged-out {
+      width: 70%;
+      padding: 0;
+      @media screen and (max-width: 765px) {
+        width: 80%;
+       }
+    }
+    padding: 10px;
+    &-menu {
+      padding: 10px;
+      @media screen and (max-width: 550px) {
+       width: 250px;
+       padding: 0;
+      }
+    }
+  }
+  &-extraleft{
+    background-color: white;
+    border-top-right-radius: 60px 100px;
+    border-bottom-right-radius: 60px 100px;
+    height: 100%;
+    width: auto;
+    margin-right: 10px;
+    padding: 10px;
+    padding-right: 20px;
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+  &-right {
+    height: 100%;
+    width: 33%;
+    &.logged-out {
+      width: auto;
+    }
+    padding: 10px;
+    padding-top: 25px;
+  }
+  &-right > &-item {
+    position: absolute;
+    right: 17px;
+  }
+  &-item {
+    height: 100%;
+  }
+  .login-btn {
+    font-size: 23px;
+    color: black;
+    margin: 10px;
+    text-transform: capitalize;
+  }
+  .community-selector, .topbar-elem {
+    background: transparent;
+    font-size: 23px;
+    margin-top: 13px;
+    padding-left: 21px;
+    color: white;
+    font-weight: bold;
+  }
+  a.topbar-elem {
+    display: inline-block;
+  }
+  .logged-out .topbar-elem {
+    @media screen and (max-width: 550px) {
+      margin-top: 1px;
+      font-size: 20px;
+      }
+  } 
+  .demouser-autologin:hover {
+      padding-left: 0px;
+      margin-left: 21px;
+      background: darken(#998072, 5%);
+      box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.973);
+      text-decoration: none;
+      text-shadow: -1px -1px 0 darken(#998072, 8%);
+      color: darken(white, 8%);
+      border-radius: 3px;
+      transition-property: background, box-shadow, text-shadow, color;
+      transition-duration: 250ms;
+  }
+  .pip-usericon {
+    display: block;
+    top: 17px;
+    @media screen and (max-width: 40em) {
+      right: 57px;
+    }    
+    .username {
+      @media screen and (max-width: 800px) {
+        display: none;
+      }
+    }
+  }
+}
+.nav-hamburger {
   display: none;
+  font-size: 2.3em;
+  color: black;
+  position: absolute;
+  right: 17px;
+  top: 21px;
   @media screen and (max-width: 40em) {
     display: block;
   }
 }
-.nav-hamburger {
-  padding: 10px;
-  font-size: 1.7em;
-  color: black;
-}
 #menu {
   padding-left: 0px;
-  // padding-top: 75px;
-  box-shadow: @menu-shadow;
-  @media screen and (min-width: 40em) {
-    z-index: 1;
-  }
-  @media screen and (max-width: 40em) {
-    padding-top:50px;
-  }
-  // start beta design
+ // start beta design
   .pic-menu {
     margin-bottom: 17px;
     .pip-usericon {
@@ -107,10 +213,7 @@ a {
       top: 0;
       right: 0;
       height: 55px;
-      display: none;
-      @media screen and (min-width: 40em) {
-        display: block;
-      }
+      display: block !important;
       &:hover {
         background-color: lighten(@pip-usericon-bcg, 5%);
       }
@@ -122,6 +225,8 @@ a {
     .house-pic {
       max-height: 150px;
       width: 270px;
+      -webkit-filter: sepia(.7);
+      filter: sepia(.7);
 
     }
     .comm-drop {
@@ -157,7 +262,7 @@ a {
     }
   }
   // end beta design
-  a, div a {
+   a, div a {
     color: @menu-a-color  !important;
     font-weight: bold;
   }
@@ -205,26 +310,9 @@ a {
   }
 }
 .vote-container .comment-collapse {
-  margin: 0px -70px -17px -17px;
+  //margin: 0px -70px -17px -17px;
 }
-#menu::after {
-  content: "";
-  background: @new-nav-bcg;
-  opacity: 0.4;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: fixed;
-  width: 270px;
-  z-index: -1;
-  // background-image: url("http://static.panoramio.com/photos/original/59978318.jpg");
-  background-image: @new-nav-bcg;
-  background-position: left center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-}
+
 //feedback still in progress
 #feedback-pane {
   position: absolute;
@@ -295,11 +383,11 @@ a {
     background: none;
   }
   font-size: 14px;
-  background-color: @fb-bcg-lighter;
+  background-color: #eae5e2;
   overflow-y: auto;
   overflow-x: hidden;
   @media screen and (max-width: 40em) {
-    padding-top: 7px;
+    //padding-top: 7px;
   }
 }
 .menu-open .content-container {
@@ -366,13 +454,18 @@ nav::after {
 .page-content {
   padding: unset;
 }
+.page {
+  &.auth {
+    padding-top:90px;
+  }
+}
 [class^="page"],[class*="page"] {
   padding: 11px 31px 31px 31px;
   @media screen and (max-width: 60em) {
     padding: 0px;
   }
   @media screen and (max-width: 40em) {
-    margin-top: 53px;
+    //margin-top: 53px;
   }
 }
 .page-vote {
@@ -476,24 +569,15 @@ nav::after {
   font-style: italic;
 }
 
-li.list-group-item.autoform-array-item:nth-child(1) .autoform-remove-item-wrap .btn-primary.autoform-remove-item {
-    display: none;
-}
-
 // eapo hacks
 
 div#content-container > div {
     height: 100%;
     max-height: 100%;
-    overflow: hidden;
 }
 
-textarea { resize:both; } 
-textarea.vert { resize:vertical; }
-textarea.noResize { resize:none; }
-
 .row > div img {
-    max-width: 100%;
+    //max-width: 100%;
 }
 ul.no-style > li {
     padding: 0 1em;

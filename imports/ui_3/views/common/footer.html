@@ -1,0 +1,23 @@
+<template name="Footer">
+
+    <div class="footer">
+        <div class="pull-left">
+            <span title="Frissítve: {{displayTimeFrom version}} ({{displayTime version}})">powered by</span> 
+            <a href="{{pathFor 'App intro'}}"><strong>honline</strong></a>
+            <!--&dash; Az online társasházkezelő-->
+        </div>
+        <div class="pull-right">
+            Köszönettel vesszük
+            <strong>
+                <a href="mailto:info@honline.hu">visszajelzéseit</a>
+            </strong>!
+        </div>
+        <div class="col-lg-offset-2 text-center"> 
+             <span class="nowrap">
+            <a href="{{pathFor 'Terms'}}" target="_blank">Szabályzat</a>
+            &emsp; 
+            <a href="{{pathFor 'Privacy'}}" target="_blank">Adatkezelés</a> 
+        </span>
+        </div>
+    </div>
+</template>

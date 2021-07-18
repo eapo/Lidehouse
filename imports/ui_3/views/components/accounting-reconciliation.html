@@ -1,0 +1,99 @@
+<template name="Accounting_reconciliation">
+    {{#if currentUserHasPermission 'statements.inCommunity'}}
+        <div class="statementEntries" id='statementEntries'>
+            {{#if currentUserHasPermission 'statements.update'}}
+            <div class="btn-group pull-right">
+                  <button class="btn btn-primary btn-sm js-create"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'statementEntry'}}</strong></button>
+                  <button class="btn btn-white btn-sm js-import"><i class="fa fa-upload"></i><strong> {{_ 'Upload statement'}}</strong></button>
+            </div>
+            {{/if}}
+            <p>
+                {{_ 'Itt a pénz számlákhoz bankivonatokat tölthet fel, és egyeztetheti azokat'}}<br>
+                {{_ 'már meglevő tranzakciókhoz. Vagy létrehozhatja trakzakcióit a kivonatokból.'}}<br>
+            </p>
+            <br>
+            <div class="filters m-b-md">
+              <div class="row">
+                  <div class="col-sm-4">
+                      <div class="form-group">
+                          <label class="control-label" for="account">{{_ 'Account'}}</label>
+                          <select id="account" name="account" {{b 'options: accountOptions, value: accountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                      </div>
+                  </div>
+                  <div class="col-sm-4">
+                      <div class="form-group">
+                          <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
+                          <input type="date" id="begin_date" name="begin_date" {{b 'value: beginDate'}} class="form-control">
+                      </div>
+                  </div>
+                  <div class="col-sm-4">
+                      <div class="form-group">
+                          <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+                          <input type="date" id="end_date" name="end_date" {{b 'value: endDate'}} class="form-control">
+                      </div>
+                  </div>
+                  <!--div class="col-sm-2">
+                      <div class="form-group">
+                          <label class="control-label" for="status">{{_ 'Status'}}</label>
+                          <select name="status" id="status" class="form-control">
+                              <option value="0" selected="">{{_ 'All'}}</option>
+                              <option value="1">{{_ 'Reconciled'}}</option>
+                              <option value="2">{{_ 'Unreconciled'}}</option>
+                          </select>
+                      </div>
+                  </div-->
+              </div>
+              <div class="row">
+                <div class="col-sm-3 align pull-right">
+                  <button type="button" class="js-clear-filter btn btn-default btn-xs {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">
+                      <i class="fa fa-times"></i> {{_ 'Clear filters'}}
+                  </button>
+                </div>
+                <div class="col-sm-9">
+                  <input type="checkbox" name="allow" id="unreconciled-only" {{b "check: unreconciledOnly"}}>
+                  <label for="unreconciled-only">{{_ 'Show only'}} {{_ 'Unreconciled'}}</label>
+                </div>
+              </div>
+            </div>
+            <div>
+                {{> ReactiveDatatable tableData=statementEntriesTableDataFn options=statementEntriesOptionsFn }}
+            </div>
+        </div>
+    {{/if}}
+    {{#if currentUserHasPermission 'transactions.inCommunity'}}
+    <!--div class="col-md-12">
+        <div class="ibox ibox-dark transactions" id='incomplete'>
+            <div class="ibox-title">
+                <h5>{{_ 'Statement reconciliation'}}</h5>
+                {{>iboxTools}}
+            </div>  
+            <div class="ibox-content">
+                {{#if currentUserHasPermission 'transactions.insert'}}
+                <div class="pull-right">
+                    <a href="" class="btn btn-primary btn-sm js-publish"><i class="fa fa-bullhorn"></i> {{_ 'Publish'}}</a>
+                    <a href="" class="btn btn-white btn-sm js-import-statement"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
+                    <a href="" class="btn btn-white btn-sm js-import-balances"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</a>
+                </div>
+                {{/if}}
+                <h3>{{_ 'Transactions to complete'}}</h3>
+                <p>
+                    {{_ 'Itt azokat a tranzakciókat látja, amiknek még nem lett megállapítva mindkét számla oldala.'}}<br>
+                    {{_ 'Szerkesztés segítségével vigye be hozzájuk a hiányzó oldalt!'}}<br>
+                    {{_ 'Ha az egyenlegek megmutatható állapotban vannak, publikálhatja az aktuális állapotot.'}}<br>
+                </p>
+                <br>
+                <div>
+                    {{> ReactiveDatatable tableData=transactionsIncompleteTableDataFn options=transactionsOptionsFn }}
+                </div>
+            </div>
+        </div>
+    </div-->
+    {{/if}}
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            {{#if currentUserHasPermission 'statements.reconcile' communityIdObject}}
+            <button class="btn btn-default text-capitalize js-edit"><i class="fa fa-list"></i> {{_ 'entities.recognition.label'}}</button>
+            {{/if}}
+        </div>
+    </div>
+</template>

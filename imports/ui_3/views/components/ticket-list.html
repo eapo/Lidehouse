@@ -1,0 +1,32 @@
+<template name="Ticket_list">
+    <div class="table-responsive">
+        <table class="table table-hover issue-tracker">
+            <tbody>
+            {{#each tickets}}
+            <tr>
+                <td>
+                    {{{displayStatus status}}}
+                </td>
+                <td class="issue-info">
+                    <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
+                    {{> Badge color='info' value=(this.unseenCommentCountBy currentUser._id Meteor.users.SEEN_BY.EYES)}}
+                    <small>{{>Chopped text=text chars=150 markdown=true}}</small>
+                </td>
+                <td>
+                    {{{displayLocalizer this.ticket.localizer activeCommunityId}}}
+                </td>
+                <td>
+                    {{creator.displayOfficialName}}
+                </td>
+                <td>
+                    {{displayTime createdAt}}
+                </td>
+                <td class="text-right">
+                    {{>Action_buttons_dropdown collection='topics' doc=this actions='statusUpdate,statusChange,edit,delete' size='lg'}}
+                </td>
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</template>

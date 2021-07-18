@@ -1,32 +1,42 @@
 {
   "scripts": {
     "start": "meteor",
+    "debug": "meteor run --inspect --inspect-brk",
     "pretest": "npm run lint --silent",
-    "test": "meteor test --once --driver-package dispatch:mocha-phantomjs",
+    "test": "meteor test --once --driver-package meteortesting:mocha",
+    "test-debug": "meteor test --inspect --inspect-brk --driver-package=meteortesting:mocha --port 3001",
     "test-app": "meteor test --full-app --once --driver-package dispatch:mocha-phantomjs",
-    "test-watch": "meteor test --driver-package practicalmeteor:mocha",
-    "test-app-watch": "meteor test --full-app --driver-package practicalmeteor:mocha",
+    "test-watch": "meteor test --driver-package meteortesting:mocha",
+    "test-app-watch": "meteor test --full-app --driver-package meteortesting:mocha",
     "test-watch-terminal": "TEST_WATCH=1 meteor test --driver-package dispatch:mocha-phantomjs",
     "test-app-watch-terminal": "TEST_WATCH=1 meteor test --full-app --driver-package dispatch:mocha-phantomjs",
     "lint": "eslint ."
   },
   "dependencies": {
+    "@antoineschaller/kadira": "^1.0.1",
+    "@babel/runtime": "^7.9.6",
     "autoprefixer": "^6.4.1",
-    "babel-runtime": "^6.26.0",
+    "bcrypt": "^4.0.1",
+    "compress.js": "^1.1.2",
+    "deep-extend": "^0.6.0",
     "faker": "^3.1.0",
-    "fractional": "^1.0.0"
+    "flat": "^4.1.0",
+    "fractional": "^1.0.0",
+    "meteor-node-stubs": "^0.4.1",
+    "nestable": "^0.2.0",
+    "rus-diff": "^1.1.0",
+    "xlsx": "^0.15.6"
   },
   "devDependencies": {
-    "babel-eslint": "^6.1.2",
-    "eslint": "^3.5.0",
-    "eslint-config-airbnb": "^11.1.0",
-    "eslint-import-resolver-meteor": "^0.3.3",
-    "eslint-plugin-import": "^1.15.0",
-    "eslint-plugin-jsx-a11y": "^2.2.2",
-    "eslint-plugin-meteor": "^4.0.0",
-    "eslint-plugin-react": "^6.2.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-import-resolver-meteor": "^0.4.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-meteor": "^7.0.0",
     "shell-source": "^1.1.0",
-    "shelljs": "^0.7.4"
+    "shelljs": "^0.7.4",
+    "sinon": "^7.2.3"
   },
   "eslintConfig": {
     "parser": "babel-eslint",
@@ -37,13 +47,20 @@
       "meteor"
     ],
     "extends": [
-      "airbnb",
+      "airbnb-base",
       "plugin:meteor/recommended"
     ],
     "rules": {
       "import/no-extraneous-dependencies": "off",
       "import/prefer-default-export": "off",
+      "import/no-absolute-path": "off",
+      "import/extensions": "off",
+      "no-multi-spaces": "off",
       "no-underscore-dangle": "off",
+      "no-else-return": "off",
+      "no-nested-ternary": "off",
+      "no-unused-expressions": "off",
+      "no-lonely-if": "off",
       "object-shorthand": [
         "error",
         "always",
@@ -51,9 +68,24 @@
           "avoidQuotes": false
         }
       ],
+      "object-property-newline": "off",
+      "object-curly-newline": "off",
+      "lines-between-class-members": "off",
+      "arrow-parens": "off",
       "max-len": [
         "warn",
-        150
+        150,
+        {
+          "ignoreComments": true
+        }
+      ],
+      "indent": [
+        "warn",
+        2,
+        {
+          "ignoreComments": true,
+          "SwitchCase": 1
+        }
       ],
       "meteor/eventmap-params": [
         "error",
@@ -66,10 +98,22 @@
       "meteor/no-session": "off",
       "prefer-template": "off",
       "prefer-arrow-callback": "off",
-      "no-param-reassign": ["error", { "props": false }],
+      "prefer-destructuring": "off",
+      "no-param-reassign": [
+        "error",
+        {
+          "props": false
+        }
+      ],
       "no-return-assign": "warn",
       "no-useless-concat": "warn",
-      "no-unused-vars": "warn"
+      "no-unused-vars": "warn",
+      "no-plusplus": [
+        "error",
+        {
+          "allowForLoopAfterthoughts": true
+        }
+      ]
     },
     "settings": {
       "import/resolver": "meteor"

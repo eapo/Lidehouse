@@ -1,0 +1,74 @@
+import { Meteor } from 'meteor/meteor';
+import { Session } from 'meteor/session';
+import { AutoForm } from 'meteor/aldeed:autoform';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
+import { __ } from '/imports/localization/i18n.js';
+import { defaultNewDoc } from '/imports/ui_3/lib/active-community.js';
+import { Txdefs } from './txdefs.js';
+import './methods.js';
+
+Txdefs.actions = {
+  create: (options, doc = defaultNewDoc(), user = Meteor.userOrNull()) => ({
+    name: 'create',
+    icon: 'fa fa-plus',
+    color: 'primary',
+    label: `${__('new')} ${__('txdef')}`,
+    visible: user.hasPermission('accounts.insert', doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.txdef.create',
+        collection: Txdefs,
+        doc,
+        type: 'method',
+        meteormethod: 'txdefs.insert',
+      });
+    },
+  }),
+  view: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'view',
+    icon: 'fa fa-eye',
+    visible: user.hasPermission('accounts.inCommunity', doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.txdef.view',
+        collection: Txdefs,
+        doc,
+        type: 'readonly',
+      });
+    },
+  }),
+  edit: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'edit',
+    icon: 'fa fa-pencil',
+    visible: user.hasPermission('accounts.update', doc),
+    run() {
+      Modal.show('Autoform_modal', {
+        id: 'af.txdef.edit',
+        collection: Txdefs,
+        doc,
+        type: 'method-update',
+        meteormethod: 'txdefs.update',
+        singleMethodArgument: true,
+      });
+    },
+  }),
+  delete: (options, doc, user = Meteor.userOrNull()) => ({
+    name: 'delete',
+    icon: 'fa fa-trash',
+    visible: user.hasPermission('accounts.remove', doc),
+    run() {
+      Modal.confirmAndCall(Txdefs.methods.remove, { _id: doc._id }, {
+        action: 'delete',
+        entity: 'txdef',
+      });
+    },
+  }),
+};
+
+//------------------------------------------------------
+
+AutoForm.addModalHooks('af.txdef.create');
+AutoForm.addModalHooks('af.txdef.edit');
+
+

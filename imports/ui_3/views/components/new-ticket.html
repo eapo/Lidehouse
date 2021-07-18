@@ -1,0 +1,9 @@
+<template name="New_Ticket">
+    <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs topics">
+        {{#each type in ticketTypes}}
+            {{#if currentUserHasPermission (concat type '.insert') }}
+            <li><a href="" class="js-create" data-entity="{{type}}">{{_ 'new'}} {{_ (concat 'schemaTickets.ticket.type.options.' type)}}</a></li>
+            {{/if}}
+        {{/each}}
+    </ul>
+</template>

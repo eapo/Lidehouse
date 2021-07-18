@@ -1,0 +1,86 @@
+<div>
+  {{#each te in this.topicsToDisplay}}
+  
+    <table class="table table-hover">
+        <tbody>    
+            {{#let hider=(te.topic.hiddenBy user._id)}}
+            <tr class='topic-row'>
+                <td class='topic-icon-container'>
+                    <img alt="image" class="img-icon" src="{{categoryImgUrlFor te.topic.category}}">
+                </td>
+                {{#if equals te.topic.category 'room'}}
+                <td class="project-title">
+                    <h3 class = "topicTitle">{{_ te.topic.title}}</h3>
+                    <div class='btn-container'>
+                        <a href="{{topicUrlFor te.topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                    </div>
+                </td>
+                {{else}}
+                <td class="project-title {{oldTopic te}}">
+                    {{#if hider}}
+                        <span>{{_ 'Content hidden by' hider=(_ hider)}}</span>
+                    {{else}}
+                        <h3 class = "topicTitle">{{te.topic.title}}</h3>
+                        {{#if te.isUnseen}}
+                          <p>{{{renderMarkdown (curb te.topic.text 1000)}}}</p>
+                        {{/if}}
+                    {{/if}}
+                    <div class='btn-container'>
+                      <a href="{{topicUrlFor te.topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                    </div>
+                </td>
+                {{/if}}
+            </tr>
+            {{/let}}
+        </tbody>
+    </table>
+    
+    {{#if te.unseenComments}}
+    <table class="table table-hover">
+        <tbody>
+            {{#each comment in te.unseenComments}}
+            {{#let hider=(comment.hiddenBy user._id)}}
+            <tr class="social-comment">   
+                <td class='puffer'>
+                </td>
+                <td class='avatar-container'>
+                  {{#unless hider}}      
+                    <a href="{{userUrlFor comment.creator}}" class="pull-left">
+                        <img alt="avatar" class="message-avatar" src='{{urlFor comment.creator.avatar}}'>
+                    </a>
+                  {{/unless}}
+                </td>
+                <td class="media-body">
+                  {{#if hider}}
+                    <span>{{_ 'Content hidden by' hider=(_ hider)}}</span>
+                  {{else}}  
+                    <a href="{{userUrlFor  comment.creator}}">{{comment.creator.displayOfficialName community._id user.settings.language}}</a>
+                    {{#if (equals comment.category 'statusChange')}}
+                        {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
+                        {{_ 'changed the status'}}: <span class="label {{eventStatusObject.color}}">
+                           {{_ (concat 'schemaTopics.status.options.' comment.status)}}
+                        </span><br>
+                        {{/let}}
+                        {{#if (equals comment.topic.category 'ticket')}}
+                            {{#each dataEntry in entriesOf comment.dataUpdate}}
+                            <span>
+                            {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
+                            {{displayStatusChangeDataUpdate dataEntry.[0] dataEntry.[1]}}
+                            </span><br>
+                            {{/each}}
+                        {{/if}}
+                    {{/if}}
+                    {{#if comment.text}}
+                    <span>{{curb comment.text 500 }}</span><br>
+                    {{/if}}
+                  {{/if}}
+                  <small class="text-muted" >{{displayTime comment.createdAt}}</small>
+                </td> 
+            </tr>
+            {{/let}}
+            {{/each}}
+        </tbody>
+    </table>
+    {{/if}}
+  {{/each}}
+</div>

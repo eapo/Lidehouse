@@ -1,0 +1,205 @@
+<template name="Navigation">
+    <div class="{{#unless currentUser}}hidden{{/unless}}">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+
+            <!-- Close canvas menu used only on OffCanvas page -->
+            <!-- You can remove this tag if you dont use offCanvas menu -->
+            <a class="close-canvas-menu"><i class="fa fa-times"></i></a>
+            <!-- End offCanvas menu toggle -->
+
+            {{#if activeCommunity}}
+            <ul class="nav" id="side-menu">
+                <li>
+                    <div class="profile-element">
+                        <!--a href="{{pathFor 'Community.page' _cid=activeCommunityId}}">
+                        </a-->
+                        <img class="nav-avatar center" src="{{activeCommunity.avatar}}" alt="Community Avatar" width="100%"/>
+                        <i id='arrow-icon' class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+                    </div>
+                </li>
+                <!--li class="nav-header">
+                    <div class="logo-element">
+                        HL
+                    </div>
+                </li-->
+                <li class="{{isActivePath regex='board'}}">
+                    <a href="{{pathFor 'Board'}}">
+                        <i class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Board'}}</span>
+                    </a>
+                </li>
+                <!--li class="{{isActivePath regex='messages'}}">
+                    <a href="{{pathFor 'Messages'}}">
+                        <i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Messages'}}</span>
+                        {{#if unseenEventsCount 'room'}}
+                        <span class="badge badge-danger pull-right">{{unseenEventsCount 'room'}}</span>
+                        {{/if}}
+                    </a>
+                </li-->
+                {{#if isActiveModule 'forum'}}
+                <li class="{{isActivePath regex='forum'}}">
+                    <a href="{{pathFor 'Forum'}}">
+                        <i class="fa fa-commenting" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Forum'}}</span>
+                        {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'forum') align='right'}}
+                    </a>
+                </li>
+                {{/if}}
+                {{#if isActiveModule 'voting'}}
+                <li class="{{isActivePath regex='votings|agendas|delegations'}}">
+                    <a class="js-submenu-toggle" href="#"><i class="fa fa-legal"></i>
+                        <span class="nav-label">{{_ 'Decision making'}}</span>
+                        <!--span class="fa arrow"> </span-->
+                        {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'vote') align='right'}}
+                        {{> Badge color='danger' title=(_ 'Todo') value=(needsAttentionCount 'vote') align='right'}}
+                    </a>
+                    <ul class="nav nav-second-level {{isActivePath regex='votings|agendas|delegations' className='submenu-open'}}">
+                        <li class="{{isActivePath regex='votings'}}">
+                            <a href="{{pathFor 'Votings'}}">
+                                <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Votings'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='agendas'}}">
+                            <a href="{{pathFor 'Agendas'}}">
+                                <i class="fa fa-list" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Agendas'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='delegations'}}">
+                            <a href="{{pathFor 'Delegations'}}">
+                                <i class="fa fa-share" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Delegations'}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {{/if}}
+                {{#if isActiveModule 'maintenance'}}
+                <li class="{{isActivePath regex='tickets|worksheets|contracts'}}">
+                    <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
+                        <span class="nav-label">{{_ 'Maintenance'}}</span>
+                        <!--span class="fa arrow"> </span-->
+                        {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'ticket') align='right'}}
+                        {{> Badge color='danger' title=(_ 'Todo') value=(needsAttentionCount 'ticket') align='right'}}
+                    </a>
+                    <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets|contracts' className='submenu-open'}}">
+                        <li class="{{isActivePath regex='tickets'}}">
+                            <a href="{{pathFor 'Tickets report'}}">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Tickets report'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='worksheets'}}">
+                            <a href="{{pathFor 'Worksheets'}}">
+                                <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Worksheets'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='contracts'}}">
+                            <a href="{{pathFor 'Contracts'}}">
+                                <i class="fa fa-handshake-o" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Contracts'}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {{/if}}
+                {{#if isActiveModule 'finances'}}
+                <li class="{{isActivePath regex='finances|inventory|accounting'}}">
+                    <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-piggy-bank"></i>
+                        <span class="nav-label">{{_ 'Finances'}}</span>
+                        <!--span class="fa arrow"> </span-->
+                    </a>
+                    <ul class="nav nav-second-level {{isActivePath regex='finances|inventory|accounting' className='submenu-open'}}">
+                        {{#if currentUserHasPermission 'parcels.finances'}}
+                        <li class="{{isActivePath regex='parcels-finances'}}">
+                            <a href="{{pathFor 'Parcels finances'}}">
+                                <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Parcels finances'}}</span>
+                            </a>
+                        </li>
+                        {{/if}}
+                        <li class="{{isActivePath regex='community-finances'}}">
+                            <a href="{{pathFor 'Community finances'}}">
+                                <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Community finances'}}</span>
+                            </a>
+                        </li>
+                        {{#if currentUserHasPermission 'transactions.inCommunity'}}
+                        <!--li class="{{isActivePath regex='inventory'}}">
+                            <a href="{{pathFor 'Inventory'}}">
+                                <i class="fa fa-calculator" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Bill registry'}}</span>
+                            </a>
+                        </li-->
+                        {{/if}}
+                        {{#if currentUserHasPermission 'transactions.inCommunity'}}
+                        <li class="{{isActivePath regex='accounting'}}">
+                            <a href="{{pathFor 'Accounting'}}">
+                                <i class="fa fa-calculator" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Accounting'}}</span>
+                            </a>
+                        </li>
+                        {{/if}}
+                    </ul>
+                </li>
+                {{/if}}
+                <li class="{{isActivePath regex='community/'}} {{isActivePath path='/community'}}">
+                    <a href="{{pathFor 'Community page'}}">
+                        <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Community page'}}</span>
+                        {{#if currentUserHasPermission 'parcels.update'}}
+                        {{> Badge color='danger' title=(_ 'Todo') value=countUnapprovedEntities align='right'}}
+                        {{/if}}
+                    </a>
+                </li>
+                {{#if isActiveModule 'documents'}}
+                <li class="{{isActivePath regex='documents'}}">
+                    <a href="{{pathFor 'Documentstore'}}">
+                        <i class="glyphicon glyphicon-paperclip" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Documentstore'}}</span>
+                    </a>
+                </li>
+                {{/if}}
+            </ul>
+            {{else}}
+            <ul>
+                <div class="m-t-md">
+                    <span class="label label-warning">{{_ 'No active' }} {{_ 'community'}}</span>
+                </div>
+            </ul>
+            {{/if}}
+
+            <!-- link to home page -->
+            <ul style="position: absolute; bottom: 0; left: 10px; width: 90%; background-color: white; border-radius: 5px;">
+                <div class="logo-container">
+                    <a href="{{pathFor 'App intro'}}" id="logo" class="minimalize-styl-2">
+                        <img src="/images/logo-duo-text.png" width="100" alt="Logo">
+                    </a>
+                </div>
+            </ul>
+
+            {{#if developerMode}}
+            <ul style="position: absolute; bottom: 0; width: 100%;">
+                <li class="{{isActivePath regex='feedback'}}">
+                    <a href="{{pathFor 'Feedbacks'}}">
+                        <i><img src="/icon/si-glyph-bolt.svg"/></i>
+                        <span class="nav-label">Feedbacks (dev)</span>
+                        {{> Badge color='info' title=(_ 'Unread') value=(unseenEventsCount 'feedback') align='right'}}
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='styleguide'}}">
+                    <a href="{{pathFor 'Styleguide'}}">
+                        <i><img src="/icon/si-glyph-bolt.svg"/></i>
+                        <span class="nav-label">Styleguide (dev)</span>
+                    </a>
+                </li>
+            </ul>
+            {{/if}}
+        </div>
+    </nav>
+    </div>
+</template>

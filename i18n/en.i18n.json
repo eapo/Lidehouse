@@ -1,6 +1,13 @@
-{
-  "person": "natural person",
-  "legal": "legal entity",
+{  
+  "appName": "honline",
+  "appDescription": "Online Transparent Condominium Management",
+  "Demo under construction": "Just a moment, <br>our colleagues at the Demo Building <br>are now constructing your demo apartment...",
+
+  // for packages
+  "markdownHelp": "In tte editor window, you may use markdown directives. Markdown directives can be typed in, or be applied to a selection, by selecting some text and then pressing one of the format buttons. The preview button shows you how the final text will look like. For a full list of applicable markdown directives, press this question mark.",
+
+  // routes
+  "App home": "Online Transparent Condominium Management",
 
   // buttons etc.
   "confirm": "Are you sure?",
@@ -11,6 +18,30 @@
   "createNew": "Create New",
   "edit": "Edit",
   "close topic": "Close",
+  "period": "Period",
+
+  // topics
+  "Do show content": "I want to see it now",
+  "Change status to": "Change status to %s",
+  "Create forum": "Start topic",
+  
+  // voting
+  "Proxy voting" : "Voting in the name of others",
+  "Please select voters": "Please select the people you would like to vote in the name of",
+  "This is a voting type": "This is a <i>%s</i> voting",
+  "votingInstructions": {
+    "yesno": "Please mark your choice, and then send your vote with the green button.",
+    "choose": "Please mark your choice, and then send your vote with the green button.",
+    "preferential": "Please rank the choices below according to your preference (the most desirable on top, the least desirable at the bottom), and then send your vote with the green button.",
+    "petition": "If you agree with the proposal, please press the Support button, and then send your vore with the green button. If you don't agree, you don't need to do anything."
+  },
+
+  // finances
+  "Breakdowns": "Accounting breakdowns",
+  "customer_bill": "invoice",
+  "supplier_bill": "bill",
+  "parcel_bill": "parcel invoice",
+  "unreconciledOnlyHelp": "Only those bills that are unpaid. Only those payments that are not reconciled to bills or not reconciled to bank statements. Only those partners which have an outstanding balance. In short only those items that need to be handled in some way.",
 
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",
@@ -20,21 +51,69 @@
   "feature": "New feature recommendation",
 
   // errors and messages
-  "err_notLoggedIn": "Must be logged in",
+  "err_notImplemented": "This feature is not available",
+  "err_notExists": "Object doesn't exist",
+  "err_alreadyExists": "Object already exists",
   "err_permissionDenied": "You don't have permission",
+  "err_notLoggedIn": "Must be logged in",
+  "err_otherPartyNotAllowed": "No permission by other party",
+  "err_unableToRemove": "Object cannot be deleted",
+  "err_sanityCheckFailed": "Data input is invalid",
+  "err_notAllowed": "Value is not allowed",
+  "err_invalidData": "Invalid data",
+  "err_constraint": "Value does not meet constraints",
+  "err_notAvailable": "Not available",
+  "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
+
+  "youNeedToSaveYourChanges": "Your changes only take effect once you press the Save button at the bottom",
+  "needToRemoveCurrentToAddNew" : "To add a different file, you need to remove the current one",
   "pageNotFound": "Page not found",
+  "tryingToConnect": "Trying to connect…",
   "connectionIssue": "There seems to be a connection issue",
-  "tryingToConnect": "Trying to connect",
-  "newForumTopicPlaceholder": "Start a discussion...",
+  "connectionIssueLine1": "No connection to the server.",
+  "connectionIssueLine2": "Its not possible to send messages now.",
+  "liveAgenda": "Live Streaming",
+  "newForumTitlePlaceholder": "New topic title…",
+  "newForumTextPlaceholder": "New topic text…",
   "newCommentPlaceholder": "Make your comment...",
   "messengerPeopleMenu": "People",
   "messengerMessagePlaceholder": "Your message here... (eg. I just baked a strawberry cake. Want to come over and taste it?)",
   "messengerHistoryPlaceholder": "No messages yet between you. <br> Start chatting today!",
-
-  "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
+  "commentEditInstruction": "Press enter to save, escape to cancel.",
+  "userAccountsSubtitle": {
+    "signIn": "Please log in to use the app",
+    "signIn_Forced": "The content is only available to logged in users",
+    "signUp": "",
+    "resendVerificationEmail": "",
+    "forgotPwd": "",
+    "changePwd": "",
+    "resetPwd": "",
+    "enrollAccount": "Please give a min 6 character password, to create your account"
+  },
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
-  "rankedVotingInstructions": "Please rank the choices below according to your preference...",
+  "pleaseSupplyParcelData": "Please supply as much data as possible about your parcel, so your join request can be approved quickly!",
+  "No permission to upload": "You have no permission to upload documents, please ask the community manager's help",
+  "Remove not possible after posting": "NOTICE: Transaction cannot be removed, because it has been already posted. If you continue, a storno transaction will be created which negates the original transaction. In case of a bill, the storno bill will be sent to the customer. Do you want to continue?",
+  "This operation will do the following": "This operation will do the following with __collection__ data",
+  "This operation will be performed on many documents": "If you approve, this operation will be performed on <strong>%s selected documents</strong> at once",
+  "Changing partner email address will unlink user": "By changing the partner's email address you are disconnecting them from the user account. Are you sure to continue?",
+  "warningPartnerMerge": "This operation deletes the partner you invoked it on, and merges his balance into the below selected partner. Data of the below selected partner will overwrite data from the partner to be removed.",
+
+  // housing
+  "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
+  "Create your own community": "Couldn't find your community? Why not create it yourself?",
+  "joinRequestInstructions": "If you own a parcel in this building, you can apply to join by pressing the button below.",
+  "Parcel owners list": "Owners of parcel %s",
+  "Parcel benefactors list": "Benefactors of parcel %s",
+
+  // topics
+  "Block content from": "Hide comments from %s",
+  "Unblock content from": "Reveal comments from %s",
+  "Content hidden by": "Content hidden by __hider__",
+  "View previous comments": "View %s previous comments",
+  
+  "forum": "forum topic",
 
   // delegations
   "delegationsFromMeInstructions": "Here you can set up delegations. So someone else can use your vote in your name.",
@@ -42,13 +121,50 @@
   "delegationsToMeInstructions": "Here you can see those who have set up delegations toward you, asking you to vote for them.",
   "delegationsToMeInstructions2": "These delegations you may refuse to accept. You can also disallow others delegating to you, completely.",
   "allowDelegationsToMe": "Allow others to delegate to me",
-
   "votedViaDelegationHint" : "casting a vote can override this",
-  "notYetVotedHint": "cast your vote below, or set up a delegation",
 
+  // rooms
+  "Send messages subtitle": "to your manager or your condo mates",
+  "Send messages instructions": "If you haven't talked with the person yet, use the search bar to find them",
+  "noSelectedPerson": "Please select a person on right panel.",
+
+  // tickets
+  "Please dont report twice": "To help our maintenance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
+  "Report issue": "Report a new issue",
+
+  "Sort by": "Sort by %s",
+
+  // account
+  "Localizer": "Accounting location",
+
+  // import
+  "importing data": "importing %s data",
 
   // Notifications
-  "Joined community": "Succesfully joined community %s",
-  "Created community": "Succesfully created community.",
-  "Vote casted": "Vote casted succesfully"
+  "Join request submitted": "Join request submitted to community %s",
+  "Join request notification": "Your join request needs to be approved by the managers. Until your request becomes approved, you will not be able to see data and interact with the community.",
+  "Vote casted": "Vote casted succesfully",
+  "You should rather archive it" : "You should rather edit the active period, and set an end date, so the data is still searchable. Delete it only if it was created by mistake!",
+  "pageNotFoundMessage": "The %s you are looking for cannot be found. This could be because it has been deleted since. Or you might not have the necessary permissions to view it.",
+
+  "registerReading": "register reading",
+  "registerReading meter": "register meter reading",
+  "editMeterReadingsWarning": "You are now editing the readings of meter [__identifier__](__service__) directly.\nIt is not recommended to edit or remove readings that were already billed, since those bills will not be changed by this operation, and therefore the billing and readings data would become inconsistent.",
+
+  "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
+  "Reconnecting user": "This person will be sent a new enrollment email to the same email address, as the previous one was sent to. As soon as the new email is sent, the old one becomes expired.",
+  "Sending outstandings reminder": "To the following partner: <strong>'%s'</strong> you are about to send out an outstandings reminder email.",
+
+  "delete user": "delete your account permanently",
+  "deletedUser": "Deleted user",
+  "unknownUser": "Unknown user",
+  "deleteUserWarning": ["BEWARE: Your user account will be permanently deleted! <br /><br />",
+    "Note that this will NOT delete your activity in your communities. ",
+    "Those belong to the community, and you need to ask the community's admin to delete them. <br /><br />",
+    "You may read our <a href='privacy' target='blank'>Privacy Statement</a>"],
+  "welcome": "Welcome on Honline!",
+  "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information.",
+  "Name mismatch notification": ["Your profile name (<strong>__userName__</strong>) does not match the name registered with the management (which is <strong>__personName__</strong>).<br /><br />",
+    "If you typed incorrect data here on the profile page, please correct it here, otherwise if the management knows your name incorrectly, and you are not __personName__, then please contact your managament, so they can fix it.",
+    "Meanwhile in __communityName__ the other owners will see you commenting and voting officially in the name of: __personName__."]
 }

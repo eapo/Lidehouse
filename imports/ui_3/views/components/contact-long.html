@@ -1,0 +1,20 @@
+<template name="Contact_long">
+    <div class="contact-box center-version">
+        <a href="">
+            <img alt="image" class="img-circle" src="{{absoluteUrl avatar}}">
+            <h3 class="m-b-xs"><strong>{{this.displayOfficialName}}</strong></h3>
+            {{#each this.memberships activeCommunityId}}
+            <div class="font-bold">{{this.displayRole}}</div>
+            {{/each}}
+            <address class="m-t-sm">
+                {{#if profile.bio}}<i>"{{profile.bio}}"</i><br><br>{{/if}}
+                {{#if profile.publicEmail}}{{profile.publicEmail}}<br>{{/if}}
+                {{#if profile.address}}{{profile.address}}<br>{{/if}}
+                {{#if profile.phone}}<i class="fa fa-phone"></i> {{profile.phone}}<br>{{/if}}
+            </address>
+        </a>
+        <div class="contact-box-footer">
+            {{> Action_buttons_group doc=this collection='users' actions='message,delegation,block' size='lg'}}
+        </div>
+    </div>
+</template>

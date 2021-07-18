@@ -1,65 +1,123 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { _ } from 'meteor/underscore';
+import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
-import { Topics } from '../topics/topics.js';
+import { __ } from '/imports/localization/i18n.js';
+import { imageUpload } from '/imports/utils/autoform.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Likeable } from '/imports/api/behaviours/likeable.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
+import { AttachmentField } from '/imports/api/behaviours/attachment-field.js';
 
-class CommentsCollection extends Mongo.Collection {
-  insert(doc, callback) {
-    const result = super.insert(doc, callback);
-    Topics.update(doc.topicId, { $inc: { commentCounter: 1 } }); // NOTE: the commentCounter does NOT decrease when a comment is removed
-                                    // this is so that we are notified on new comments, even if some old comments were removed meanwhile
-    return result;
-  }
-  update(selector, modifier) {
-    const result = super.update(selector, modifier);
-    return result;
-  }
-  remove(selector) {
-    const comments = this.find(selector).fetch();
-    const result = super.remove(selector);
-    return result;
-  }
-}
+import { Topics } from '/imports/api/topics/topics.js';
 
-export const Comments = new CommentsCollection('comments');
+export const Comments = new Mongo.Collection('comments');
+
+Comments.categoryValues = ['comment', 'statusChange', 'pointAt'];
 
 Comments.schema = new SimpleSchema({
-  topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  text: { type: String, optional: true },
+  topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
+  category: { type: String, defaultValue: 'comment', allowedValues: Comments.categoryValues, autoform: { type: 'hidden' } },
+  text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
+  // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
+    autoValue() {
+      const topicId = this.field('topicId').value;
+      if (!this.isSet && topicId) {
+        const topic = Topics.findOne(topicId);
+        return topic.communityId;
+      }
+      return undefined; // means leave whats there alone for Updates, Upserts
+    },
+  },
 });
 
-Comments.attachSchema(Comments.schema);
-Comments.attachSchema(Timestamps);
+const StatusChanges = {};
+StatusChanges.extensionSchema = new SimpleSchema({
+  // for statusChange only:
+  status: { type: String, optional: true, autoform: { omit: true } },
+  dataUpdate: { type: Object, blackbox: true, optional: true, autoform: { omit: true } },
+});
+
+Meteor.startup(function indexComments() {
+  if (Meteor.isClient && MinimongoIndexing) {
+    Comments._collection._ensureIndex('topicId');
+  } else if (Meteor.isServer) {
+    Comments._ensureIndex({ communityId: 1, topicId: 1, createdAt: -1 });
+  }
+});
+
+Comments.attachBaseSchema(Comments.schema);
+Comments.attachBehaviour(Timestamped);
+Comments.attachBehaviour(Likeable);
+Comments.attachBehaviour(Flagable);
+Comments.attachBehaviour(AttachmentField(true));
+
+Comments.attachVariantSchema(undefined, { selector: { category: 'comment' } });
+Comments.attachVariantSchema(StatusChanges.extensionSchema, { selector: { category: 'statusChange' } });
 
 Comments.helpers({
-  user() {
-    return Meteor.users.findOne(this.userId);
-  },
   topic() {
     return Topics.findOne(this.topicId);
+  },
+  community() {
+    return this.topic().community();
+  },
+  entityName() {
+    return this.category;
   },
   editableBy(userId) {
     return this.userId === userId;
   },
+  hiddenBy(userId) {
+    const author = this.creator();
+    if (this.creatorId === userId) return undefined;
+    return this.flaggedBy(userId, this.communityId) || (author && author.flaggedBy(userId, this.communityId));
+  },
 });
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Comments.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
+// --- Before/after actions ---
+
+Comments.after.insert(function (userId, doc) {
+  Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
 });
 
-// TODO This factory has a name - do we have a code style for this?
-//   - usually I've used the singular, sometimes you have more than one though, like
-//   'comment', 'emptyComment', 'readedComment'
+Comments.after.update(function (userId, doc, fieldNames, modifier, options) {
+  if (this.previous.topicId !== doc.topicId) {
+    Topics.update(this.previous.topicId, { $inc: { commentCounter: -1 } });
+    Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
+  }
+});
+
+Comments.after.remove(function (userId, doc) {
+  Topics.update(doc.topicId, { $inc: { commentCounter: -1 } });
+});
+
+Comments.moveSchema = new SimpleSchema({
+  _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  destinationId: { type: String, regEx: SimpleSchema.RegEx.Id,
+    autoform: {
+      options() {
+        const communityId = getActiveCommunityId();
+        const topics = Topics.find({ communityId, category: { $in: ['forum', 'vote', 'ticket'] } });
+        return topics.map(function option(t) { return { label: t.title, value: t._id }; });
+      },
+      firstOption: () => __('(Select one)'),
+    },
+  },
+});
+
+Comments.simpleSchema({ category: 'comment' }).i18n('schemaComments');
+Comments.simpleSchema({ category: 'statusChange' }).i18n('schemaStatusChanges');
+Comments.moveSchema.i18n('schemaComments');
+
 Factory.define('comment', Comments, {
-  topicId: () => Factory.get('topic'),
   text: () => faker.lorem.sentence(),
-  createdAt: () => new Date(),
+  category: 'comment',
 });

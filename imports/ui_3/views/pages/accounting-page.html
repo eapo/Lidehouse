@@ -1,0 +1,73 @@
+<template name="Accounting_page">
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Accounting') }}
+
+    <div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="ibox">
+    <div class="tabs-container">
+        <ul class="nav nav-tabs m-b-md" role="tablist">
+            {{#unless noAccountsDefined}}
+            <li class="nav-link active show"><a data-toggle="tab" href="#tab-bills">
+              <h3>{{_ 'Bill registry'}}&nbsp;
+              {{> Badge value=countUnreconciledTxs color='danger' title=(_ 'Unreconciled') align='right'}} 
+              {{> Badge value=countUnpostedTxs color='warning' title=(_ 'Unposted') align='right'}} 
+              {{> Badge value=countOutstandingBills color='info' title=(concat (_ 'Unpaid') ' ' (_ 'bills')) align='right'}} 
+            </h3></a></li>
+            <li class="nav-link"><a data-toggle="tab" href="#tab-ledger">
+              <h3>{{_ 'General ledger'}}</h3>
+            </a></li>
+            <li class="nav-link"><a data-toggle="tab" href="#tab-transactions">
+              <h3>{{_ 'Transactions'}}</h3>
+            </a></li>
+            <li class="nav-link"><a data-toggle="tab" href="#tab-reconciliation">
+              <h3>{{_ 'Statement reconciliation'}}&nbsp;
+              {{> Badge value=countUnreconciledEntries color='danger' title=(concat (_ 'Unreconciled') ' ' (_ 'statementEntries') align='right')}}
+            </h3></a></li>
+            {{/unless}}
+            <li class="nav-link {{#if noAccountsDefined}}active{{/if}}"><a data-toggle="tab" href="#tab-breakdowns">
+              <h3>{{_ 'Accounting configuration'}} <i class="fa fa-cog"></i></h3>
+            </a></li>
+        </ul>
+        <div class="tab-content">
+            {{#unless noAccountsDefined}}
+            <div role="tabpanel" id="tab-bills" class="tab-pane active">
+              {{#LazyTab}}
+                <div class="ibox-content">
+                    {{> Accounting_bills}}
+                </div>
+              {{/LazyTab}}
+            </div>
+            <div role="tabpanel" id="tab-ledger" class="tab-pane">
+              {{#LazyTab}}
+                <div class="ibox-content">
+                    {{> Accounting_ledger}}
+                </div>
+              {{/LazyTab}}
+            </div>
+            <div role="tabpanel" id="tab-transactions" class="tab-pane">
+              {{#LazyTab}}
+                <div class="ibox-content">
+                    {{> Accounting_transactions}}
+                </div>
+              {{/LazyTab}}
+            </div>
+            <div role="tabpanel" id="tab-reconciliation" class="tab-pane">
+              {{#LazyTab}}
+                <div class="ibox-content">
+                    {{> Accounting_reconciliation}}
+                </div>
+              {{/LazyTab}}
+            </div>
+            {{/unless}}
+            <div role="tabpanel" id="tab-breakdowns" class="tab-pane {{#if noAccountsDefined}}active{{/if}}">
+              {{#LazyTab}}
+                <div class="ibox-content">
+                    {{> Accounting_setup}}
+                </div>
+              {{/LazyTab}}
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</template>

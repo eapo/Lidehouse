@@ -1,0 +1,28 @@
+{
+  // Topics
+  "TIC": "M",
+  "ISS": "HIBA",
+  "MAI": "KARB",
+  "UPG": "FELU",
+  "FOR": "FOR",
+  "NEW": "HIR",
+  "ROO": "CSOP",
+  "VOT": "SZAV",
+ // Transactions
+  "BIL": "SZ",
+  "REC": "NY",
+  "PAY": "FIZ",
+  "REM": "ELE",
+  "TRA": "ATV",
+  "BAR": "BAR",
+  "EXC": "APK",
+  "OPE": "NYIT",
+  "CLO": "ZAR",
+  "FRE": "VEGY",
+  // Txdefs
+  "SUP": "SZAL",
+  "CUS": "VEV",
+  "MEM": "DIJ",
+  "DEB": "T",
+  "CRE": "K"
+}

@@ -1,0 +1,34 @@
+<template name="afFileUpload">
+  {{#if currentProgress}}
+    Uploading <b>{{currentUpload.getFile.name}}</b>:
+    <progress value="{{currentProgress}}" max="100"></progress>
+    &nbsp;
+    <span class="progress">{{currentProgress}}%</span>
+  {{else}}
+    {{#if vmValue}}
+      {{>Template.dynamic template=template data=context}}
+      <a data-reset-file href="#" style="display:none">Reset</a>
+      <!--span class="text-muted">{{_ 'needToRemoveCurrentToAddNew'}}</span-->
+    {{/if}}
+  {{/if}}
+  <div class="row">
+    <div class="col-xs-8">
+      <input class="form-control" type="{{textOrHidden}}" value="{{vmValue}}" {{this.atts}}/>
+    </div>
+    {{#unless vmValue}}
+    <div class="col-xs-4">
+      <button type="button" name="upload" class="btn btn-info">
+          <i class="fa fa-upload"></i> {{_ 'Upload file'}}
+      </button>
+      {{#if Meteor.isCordova}}
+      <button type="button" class="create-photo btn btn-info">
+        <i class="fa fa-upload"></i>{{_ 'photo'}}
+      </button>
+      {{/if}}
+    </div>
+    {{/unless}}
+  </div>
+  <!--{{#if valueHasChanged}}
+  <span class="text-warning">{{_ 'youNeedToSaveYourChanges'}}</span>
+  {{/if}}-->
+</template>

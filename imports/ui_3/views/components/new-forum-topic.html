@@ -1,0 +1,21 @@
+<template name="New_forum_topic">
+  <div class="ibox chat-thread">
+  <div class="ibox-content">
+        <div class="media">
+          <div class="media-left">
+            <img src="{{absoluteUrl currentUser.avatar}}" class="message-avatar" alt="avatar" width="60" height="60" />
+          </div>
+          <div class="media-body">
+            <div class="form-group">
+              <textarea name="title" rows="1" cols="" placeholder="{{_ 'newForumTitlePlaceholder'}}" {{b "value: titleValue"}} class="full-width"></textarea>
+              <textarea name="text" rows="3" cols="" placeholder="{{_ 'newForumTextPlaceholder'}}" {{b "value: textValue"}} class="full-width"></textarea>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="btn btn-sm btn-default m-t-n-xs {{disabled}} js-attach"><i class="fa fa-photo"></i> {{_ 'Attachments'}}</span>
+            <span class="btn btn-sm btn-primary m-t-n-xs {{disabled}} js-send">{{_ 'Create forum'}}</span>
+          </div>
+        </div>
+  </div>
+  </div>
+</template>

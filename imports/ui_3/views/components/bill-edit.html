@@ -1,0 +1,201 @@
+<!--template name="Bill_partner_edit">
+    <address>
+        {{> afQuickField name="partner.contact.address"}}<br>
+        {{> afQuickField name="partner.BAN"}}<br>
+        {{> afQuickField name="partner.taxNo"}}<br>
+    </address>
+</template-->
+
+<template name="Bill_edit">
+    {{#let afDoc=afDoc}}
+    <div class="row">
+        <!-- hidden, needed for autoform doc data -->
+        {{> afQuickField name="communityId" type="hidden"}} 
+        {{> afQuickField name="category" type="hidden"}}
+        {{> afQuickField name="defId" type="hidden"}}
+        {{> afQuickField name="relation" type="hidden"}}
+         <!-- hidden, needed for autoform doc data -->
+        <div class="col-sm-6 col-md-4">
+            <h5>{{_ 'issuer'}}:</h5>
+            <address>
+                {{#if (equals afDoc.relationSign -1)}}
+                    {{> afQuickField name="partnerId"}}
+                    <!--{{#if showContractField}}-->
+                    {{> afQuickField name="contractId"}}
+                    {{#if isBill}}
+                        {{> afQuickField name="relationAccount"}}
+                    {{/if}}
+                {{else}}
+                    {{>Bill_partner activeCommunity.asPartner}}
+                {{/if}}
+            </address>
+        </div>
+
+        {{#if originalStatementEntry}}
+        <div class="col-sm-6 col-md-4">
+            <div class="form-group">
+                <label>{{_ 'schemaStatementEntries.original.label'}}</label><br>
+                <div class="well">   
+                    {{>Doc_view doc=originalStatementEntry}}
+                </div>
+            </div>
+        </div>
+        {{/if}}
+
+        <div class="col-sm-6 col-md-4 pull-right">
+            {{#if afDoc.serialId}}
+                <h4>{{_ afDoc.txdef.name}}:
+                <span class="text-navy">{{afDoc.serialId}}</span></h4>
+            {{/if}}
+            <h5>{{_ 'receiver'}}:</h5>
+            <address>
+                {{#if (equals afDoc.relationSign 1)}}
+                    {{> afQuickField name="partnerId"}}
+                    <!--{{#if showContractField}}-->
+                    {{> afQuickField name="contractId"}}
+                    {{#if isBill}}
+                        {{> afQuickField name="relationAccount"}}
+                    {{/if}}
+                {{else}}
+                    {{>Bill_partner activeCommunity.asPartner}}
+                {{/if}}
+            </address>
+
+            <p>
+                {{#if isBill}}
+                    <span>{{> afQuickField name="issueDate" defaultValue=defaultDate}}</span>
+                    <span>{{> afQuickField name="deliveryDate" defaultValue=defaultDate}}</span>
+                    <span>{{> afQuickField name="dueDate" defaultValue=defaultDueDate}}</span>
+                {{else}} <!-- isReceipt -->
+                    <span>{{> afQuickField name="valueDate" type=hiddenWhenReconciling defaultValue=defaultDate}}</span>
+                    <span class="js-autofill">{{> afQuickField name="payAccount" type=hiddenWhenReconciling}}</span>
+                {{/if}}
+            </p>
+
+        </div>
+    </div>
+
+    {{#if detailedView}}
+    <div class="table-responsive m-t">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>{{_ 'schemaBills.lines.$.title.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.discoPct.label'}}</th>
+                    {{#if afDoc.community.settings.subjectToVat}}
+                      <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                    {{/if}}
+                    <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#afEachArrayItem name="lines"}}
+                <!--{{#if notNullLine this}}-->
+                <tr class="js-autofill">
+                    <td class="text-left">
+                      <button type="button" class="btn btn-info autoform-remove-item">
+                          <i class="fa fa-trash"></i>
+                      </button>
+                    </td>                       
+                    <td>{{> afFormGroup name=this.current.title}}</td>
+                    <td>{{> afFormGroup name=this.current.quantity}}</td>
+                    <td>{{> afFormGroup name=this.current.uom}}</td>
+                    <td>{{> afFormGroup name=this.current.unitPrice}} </td>
+                    <td>{{> afFormGroup name=this.current.discoPct}}</td>
+                    {{#if afDoc.community.settings.subjectToVat}}
+                      <td>{{> afFormGroup name=this.current.taxPct}}</td>
+                    {{/if}}
+                    <td>{{> afFormGroup name=this.current.amount}} </td>
+                    <!--td class="text-center">{{lineTotal this}}</td-->
+                    <!-- hidden, needed for autoform doc data -->
+                    <td>{{> afQuickFields name=this.current.billing type="hidden"}} </td>
+                    {{#if (lineHasField this.index 'metering')}}
+                        <td>{{> afQuickField name=(concat "lines." this.index ".metering.id") type="hidden"}} </td>
+                        <td>{{> afQuickFields name=(concat "lines." this.index ".metering.start") type="hidden"}} </td>
+                        <td>{{> afQuickFields name=(concat "lines." this.index ".metering.end") type="hidden"}} </td>
+                    {{/if}}
+                    <!-- hidden, needed for autoform doc data -->
+                </tr>
+                {{#if currentUserHasPermission 'transactions.post'}}
+                <tr>
+                      <td></td>
+                      <td>{{> afFormGroup name=this.current.account}}</td>
+                      <td>{{> afFormGroup name=this.current.localizer}}</td>
+                </tr>
+                <!--{{/if}}-->
+                {{/if}}
+                {{/afEachArrayItem}}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
+            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
+        </button>                  
+    </div>
+    <table class="table invoice-total">
+        <tbody>
+        {{#if afDoc.community.settings.subjectToVat}}
+        <tr>
+            <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
+            <td>{{afDoc.net}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
+            <td>{{afDoc.tax}}</td>
+        </tr>
+        {{/if}}
+        {{#if afDoc.disco}}
+        <tr>
+            <td><strong>{{_ 'schemaBills.disco.label'}} :</strong></td>
+            <td>{{afDoc.disco}}</td>
+        </tr>
+        {{/if}}
+        {{#if cashPayAccount}}
+        <tr>
+            <td></td>
+            <td class="js-autofill">{{> afQuickField name="rounding"}} </td>
+        </tr>
+        {{/if}}  
+        <tr>
+            <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
+            <td>{{afDoc.amount}}</td>
+        </tr>
+        </tbody>
+    </table>
+    {{else}}
+    <div class="table-responsive m-t">
+        <table class="table">
+                {{> afQuickField name="lines.0.quantity" type="hidden"}} 
+            <thead>
+                <tr>
+                    <th class="text-left">{{_ 'schemaBills.lines.$.title.label'}}
+                        <button type="button" class="btn btn-xs btn-outline btn-info pull-right js-view-mode">{{_ "Detailed bill"}}</button>
+                    </th>
+                    <th class="text-left">{{_ 'schemaBills.lines.$.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{> afFormGroup name="lines.0.title"}}</td>
+                    <td>{{> afFormGroup name="lines.0.unitPrice"}}</td>
+                </tr>
+                <tr>
+                    <td>{{> afFormGroup name="lines.0.account"}}</td>
+                    <td>{{> afFormGroup name="lines.0.localizer"}}</td>
+                </tr>
+            </tbody>
+        </table>
+        {{#if cashPayAccount}}
+            {{> afQuickField name="rounding"}} 
+        {{/if}}
+    </div>
+    {{/if}}
+
+    <div class="well m-t">
+        {{> afQuickField name="notes"}}
+    </div>
+    {{/let}}
+</template>

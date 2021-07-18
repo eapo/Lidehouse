@@ -1,0 +1,133 @@
+<template name="Shareddoc_store">
+
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Documentstore') }}
+
+    <div class="wrapper wrapper-content page-docs">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div class="file-manager">
+                            <!--h5>{{_ 'Show'}}:</h5>
+                            <a href="" class="file-control active">{{_ 'All'}}</a>
+                            {{#each extensions}}
+                                <a href="" class="file-control" data-ext="{{this}}">.{{this}}</a>
+                            {{/each}}
+                            <div class="hr-line-dashed"></div>
+                            <button name="upload" class="btn btn-primary btn-block {{#unless currentUserHasPermission 'shareddocs.upload'}}disabled{{/unless}}">
+                                <i class="fa fa-upload"></i>
+                                {{_ 'Upload file'}}
+                            </button>
+                            <div class="hr-line-dashed"></div-->
+                            <h5>{{_ 'Sharedfolders'}}</h5>
+                            <ul class="folder-list" style="padding: 0">
+                                {{#each folder in builtinFolders}}
+                                <li>
+                                    <a href="" data-id={{folder._id}} class="{{#if (isActive folder._id)}}text-bold{{/if}}">
+                                        <span class="js-select"><i class="fa {{#if (isActive folder._id)}}fa-folder-open fa-lg{{else}}fa-folder{{/if}}"></i> {{_ folder.name}}</span>
+                                    </a>
+                                </li>
+                                {{/each}}
+                                {{#each folder in communityFolders}}
+                                <li>
+                                    <a href="" data-id={{folder._id}} class="{{#if (isActive folder._id)}}text-bold{{/if}}">
+                                        <span class="js-select"><i class="fa {{#if (isActive folder._id)}}fa-folder-open-o fa-lg{{else}}fa-folder-o{{/if}}"></i> {{_ folder.name}}</span>
+                                        {{#if currentUserHasPermission 'shareddocs.remove' folder}}
+                                            {{#if (isActive folder._id)}}
+                                                <i class="fa fa-trash pull-right js-delete"></i>
+                                                <i class="fa fa-pencil pull-right js-edit"></i>
+                                            {{/if}}
+                                        {{/if}}
+                                    </a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                            {{#let userCanUpload=(currentUserHasPermission 'shareddocs.upload')}}
+                            {{#if userCanUpload}}
+                            <button name="newdir" class="btn btn-default btn-xs js-create">
+                                <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'sharedfolder'}}
+                            </button>
+                            {{/if}}
+                            <div class="hr-line-dashed"></div>
+                            <button name="upload" class="btn btn-primary btn-block {{disabledUpload}}" title="{{#unless userCanUpload}}{{_ 'No permission to upload'}}{{/unless}}">
+                                <i class="fa fa-upload"></i>
+                                {{_ 'Upload file'}}
+                            </button>
+                            {{/let}}
+                            <div class="hr-line-dashed"></div>
+                            <h5>{{_ 'Show'}}
+                              <span class="pull-right">
+                                <select name="view-mode" {{b 'value: viewMode'}}>
+                                  <option value="grid" selected>{{_ 'grid'}} </option>
+                                  <option value="list">{{_ 'list'}} </option>
+                                </select>
+                              </span>                            
+                            </h5>
+                            <div class="">
+                                <select name="sort-by" {{b 'value: sortBy'}}>
+                                  <option value="name" selected>{{_ 'Sort by' (_ 'name')}}</option>
+                                  <option value="uploadedAt">{{_ 'Sort by' (_ 'date')}}</option>
+                                  <option value="size">{{_ 'Sort by' (_ 'size')}}</option>
+                                  <option value="type">{{_ 'Sort by' (_ 'type')}}</option>
+                                </select>
+                                <select name="sort-direction" {{b 'value: sortDirection'}}>
+                                  <option value="1" selected>{{_ 'increasing'}}</option>
+                                  <option value="-1">{{_ 'decreasing'}}</option>
+                                </select>
+                                {{>Help_icon title=(_ 'Sorting may not be applied on external docs')}}                 
+                            </div>
+                            <!--h5 class="tag-title">Tags</h5>
+                            <ul class="tag-list" style="padding: 0">
+                                <li><a href="">Work</a></li>
+                                <li><a href="">Home</a></li>
+                                <li><a href="">Holidays</a></li>
+                            </ul-->
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 animated fadeInUp">
+                <!--h1 class="page-title">{{_ activeFolder.name}}</h1-->
+                <!-- some instruction for the users 
+                {{_ 'documentStoreSubtitle'}}-->
+            {{#if activeFolder.externalUrl}} 
+                <iframe src={{embedUrl activeFolder.externalUrl}} style="width:100%; height:600px; border:0;"></iframe>
+            {{else}}
+                <div class="row">
+                <div class="col-lg-12">
+
+<!--              {{#if storeHasDocuments }}-->
+                {{#if (equals viewMode 'grid')}}
+                <div class="file-list text-center">
+                  {{#each doc in shareddocs}}
+                      {{> Shareddoc_boxy doc }}
+                  {{/each}}
+                </div>
+                {{/if}}
+                {{#if (equals viewMode 'list')}}
+                <ul class="file-list list-unstyled">
+                  {{#each doc in shareddocs}}
+                    <li>
+                      {{> Shareddoc_inline doc}}
+                    </li>
+                  {{/each}}
+                </ul>
+                <!--div class="table-responsive">
+                  {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+                </div-->
+                {{/if}}                
+<!--              {{else}} -->
+                    <!-- empty state -->
+<!--                <div class="upload-row margined-row border-bottom">
+                  <i>{{_ 'documentStorePlaceholder'}}</i>
+                </div>
+                {{/if}}-->
+                </div>
+                </div>
+            {{/if}}
+            </div>
+        </div>
+    </div>
+</template>

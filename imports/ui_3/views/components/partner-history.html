@@ -1,0 +1,70 @@
+<template name="Partner_history">
+    <div class="transactions">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label class="control-label text-capitalize" for="partner">{{_ 'partner'}}/{{_ 'contract'}}</label>
+                <select id="partner" name="partner" {{b 'options: partnerOptions, value: partnerSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
+                <input type="date" id="begin_date" name="begin_date" {{b 'value: beginDate'}} class="form-control">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+                <input type="date" id="end_date" name="end_date" {{b 'value: endDate'}} class="form-control">
+            </div>
+        </div>
+        <!--div class="col-sm-2">
+            <div class="form-group">
+                <label class="control-label" for="status">{{_ 'Status'}}</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="1" selected="">{{_ 'Reconciled'}}</option>
+                    <option value="0">{{_ 'Pending'}}</option>
+                </select>
+            </div>
+        </div-->
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tbody>
+              <tr style="font-weight: bold">
+                  <td>{{_ 'schemaTransactions.valueDate.label'}}</td>
+                  <td>{{_ 'Type'}}</td>
+                  <td></td>
+                  <td>{{_ 'schemaTransactions.serialId.label'}}</td>
+                  <td>{{_ 'schemaTransactions.amount.label'}}</td>
+                  <!--td></td-->
+                  <!--td></td-->
+                  <td>{{_ 'Balance'}}</td>
+                  <!--td></td-->
+              </tr>
+              {{#each tx in history.transactions}}
+              <tr>
+                  <td>{{displayDate tx.valueDate}}</td>
+                  <td class="text-capitalize"><!--a href="{{pathFor 'Transaction show' _txid=tx._id}}"-->{{tx.displayInHistory}}<!--/a--></td>
+                  <td>{{>Action_buttons_group collection='transactions' actions='view' doc=tx size='sm'}}</td>
+                  <td><span class="text-navy">{{tx.serialId}}</span></td>
+                  <td class="{{negativeClass tx.contractAmount}}">{{displayMoney tx.contractAmount}}</td>
+                  <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
+                  <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
+                  <td class="{{negativeClass tx.total}}"><strong>{{displayMoney tx.total}}</strong></td>
+                  <!--td>{{{checkmarkBoolean entry.transaction.isReconciled}}}</td-->
+              </tr>
+              {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <p class="text-center">{{_ 'Balance at the beginning of period'}}: <strong>{{displayMoney history.beginBalance}}</strong></p>
+    {{#if (not (not history.predecessor))}}
+    <a class="btn btn-block btn-default js-predecessor" data-id={{history.predecessor._id}}>{{_ 'Balance from predecessor'}}: <strong>{{displayMoney history.predecessor.balance}}</strong>
+        {{>Help_icon name="predecessor-balance" title=(_ 'predecessorBalanceHelp')}}
+    </a>
+    {{/if}}
+    </div>
+</template>

@@ -1,54 +1,142 @@
 {
+  "Try demo": "Try it in a demo house",
+
   "demo": {
     "house": "Demo house",
     "city": "Boston",
-    "street": "Lavender street",
+    "street": "Primrose street",
+    "ground": "GroudFloor",
+    "groundCode": "G",
+    "attic": "Attic",
+    "atticCode": "A",
+    "cellar": "Basement",
+    "cellarCode": "B",
     "user": {
       "0": {
         "firstName": "Stephen",
         "lastName": "Bolt"
       },
       "1": {
-        "firstName": "Andrew",
-        "lastName": "Bay",
+        "firstName": "Mary",
+        "lastName": "Woods",
         "benefactor": {
           "name": "Rosemary Bird",
-          "address": "123 Awesome street, Georgia ",
+          "address": "Awesome street 45., Georgia",
           "mothersName": "Cethleen Pierce"
         }
       },
       "2": {
-        "firstName": "Tiffany",
-        "lastName": "Baker",
-        "company": {
-          "name": "ACME Inc.",
-          "address": "Peterson avenue 124., Philadelphia, USA"
-        }
+        "firstName": "Peter",
+        "lastName": "Baker"
+
       },
       "3": {
-        "firstName": "Peter",
-        "lastName": "Brown"
+        "firstName": "Tiffany",
+        "lastName": "Wagon",
+        "company": {
+          "name": "ACME Inc.",
+          "address": "Peterson avenue 124., Philadelphia, USA",
+          "regno": "Reg.no: 21-09-658912"
+        }
       },
       "4": {
-        "firstName": "Emilia",
-        "lastName": "Brown"
-      }
+        "firstName": "Charlie",
+        "lastName": "Collins"
+      },
+      "5": {
+        "firstName": "Adam",
+        "lastName": "Bailey"
+      },
+      "6": {
+        "firstName": "Julia",
+        "lastName": "Lawrence"
+      },
+      "7": {
+        "firstName": "Andrew",
+        "lastName": "Archer",
+        "benefactor": {
+          "name": "Eve Archer",
+          "address": "124 Wilson stret, Birmingham",
+          "mothersName": "Elizabeth Lawson"
+        }
+      },
+      "8": {
+        "firstName": "Stephanie",
+        "lastName": "Miller"
+      },
+      "9": {
+        "firstName": "Cathleen",
+        "lastName": "Glover"
+      },
+      "10": {
+        "firstName": "Daniel",
+        "lastName": "Wolf"
+      },
+      "11": {
+        "firstName": "Leslie",
+        "lastName": "Hunter"
+      },
+      "12": {
+        "firstName": "Esme",
+        "lastName": "Laws"
+      },
+      "13": {
+        "firstName": "Zachary",
+        "lastName": "Brooks",
+        "company": {
+          "name": "Virtual Choc Ltd.",
+          "address": "86 Primrose street, Boston",
+          "regno": "Reg.no: 21-09-846231"
+        }
+      },
+      "14": {
+        "firstName": "Emily",
+        "lastName": "Baker"
+      },
+      "15": {
+        "firstName": "Tom",
+        "lastName": "Pope"
+      },
+      "16": {
+        "firstName": "Ariana",
+        "lastName": "Ford"
+      },
+      "17": {
+        "firstName": "Rose",
+        "lastName": "Ingram"
+      },
+      "firstNames": ["Adam", "Bonnie", "Cecil", "David", "Eve", "Frank", "Gabe", "Hellen", "Ike", "James", "Kitty", "Louis", "Maggie", "Nick", "Oliver", "Peter", "Rose", "Sarah", "Thomas", "Zachary"]
+    },
+    "manager": {
+      "firstName": "Lewis",
+      "lastName": "King",
+      "bio": "I have more than 15 years of experience in house-management.",
+      "message": "As Manager of Demo House I welcome you in our honline system."
+    },
+    "admin": {
+      "firstName": "Patrick",
+      "lastName": "Shepherd",
+      "bio": "I've been living in this house for more than 8 years. I work as an IT specialist, my hobby is diving. I believe this platform will help us exchange information and share ideas."
+    },
+    "maintainer": {
+      "firstName": "Shane",
+      "lastName": "Young"
     },
     "topic": {
       "0": {
-        "title": "Problem with the front door",
-        "text": "Someone broke in the front door last week, it cannot be locked ever since",
-        "comment": {
-          "0": "Yes, I've already reported the problem. Earliest they can come fix it is next week."
-        }
-      },
-      "1": {
         "title": "Bank loan for renovation",
         "text": "There is special offer from the bank for a one time loan that can be used for renovation.",
         "comment": {
           "0": "I think it is worth it. Interest is only 6%, repayment period is 10 years.",
           "1": "Well, I'm not sure. We just got out from our last loan. Finally we can make the common cost lower, and now another loan?",
           "2": "I suggest voting on it!"
+        }
+      },
+      "1": {
+        "title": "Problem with the front door",
+        "text": "Someone broke in the front door last week, it cannot be locked ever since",
+        "comment": {
+          "0": "Yes, I've already reported the problem. Earliest they can come fix it is next week."
         }
       },
       "2": {
@@ -59,34 +147,67 @@
           "1": "I apologize from everyone. The dog is ours, it ususally doesn't make any noise. But my granny was in the hospital, and it was left alone last week.",
           "2": "Fortunately granny is out of hospital and back home from yesterday, so it won't be causing noise anymore. Sincere apologies from everyone."
         }
+      },
+      "3": {
+        "title": "Help in shopping",
+        "text": "My dear neighbours! Can you help me please with shopping? I'd rather not go to the store because of the epidemic.",
+        "comment": {
+          "0": "Sure, just send me your list in private message and I will get you everything.",
+          "1": "I can help, too.",
+          "2": "Thank you!",
+          "3": "Do you know where can I get a thermometer? They ran out of it in the pharmacy at the corner."
+        }
       }
     },
     "news": {
       "0": {
-        "title": "Garbage Day on May 4",
+        "title": "Garbage Day on next Friday",
         "text": "Any dangerous materials and special garbage can be placed outside the front door on the previous day. And it will be taken away"
       },
       "1": {
         "title": "Mandatory chimney checking",
-        "text": "Has to be done until the end of the month. Three possible dates: 2017.05.11, 2017.05.13, 2017.05.24.\nPlease choose one and schedule an appointment with the chimney checkers at +36(20)2569875."
+        "text": "Has to be done until the end of the month.\nPlease choose an appropriate date and schedule an appointment with the chimney checkers at +36(20)2569875."
       },
       "2": {
         "title": "Useful information",
         "text": ""
+      },
+      "3": {
+        "title": "Information on epidemic precautions",
+        "text": ["Dear Owners, Residents! ",
+          "With regard to the coronavirus outbreak, we are introducing the following measures in our house:",
+          "- As part of the daily cleaning routine, the front door handles and the buttons on the elevators are cleaned with alcohol disinfectant by the cleaning staff.",
+          "- Staircase windows are open during the day. \n",
+          "We ask everyone to pay close attention to personal hygiene, wash their hands frequently and thoroughly with soap or alcohol hand disinfectant, do not stay in a larger community for extended periods of time, use tissue when coughing and sneeze, and follow the recommendations of the Operational Strain.",
+          "The condominium management will keep abreast of developments in the epidemiological situation, keeping an eye on communications issued by the Operational Strain. If any action is taken on the condominium, we will inform you immediately."]
       }
     },
     "vote": {
-      "0": {
+      "loan": {
         "title": "Bank loan for renovation",
-        "text": "Shall we take out a $100,000 special loan from the bank at 6% interest, repaying through the next 10 years."
+        "text": "We shall take a $100,000 special loan from the bank at 6% interest, repaying through the next 10 years."
       },
-      "1": {
+      "parking": {
+        "title": "Guest parking lots",
+        "text": ["The parking lots for the guests of the house are used by other people, we should limit its use.",
+         "Proposed resolution: Let's establish telescopic parking guards in the two guest parking lots of the house, total cost is 46,200.- HUF. Each owner will get a key."]
+      },
+      "cleaning": {
+        "title": "Cleaning in winter",
+        "text": "As winter is here, the staircase is getting more dirty. I suggest increasing the regularity of the cleaning of the staircase to twice a week.",
+        "choice": {
+          "0": "I agree",
+          "1": "I don't agree"
+        }
+      },
+      "bicycleStorage": {
         "title": "Bicycle storage",
-        "text": "Shall we create a bicycle storage for maximum $1000 in the basement.\nIf accepted, we will get 3 offers and choose the best."
+        "text": ["There is no safe storage for bicyles in the house. It would be advisable to construct a 12-seater storage on the garage level. In case of acceptance we will ask for 3 offers.",
+          "Proposed resolution: The house shall establish a bicycle storage from a maximum gross amount of 200,000 HUF on the garage level. The Manager is responsible for the request of offers and the execution. Deadline: 3 months from acceptance."]
       },
-      "2": {
+      "wallColor": {
         "title": "Color of the building walls",
-        "text": "What color should we paint the building's walls during the renovation in August.",
+        "text": "What color should we paint the building's walls during the renovation in August?",
         "choice": {
           "0": "neutral white",
           "1": "light pink",
@@ -97,37 +218,149 @@
           "0": "Light colors are always prefered. Makes the area look brighter.",
           "1": "OMG If you choose grey, I'm moving out!"
         }
+      },
+      "manager": {
+        "title": "Replacement of Manager",
+        "text": "Let's have a vote in writing or hold an extraordinary meeting for this purpose. Those who agree to replace the manager, please support this proposal. If at least 10% of the ownership ratios support this proposal the current manager is obliged to open a vote on this issue. If he fail to do this within 30 days of the successful completion of this vote, the Audit Board shall do the same."
+      },
+      "epidemic": {
+        "title": "Reduce shop rental fee",
+        "text": ["The confectionery on the ground floor has closed indefinitely due to the epidemic. The owner has asked for the rent to be released for the downtime, as he cannot pay the rent if he has no income.",
+          "Should we reduce the rent for the confectionery during the epidemic?"],
+        "choice": {
+          "0": "Yes, cut it in half (50%)",
+          "1": "Yes, let it go completely",
+          "2": "No, let them pay long as they can"
+        },
+        "comment": {
+          "0": "I think it is worth reducing to keep the current tenant because it will be difficult to find a new tenant in the emerging economic situation.",
+          "1": "I love this pastry shop, the owner is very cute.",
+          "2": "Who knows how long this situation will last, if he goes bankrupt anyway before it reopens, we won't win anything, we will give up our money unnecessarily."
+        }
+      },
+      "promo": {
+        "title": "Do you think we should use HONLINE in our house?",
+        "text": ["It is practical that we are able to hold a legally valid online voting on house affairs.", 
+          "We can discuss house matters in the forum and we can report maintenance problems online right away.", 
+          "The program is easy to use and now it is free.",
+          "We have nothing to lose. Shall we start using it?"],
+        "choice": {
+          "0": "Yes, definitely",
+          "1": "No, I am not interested",
+          "2": "Abstain"
+        }
       }
     },
     "agenda": {
       "0": {
-        "title": "Owners Association Meeting 2017-II."
+        "title": "Extraordinary Owners Association Meeting"
+      },
+      "1": {
+        "title": "Owners Association Meeting"
+      }
+    },
+    "contract": {
+      "0": {
+        "title": "Caretaker agreement",
+        "text": "Detailed caretaker duties list in the document store.",
+        "partner": "Peter Baker SC"
+      },
+      "1": {
+        "title": "Elevator maintenance contract",
+        "text": "Monthly planned maintenance and part supplly by warranty",
+        "partner": "Lift fix ultra",
+        "ticketTitle": "Elevator maintenance",
+        "ticketText": "Monthly planned maintenance"
+      },
+      "2": {
+        "title": "building cleaning contract",
+        "text": "Buildings cleaned once a week, halls cleaned daily",
+        "partner": "Super-Clean Inc.",
+        "ticketTitle": "Scheduled cleaning",
+        "ticketText": "Monthly billing according to contract"
+      },
+      "10": {
+        "title": "Billboard area rental",
+        "text": "Billboard space rent on building, yearly contract",
+        "partner": "Rent-o-matic Inc"
       }
     },
     "ticket": {
-      "0": {
+      "lift": {
         "title": "Elevator out of order",
-        "text": "Stopped on the 6th floor. None of the buttons make it move."
+        "text": "Stopped on the 6th floor. None of the buttons make it move.",
+        "comment": {
+          "0": "I called the elevator maintance company. If its a small fix, it is covered under our general maintance contract. We only need to pay if there is a major problem.",
+          "1": "Looks like its repairable easily, but they took the electric panel with them to their HQ, only there can they fix it. Unfortunately this means we need to wait a few days for them to bring it back."
+        }
       },
-      "1": {
+      "leak": {
         "title": "My bathroom is being flooded from above.",
-        "text": "A part of the ceiling has even fallen. I was lucky to not have my bath at that moment. I could be dead now."
+        "text": "A part of the ceiling has even fallen. I was lucky to not have my bath at that moment. I could be dead now.",
+        "comment": {
+          "0": "Fortunately our insurance covers these. I'm calling the insurance company right away",
+          "1": "They opened it up, and the insurance company took pictures. They will be coming to fix things up the day after tomorrow.",
+          "2": "The fix has been done. We are just waiting for the payment from the insurance",
+          "3": "The money arrived too. The bill has been paid today."
+        }
       },
-      "2": {
+      "blackout": {
         "title": "Electricity shortages",
         "text": "It is the third time that the electricity goes away for a period during the nigth.",
         "comment": {
           "0": "I reported to the electricity company last week. They are looking into it."
         }
       },
-      "3": {
+      "plaster": {
         "title": "Cracks in the wall",
-        "text": "On the second floor the wall is cracked, pieces of it fallen down."
+        "text": "On the second floor the wall is cracked, pieces of it fallen down.",
+        "comment": {
+          "0": "I can fix this next week. We only need to buy the materials.",
+          "1": "I will also paint it over nicely, we have some leftover paint. But the big ladder I can only get on Tuesday.",
+          "2": "I had some time over the weekend too to work on it. So I finished a bit earlier.",
+          "3": "Looks lovely Mr Baker! Looks just like a professional paint job.",
+          "4": "My grandfather was actually a professional painter."
+        }
       }
     },
     "messages": {
       "0": "Hi! I've found your post box keys. You've left it in the post box. :)",
       "1": "Ooops. Thanks a lot! I was looking for it, thought I lost it. I'll drop by to pick it up after dinner."
+    },
+    "transactions": {
+      "notes": {
+        "0": "Decided during the year",
+        "1": "From local government",
+        "2": "Billboard on the facade",
+        "3": "Compensation, from insurance company",
+        "4": "Bank loan"
+      }
+    }
+  },
+  "test": {
+    "house": "Test house"
+  },
+
+  "promo": {
+    "OneClickToLaunch": "One click and your demo house is ready",
+    "InstructionsToLaunch": "We create a house for you, and you can invite your neighbours into it",
+    "admin": {
+      "name": {
+        "label": "Your name"
+      },
+      "email": {
+        "label": "Your email address",
+        "placeholder": "... we are sending the shareable invite link here."
+      }
+    },
+    "community": {
+      "name": {
+        "label": "Name of the community",
+        "placeholder": "(eg. Main street 5)"
+      }
+    },
+    "parcelCount" : {
+      "label": "How many flats are in your house? "
     }
   }
 }

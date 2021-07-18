@@ -1,0 +1,21 @@
+<template name="Reconciliation">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>{{_ 'schemaStatementEntries.original.label'}}</label><br>
+                <div class="well">   
+                    {{>Doc_view doc=originalStatementEntry}}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <address>
+                <!-- hidden, needed for autoform doc data -->
+                {{> afQuickField name="_id" type="hidden"}}
+                <!-- hidden, needed for autoform doc data -->
+                {{> afQuickField name="defId"}}
+                {{> afQuickField name="txId"}}
+            </address>
+        </div>
+    </div>
+</template>

@@ -1,92 +1,76 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Accounts } from 'meteor/accounts-base';
+import { Random } from 'meteor/random';
 import { Fraction } from 'fractional';
+import { _ } from 'meteor/underscore';
 
+import { sanityCheckAtLeastOneActive } from '/imports/api/behaviours/active-period.js';
 import { Log } from '/imports/utils/log.js';
-import { checkExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
-import { Memberships } from './memberships.js';
+import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Memberships, entityOf } from './memberships.js';
+import { sendAddedToRoleInfoEmail } from '/imports/email/added-to-role.js';
 
-// We need a check of userEmail and userId matches.
-// Easy solution is to not allow setting both fields in inserts and updates. Eg. userId will be the stronger.
-// Alternatively we could throw an Error if they dont match.
-function checkUserDataConsistency(membership) {
-  if (membership.userId) {
-    if (membership.userEmail) {
-      Log.warning('Membership data contains both userId and userEmail', membership);
-      delete membership.userEmail;
-    }
+function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
+  // Checks that *user* has permission to add new member in given *community*  
+  const user = Meteor.users.findOne(userId);
+  if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?)
+  const permissionName = entityOf(roleOfNewMember) + '.update';
+  if (!user.hasPermission(permissionName, { communityId })) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to add membership', { roleOfNewMember, userId, communityId });
   }
 }
 
-// Connecting the membership with a registered user (call if only email is provided and no user connected)
-// from this point the user can change her email address, w/o breaking the association
-function connectUser(membershipId, userId) {
-  const modifier = {
-    $set: { userId },
-    $unset: { userEmail: '' },      // !! break the email association - the userId is the new association
-  };
-  Memberships.update(membershipId, modifier);
-}
-
-// Sends out an invitation into the specific community to the provided email address
-function inviteUser(membershipId, email) {
-  const membership = Memberships.findOne(membershipId);
-  // TODO:
-  /*
-  Dear user,
-  You have been added as a member of community '${membership.community()}', with role: ${membership.role}
-  If you think you have been added by accident, or in fact not want to be part of that community,
-  please contact the community administrator at ${admin.email}, and ask him to remove you.
-
-  You have been also invited to join the condominium management system, where you can follow the community issues,
-  discuss them and even vote on them. You can start enjoying all its benefits as soon as you redister your account
-  with this email address.
-  The following link takes you to our simple one click registration: LINK
-  */
-  Log.info(`Invitation sent to ${email}, to join community ${membership.community().name}`);
-  // When user joins, with this email, she will automatically get connected to this membership
-  return;
-}
-
-// Sometimes only a email is given in the membership. In this case we can look if we have a registered user with such email,
-// and then connect her to this membership. Or if not, we can send invitation to this email.
-function connectUserIfPossible(membershipId) {
-  const membership = Memberships.findOne(membershipId);
-  const email = membership.userEmail;
-  if (!membership.userId && email) {
-    const user = Meteor.users.findOne({ 'emails.0.address': email });
-    if (user && user.emails[0].verified) {  // if not verified, connection will happen when she verifies (thats the trigger)
-      connectUser(membership._id, user._id);
-    } else {
-      inviteUser(membership._id, email);
-    }
+function checkParcelMembershipsSanity(parcelId, memberships) {
+  if (Meteor.isClient) return;
+  if (!parcelId) return;
+  const parcel = Parcels.findOne(parcelId);
+  // Parcel can have only one representor
+  const representorsCount = memberships.find({ communityId: parcel.communityId, active: true, approved: true, parcelId, role: 'owner', 'ownership.representor': true }).length;
+  if (representorsCount > 1) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'Parcel can have only one representor', { representorsCount, parcel: parcel._id });
   }
-}
-
-function checkSanityOfTotalShare(parcelId, totalShare) {
-  if (totalShare.numerator > totalShare.denominator) {
-    throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
-      `New total shares would become: ${totalShare}, for parcel ${parcelId}`);
+  // Ownership share cannot exceed 1
+  let ownedShare = new Fraction(0);
+  memberships.find({ parcelId, active: true, approved: true, role: 'owner' })
+    .forEach(p => ownedShare = ownedShare.add(p.ownership.share));
+  if (ownedShare.numerator > ownedShare.denominator) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1', { ownedShare, parcel: parcel._id });
   }
+  // Following check is not good, if we have activePeriods (same guy can have same role at a different time)
+  // checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, partnerId: doc.partnerId });
 }
 
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
-  validate: Memberships.simpleSchema().validator({ clean: true }),
-
+  validate: doc => Memberships.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
-    checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    if (doc.role === 'owner') {
-      const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
-      const newTotal = total.add(doc.ownership.share);
-      checkSanityOfTotalShare(doc.parcelId, newTotal);
+    doc = Memberships._transform(doc);
+    // Users can submit non-approved membership requests, just for themselves
+    if (!doc.approved) {
+      if (doc.userId && doc.userId !== this.userId) {
+        throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity', { method: 'memberships.insert', doc, userId: this.userId });
+      }
+      // Nothing else to check. Things will be checked when it gets approved by community admin/manager.
+      if (doc.community() && !doc.community().needsJoinApproval()) {
+        doc.approved = true;
+        doc.accepted = true;
+      }
+    } else {
+      checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     }
-    checkUserDataConsistency(doc);
-    const id = Memberships.insert(doc);
-    connectUserIfPossible(id);
-    return id;
+
+    const MembershipsStage = Memberships.Stage();
+    const _id = MembershipsStage.insert(doc);
+    checkParcelMembershipsSanity(doc.parcelId, MembershipsStage);
+    MembershipsStage.commit();
+
+    return _id;
   },
 });
 
@@ -100,19 +84,70 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    checkModifier(doc, modifier, Memberships.modifiableFields);
-    const newrole = modifier.$set.role;
-    if (newrole && newrole !== doc.role) {
-      checkAddMemberPermissions(this.userId, doc.communityId, newrole);
+    checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));
+
+    const MembershipsStage = Memberships.Stage();
+    const result = MembershipsStage.update({ _id }, modifier, { selector: doc });
+    checkParcelMembershipsSanity(doc.parcelId, MembershipsStage);
+    MembershipsStage.commit();
+
+    return result;
+  },
+});
+
+export const linkUser = new ValidatedMethod({
+  name: 'memberships.linkUser',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const doc = checkExists(Memberships, _id);
+    checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+    const partner = doc.partner();
+    const email = partner && partner.contact && partner.contact.email;
+    if (!email && !doc.userId) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this partner', doc);
+    if (this.isSimulation) return;  // Not possible to find and link users on the client side, as no user data available
+
+    if (doc.userId) {
+      const linkedUser = Meteor.users.findOne(doc.userId);
+      if (linkedUser.isVerified() === false) {
+        // Lets resend the enrollment request
+        Accounts.sendEnrollmentEmail(doc.userId);
+      } else if (doc.accepted === false) {
+        sendAddedToRoleInfoEmail(linkedUser, doc.communityId, doc.role);
+        Memberships.update(doc._id, { $set: { accepted: true } }, { selector: { role: doc.role } });
+       // now we auto-accept it for him (if he is already verified user), we could send acceptance request email instead of info
+      }
+      return;   // thats all, user is already linked
     }
-    if (doc.role === 'owner') {
-      const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
-      const newTotal = total.subtract(doc.ownership.share).add(modifier.$set['ownership.share']);
-      checkSanityOfTotalShare(doc.parcelId, newTotal);
+
+    // Else if doc.userId is not yet set, we link user here
+    let user = Meteor.users.findOne({ 'emails.0.address': email });
+    if (user && Partners.findOne({ communityId: doc.communityId, _id: { $ne: doc.partnerId }, userId: user._id })) {
+      throw new Meteor.Error('err_sanityCheckFailed', 'There is already an other partner connected with a user with this e-mail address in the community');
     }
-    checkUserDataConsistency(modifier.$set);
-    Memberships.update({ _id }, modifier);
-    connectUserIfPossible(_id);
+    if (!user) {
+      const inviter = Meteor.users.findOne(this.userId);
+      Log.info(`Invitation sending to ${email} in '${inviter.language()}', to join community ${doc.community().name}`);
+      const userId = Accounts.createUser({ email, password: Random.id(8), language: inviter.language() });
+      Accounts.sendEnrollmentEmail(userId);
+      user = Meteor.users.findOne(userId);
+    }
+
+    // TODO: We should ask for acceptance, not auto-accept it like now
+    const accepted = user.isVerified(); // if not verified, auto-acceptance will happen when he verifies
+    if (!partner.userId) Partners.update(doc.partnerId, { $set: { userId: user._id } });
+    Memberships.update(doc._id, { $set: { accepted } }, { selector: { role: doc.role } });
+  },
+});
+
+export const accept = new ValidatedMethod({
+  name: 'memberships.accept',
+  validate: null,
+  run() {
+    Memberships.find({ userId: this.userId }).forEach((doc) => {
+      Memberships.update(doc._id, { $set: { accepted: true } }, { selector: { role: doc.role } });
+    });
   },
 });
 
@@ -121,10 +156,23 @@ export const remove = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    Memberships.remove(_id);
+    const MembershipsStage = Memberships.Stage();
+    const result = MembershipsStage.remove(_id);
+    if (doc.role === 'admin') {
+      try {
+        sanityCheckAtLeastOneActive(MembershipsStage, { communityId: doc.communityId, role: 'admin' });
+      } catch (err) {
+        throw new Meteor.Error('err_unableToRemove', 'Admin cannot be deleted if no other admin is appointed');
+      }
+    }
+    MembershipsStage.commit();
+    return result;
   },
 });
+
+Memberships.methods = Memberships.methods || {};
+_.extend(Memberships.methods, { insert, update, linkUser, accept, remove });
+_.extend(Memberships.methods, crudBatchOps(Memberships));

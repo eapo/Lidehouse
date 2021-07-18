@@ -1,0 +1,36 @@
+<template name="Vote_topics">
+
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Votings')}}
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+
+        <div class="ibox">
+            <div class="ibox-title">
+                <h3>{{_ 'All votings'}}</h3>
+                <!--a href="" class="label label-primary js-create">+ {{_ 'new'}} {{_ 'voting'}}</a-->
+                {{#if currentUserHasPermission 'poll.insert'}}
+                <div class="ibox-tools">
+                    <a href="" class="btn btn-primary btn-sm js-create"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'voting'}}</a>
+                </div>
+                {{/if}}
+            </div>
+            <div class="ibox-content">
+                <div class="row m-b-sm m-t-sm">
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline btn-primary btn-sm {{activeClass}} js-filter"><i class="fa fa-refresh"></i> {{_ 'Opened only'}}</button>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <input type="text" placeholder="{{_ 'search'}}" class="input-sm form-control js-search">
+                            <span class="input-group-addon">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {{>Voting_list items=voteTopics}}
+            </div>
+        </div>
+    </div>
+</template>

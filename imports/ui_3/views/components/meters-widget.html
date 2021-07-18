@@ -1,0 +1,19 @@
+<template name="Meters_widget">
+    {{#if Template.subscriptionsReady}}
+    {{#if ownedParcels.length}}
+    <a href="{{pathFor 'Parcels finances'}}" class="js-meters">
+        <div id="balance-widget-top" class="widget style1 {{colorClass}}">
+            <div class="row vertical-align">
+                <div class="col-xs-4">
+                    <i class="{{icon}} fa-4x"></i>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span>{{_ 'schemaReadings.reading.date.label'}}:</span>
+                    <h2 class="font-bold">{{displayTimeFrom lastReadingDate}}</h2>
+                </div>
+            </div>
+        </div>
+    </a>
+    {{/if}}
+    {{/if}}
+</template>

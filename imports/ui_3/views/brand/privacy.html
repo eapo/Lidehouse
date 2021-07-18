@@ -1,0 +1,7 @@
+<template name="Privacy_page">
+  {{#if (equals (fromSettings 'deployment') 'marina')}}
+  {{> Privacy_local}}
+  {{else}}
+  {{> Privacy_generic}}
+  {{/if}}
+</template>

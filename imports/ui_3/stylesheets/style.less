@@ -1,0 +1,298 @@
+@import "variables.less";
+@import "navigation.less";
+@import 'envelope.less'; 
+@import "vote.less";
+@import "live-chat.less";
+@import "promotion.less";
+@import "ticket.less";
+@import "reports.less";
+
+// Marking the required fields on autoforms - only top level in form groups, avoiding marking each checkbox option
+[data-required] > label:after {
+  content: '*';
+  color: #ed5565;
+}
+
+// Google Material Icons (send vote icon)
+@import url("https://fonts.googleapis.com/css?family=Material+Icons");
+
+h1, h2, h3, h4, h5, h6,
+button, button p,
+.cap-first {
+    &::first-letter {
+        text-transform: uppercase;
+    }
+}
+
+// on the main page
+.collapse-container {
+    margin-bottom: 20px;
+}
+
+#balance-widget-top {
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+// likes and messages countbox if not in brackets on the button
+.count-box {
+    float: left;
+    border: 1px solid #e7eaec;
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.scrollbar-horizontal {
+    overflow-x: auto;
+}
+
+.newlines {
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.tr-bold {
+    td {
+        font-weight: bold;
+    }
+}
+
+.page-slim {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1em;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.dropdown-menu {
+  animation-duration: .5s;
+}
+
+.widget .btn-primary {
+    border: 2px solid white;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.max-height-avatar {
+    max-height: 400px;
+}
+
+//.nav li > a > i  { transition: all .2s ease-in-out; }
+.nav li.active > a > i { transform: scale(1.35); }
+
+.darker-nav-bg {
+    background: darken(@nav-bg, 3%);
+  }
+
+@media screen and (min-width: 768px) {
+    .rwd-break {
+        display: none;
+    }
+}
+
+.file .trash {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.file .trash:hover {
+    color: @navy;
+}
+
+.normalize {
+    margin: 0;
+    padding: 0;
+}
+
+.margin-bottom {
+    margin: 0 0 5px 0;
+}
+
+.hidden-by-text {
+    width: 100%;
+    padding: 16px 16px 6px 16px;
+}
+
+.width-adjust {
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-flex;
+}
+
+@media screen and (max-width: 375px) {
+    #active-community-name {
+        max-width: 80px;
+    }
+}
+
+.img-af {
+    width: 30%;
+}
+
+.img-embed {
+//    .img-thumbnail;
+//    .img-fluid;
+    max-width: 100%;
+    height: "auto";
+}
+
+.profil-badge {
+    position: absolute;
+    right: 15px;
+    top: 6px;
+    font-size: 10px;
+    padding: 2px 5px 2px 5px;
+    line-height: 12px;
+}
+
+.help-icon {
+  cursor: help;
+}
+
+// Landing page
+
+@font-face {
+    font-family: kaffeesatz;
+    src: url('/font/YanoneKaffeesatz-Light.ttf') format('truetype');;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: kaffeesatz;
+    src: url('/font/YanoneKaffeesatz-Regular.ttf') format('truetype');;
+    font-weight: 400;
+}
+
+.landing-specials {
+    font-family: kaffeesatz;
+    color: #5E5E60;
+
+    h1 {
+        font-size: 40px;
+        font-weight: 400;
+    }
+
+    h2 {
+        font-size: 25px;
+        font-weight: 300
+    }
+
+    .navy-line {
+        width: 100px;
+        height: 5px;
+        margin: 20px auto 20px;
+        border-bottom: 2px solid #1ab394;
+    }
+
+    .logo {
+        display: inline-block;
+        padding: 10px 50px 10px 50px;
+        font-size: 20px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .button {
+        box-shadow: 0 10px 20px 0 rgba(0,0,0,.25);
+        font-size: 20px;
+        padding: 10px 40px 10px 40px;
+        border-radius: 6px;
+        line-height: 1.333;
+        font-weight: 300;
+        text-shadow: 1px 1px gray;
+    }
+
+    .small-letter {
+        font-size: 20px;
+        font-weight: 300;
+    }
+
+    .image-in-bg {
+        overflow: visible !important;
+        width: 100%;
+        height: 500px;
+    }
+
+    .stripe-img {
+        background: url('/images/landing-stripe.jpg') 45% 0 no-repeat;
+    } 
+
+    .floating-img {
+        position: absolute;
+        right: 5vw;
+        top: 158px;
+    }
+
+    .promo {
+        color:#fff !important;
+        max-width: 70vw;
+    }
+
+    .font-30 {
+        font-size: 30px;
+        font-weight: 300;
+    }
+
+    .padding-top-lot {
+        padding-top: 60px;
+    }
+
+    .light-navy {
+        color: #1cc1a0;
+        text-shadow: 1px 1px #4b8478;
+        font-weight: 400;
+    }
+
+   @media (max-width: 1024px) {
+        h1 {
+            font-size: 25px;
+        }
+        h2, .font-30 {
+            font-size: 20px;
+        }
+        .p-xl, .p-h-lg, .row.p-md{
+            padding: 10px 0 10px 0;
+        }
+        .image-in-bg {
+            height: 350px;
+        }
+        .stripe-img {
+            background: url('/images/landing-stripe-smaller.jpg') 28% 0 no-repeat;
+        } 
+        .padding-top-lot, .p-h-lg {
+            padding-top: 10px;
+        }
+        .m-t-lg {
+            margin-top: 10px;
+        }
+        .small-letter {
+            font-size: 16px;
+        }
+    }
+    @media (max-width: 769px) and (min-width: 441px) {
+        .promo {
+            max-width: 50vw;
+        }
+    }
+    @media (max-width: 330px) {
+        h2 {
+            font-size: 15px;
+        }
+    }
+}

@@ -1,56 +1,82 @@
+/* globals window */
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
+import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
-
 import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
+import { numeral } from 'meteor/numeral:numeral';
+import 'meteor/numeral:languages';
+import { Log } from '/imports/utils/log.js';
+import { availableLanguages } from '/imports/startup/both/language.js';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+import { update as updateUser } from '/imports/api/users/methods.js';
+import { handleError } from '/imports/ui_3/lib/errors.js';
 
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { comtype } from '/imports/comtypes/comtype.js';
-
-function getDefaultLanguage() {
-  return 'en';    // Current default language is hungarian
+export function getBrowserLanguage() {
+  // https://stackoverflow.com/questions/31471411/how-to-set-user-language-settings-in-meteor#31471877
+  const language = window.navigator.userLanguage || window.navigator.language;  // works IE/SAFARI/CHROME/FF
+//  Log.info('Browser language:', language);
+  return language.split('-')[0];
 }
 
-// TODO:  Use the session var to show loading while language loads
-// this prevents from displaying the default language while loading
+function supportedLanguage(lang) {
+  return _.contains(availableLanguages, lang) ? lang : 'en';
+}
 
-Meteor.startup(function setDefaultLanguage() {
+function setLanguage(lang) {
+  const supportedLang = supportedLanguage(lang);
+  // TODO:  Use the session var to show loading while language loads - this prevents from displaying the default language while loading
   Session.set('showLoadingIndicator', true);
-  TAPi18n.setLanguage(getDefaultLanguage())
+  TAPi18n.setLanguage(supportedLang)
     .done(function handleSuccess() {
       Session.set('showLoadingIndicator', false);
     })
     .fail(function handleError(errorMessage) {
-      // TODO: Handle the situation
-      console.log(errorMessage);
+      Log.error(errorMessage);        // TODO: Handle the error
     });
-  T9n.setLanguage(getDefaultLanguage());
+  T9n.setLanguage(supportedLang);
+}
 
-  // Logged in users have language prefenence in their settings. So if user logs in, use that.
+// Logged in users have language prefenence in their settings. So if user logged in, use that. 
+// Otherwise use the browser language as default
+export function currentUserLanguage() {
+  const user = Meteor.user();
+  if (user && user.settings && user.settings.language) {
+    return user.settings.language;
+  } else {
+    return getBrowserLanguage();
+  }
+}
+
+export function setCurrentUserLanguage(lang = getBrowserLanguage()) {
+  const supportedLang = supportedLanguage(lang);
+  updateUser.call({ _id: Meteor.userId(), modifier: { $set: { 'settings.language': supportedLang } } }, handleError);
+}
+
+Meteor.startup(function setupLanguage() {
   Tracker.autorun(() => {
-    const user = Meteor.user();
-    if (user) {
-      TAPi18n.setLanguage(user.settings.language);
-      T9n.setLanguage(user.settings.language);
-    }
+    setLanguage(currentUserLanguage());
   });
 
-  // moment package is not reactive, need to localize it reactively
+  // moment, numeral package is not reactive, need to localize it reactively
   Tracker.autorun(() => {
     moment.locale(TAPi18n.getLanguage());
   });
+  Tracker.autorun(() => {
+    const community = getActiveCommunity();
+    const language = community ? community.settings.language : TAPi18n.getLanguage();
+    numeral.language(language);
+  });
 });
 
-// The different community types bring in their own i18n extensions
-
-Meteor.startup(function comtypeLanguageExtensions() {
-  TAPi18n.loadTranslations(comtype.translation, 'project');
-});
-
-// Note: Currently this is run on the CLIENT ONLY
-// So comtype transaltions will not be available on the server.
+// In numeral locales replacing the ' ' with a '.' in the hu locale
+// Meteor.startup(function amendNumeralLocale() {
+//   const huLocale = numeral.languageData('hu');
+//   huLocale.delimiters.thousands = '.';
+//   numeral.language('hu', huLocale);
+// });
 
 // Known problems with this language and translation system
 // 1. If there is no english label, the other language labels are not used either

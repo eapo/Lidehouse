@@ -1,0 +1,65 @@
+<template name="Contracts">
+  <!-- Page heading -->
+  {{> Page_heading title=(_ 'Contracts') }}
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+
+        {{#if currentUserHasPermission 'contracts.insert'}}
+          <button class="btn btn-primary btn-sm pull-right m-md js-create contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
+        {{/if}}
+        <div class="btn-group m-b-md">
+          {{#each relation in relationValues}}
+          <button type="button" class="btn {{activeClass relation}} js-relation-filter" data-value="{{relation}}">{{_ (concat 'schemaPartners.relation.options.' relation)}}{{_ 's'}}</button>
+          {{/each}}
+        </div>
+
+        {{#each contracts}}
+        <div class="ibox collapsed">
+            <div class="ibox-title">
+                <h3>{{title}}</h3>
+                {{#if this.active}}
+                    <span class="label label-xs label-primary">{{_ 'active'}}</span>
+                {{else}}
+                    <span class="label label-xs label-default">{{_ 'closed'}}</span>
+                {{/if}}
+                {{>iboxTools}}
+            </div>
+            <div class="ibox-content" data-id={{this._id}}>
+                {{#if currentUserHasPermission 'ticket.insert'}}
+                <span class="pull-righ">
+                  <div class="dropdown btn-group pull-right">
+                      <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
+                          <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheets'}} <b class="caret"></b>
+                      </button>
+                      {{> New_Ticket }}
+                      <button class="btn btn-white btn-xs js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+                  </div>
+                </span>
+                {{/if}}
+                <div class="contracts">
+                    <div><span style="font-weight:600">{{_ 'schemaContracts.partnerId.label'}}:</span> {{this.partner}}</div>
+                    <div><span style="font-weight:600">{{_ 'schemaContracts.text.label'}}:</span> {{this.text}}</div>
+                    {{#if this.activeTime.begin}}
+                    <div><span style="font-weight:600">{{_ 'Begin date'}}:</span> {{displayDate this.activeTime.begin}}</div>
+                    {{/if}}
+                    {{#if this.activeTime.end}}
+                    <div><span style="font-weight:600">{{_ 'End date'}}:</span> {{displayDate this.activeTime.end}}</div>
+                    {{/if}}
+                    <div class="m-t-sm m-b-sm">
+                      {{>Action_buttons_group collection='contracts' actions='edit,delete' doc=this._id size='lg'}}
+                    </div>
+                </div>
+                {{>Ticket_list tickets=this.worksheets}}
+            </div>
+        </div>
+        {{/each}}
+
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                {{#if currentUserHasPermission 'contracts.insert'}}
+                <button class="btn btn-default text-capitalize js-contracts-list"><i class="fa fa-list"></i> {{_ 'contract'}} {{_ 'list'}}</button>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</template>

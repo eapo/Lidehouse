@@ -1,0 +1,123 @@
+<template name="Topic_show">
+    {{#if Template.subscriptionsReady}}
+        {{#if topic}}
+            {{#if (equals topic.category 'news')}}
+                {{> app_rootRedirector}}
+            {{else if topic.movedTo}}
+                {{_ 'This topic has been merged with an other one, you will be redirected'}}
+                {{redirectToDestination topic.movedTo}}
+            {{else}}
+            {{#with topic}}
+            <!-- Page heading -->
+            {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
+            
+            <div class="wrapper wrapper-content animated fadeInUp">
+                <div class="row">
+                <div class="col-md-9">
+                  <div class="ibox-content">
+                    {{> Topic_box topic=topic}}
+                      <div class="panel blank-panel">
+                          <div class="panel-heading">
+                              <div class="panel-options">
+                                  <ul class="nav nav-tabs">
+                                      <li class="active"><a href="#tab-1" data-toggle="tab" class="cap-first">{{_ 'comments'}}</a></li>
+                                      <li class=""><a href="#tab-2" data-toggle="tab">{{_ 'Amendments'}}</a></li>
+                                      {{#if (equals topic.category 'vote')}}
+                                      <li class=""><a href="#tab-3" data-toggle="tab">{{_ 'Casted votes'}}</a></li>
+                                      {{/if}}
+                                  </ul>
+                              </div>
+                          </div>
+                          <div class="panel-body">
+                              <div class="tab-content">
+                                  <div class="tab-pane active" id="tab-1">
+                                      {{> Comments_section}}
+                                  </div>
+                                  <div class="tab-pane" id="tab-2">
+                                      {{> Revision_history doc=this schemaName='schemaTopics'}}
+                                  </div>
+                                  {{#if (equals topic.category 'vote')}}
+                                  <div class="tab-pane" id="tab-3">
+                                      {{#if or votingClosed (currentUserHasPermission 'vote.peek')}}
+                                          {{> Vote_results}}
+                                      {{else}}
+                                          <h5 class="text-center">{{_ 'Vote results become available once voting is closed'}}</h5>
+                                      {{/if}}
+                                  </div>
+                                  {{/if}}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="wrapper wrapper-content project-manager"> 
+                        {{> Template.dynamic template=(concat 'Topic_' this.category '_data')}}
+                    </div>
+                </div>
+                </div>
+            </div>
+            {{/with}}
+            {{/if}}
+        {{else}}
+            {{>Error code='404' type='Page not found' message='pageNotFoundMessage' item='topic'}}
+        {{/if}}
+    {{/if}}
+</template>
+
+<template name="Data_field">
+    {{#if value}}
+    <dt>{{displayKey key}}:</dt>
+    <dd>{{{displayValue key value}}}</dd>
+    <!--div class="m-b-xs"><strong>{{displayKey key}}:</strong> {{{displayValue key value}}}</div-->
+    <!--div class="row mb-0">
+      <div class="col-sm-6" style="text-align: right !important"><dt>{{displayKey key}}:</dt> </div>
+      <div class="col-sm-6" style="text-align: left !important"><dd class="mb-1">{{{displayValue key value}}}</dd></div>
+    </div-->
+    {{/if}}
+</template>
+
+<template name="Topic_forum_data">
+</template>
+
+<template name="Topic_vote_data">
+    <dl class="">
+        {{>Data_field key='Topics.status' value=this.status}}
+    </dl>
+    <dl class="">
+        {{>Data_field key='Votings.agendaId' value=this.agendaId}}
+    </dl>
+    <dl class="">
+        {{>Data_field key='Timestamped.creatorId' value=this.creator.displayOfficialName}}
+        {{>Data_field key='Timestamped.createdAt' value=this.createdAt}}
+        {{>Data_field key='Timestamped.updatedAt' value=this.createdAt}}
+    </dl>
+</template>
+
+<template name="Topic_ticket_data">    
+    <dl class="">
+        {{>Data_field key='Tickets.ticket.type' value=this.ticket.type}}
+        {{>Data_field key='Topics.status' value=this.status}}
+        {{>Data_field key='Tickets.ticket.urgency' value=this.ticket.urgency}}
+        {{>Data_field key='Tickets.ticket.localizer' value=this.ticket.localizer}}
+        {{>Data_field key='Tickets.ticket.chargeType' value=this.ticket.chargeType}}
+        {{>Data_field key='Tickets.ticket.contractId' value=this.ticket.contractId}}
+        {{>Data_field key='Tickets.ticket.txId' value=this.ticket.txId}}
+    </dl>
+    <dl class="">
+        {{>Data_field key='Tickets.ticket.expectedCost' value=this.ticket.expectedCost}}
+        {{>Data_field key='Tickets.ticket.expectedStart' value=this.ticket.expectedStart}}
+        {{>Data_field key='Tickets.ticket.expectedFinish' value=this.ticket.expectedFinish}}
+        {{>Data_field key='Tickets.ticket.expectedContinue' value=this.ticket.expectedContinue}}
+        {{>Data_field key='Tickets.ticket.waitingFor' value=this.ticket.waitingFor}}
+        {{>Data_field key='Tickets.ticket.actualCost' value=this.ticket.actualCost}}
+        {{>Data_field key='Tickets.ticket.actualStart' value=this.ticket.actualStart}}
+        {{>Data_field key='Tickets.ticket.actualFinish' value=this.ticket.actualFinish}}
+        {{>Data_field key='Tickets.ticket.actualContinue' value=this.ticket.actualContinue}}
+    </dl>
+    <dl class="">
+        {{>Data_field key='Timestamped.creatorId' value=this.creator.displayOfficialName}}
+        {{>Data_field key='Timestamped.createdAt' value=this.createdAt}}
+        {{>Data_field key='Timestamped.updatedAt' value=this.updatedAt}}
+    </dl>
+</template>

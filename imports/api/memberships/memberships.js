@@ -1,72 +1,107 @@
 /* eslint no-param-reassign: "off" */
 /* eslint func-names: ["error", "as-needed"] */
 import { Meteor } from 'meteor/meteor';
+import { Tracker } from 'meteor/tracker';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
-import '/utils/fractional.js';  // TODO: should be automatic, but not included in tests
-if (Meteor.isClient) import { Session } from 'meteor/session';
+import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
+import { Factory } from 'meteor/dburles:factory';
+import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Factory } from 'meteor/dburles:factory';
-import { autoformOptions } from '/imports/utils/autoform.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { officerRoles, everyRole, nonOccupantRoles, Roles } from '/imports/api/permissions/roles.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Roles } from '/imports/api/permissions/roles.js';
+import { noUpdate } from '/imports/utils/autoform.js';
+import { Parcels, chooseProperty } from '/imports/api/parcels/parcels.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Contracts } from '../contracts/contracts';
 
 export const Memberships = new Mongo.Collection('memberships');
 
+// Memberships are the Ownerships, Benefactorships and Roleships in a single collection
+Memberships.baseSchema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },  // manager approved this membership
+  accepted: { type: Boolean, autoform: { omit: true }, defaultValue: false },  // person accepted this membership
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { ...noUpdate, ...choosePartner } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  role: { type: String, allowedValues() { return everyRole; },
+    autoform: _.extend({}, noUpdate, {
+      options() {
+        return Roles.find({ name: { $in: officerRoles } }).map(function option(r) { return { label: __(r.name), value: r._id }; });
+      },
+      firstOption: () => __('(Select one)'),
+    }),
+  },
+});
+
 // Parcels can be jointly owned, with each owner having a fractional *share* of it
-// in this case only a single *representor* can cast votes for this parcel.
-// The repsesentor can be defined by setting the flag, or implicitly by being the first owner added.
+// each frectional owner can vote with his own fraction,
+// or if there is a single *representor*, he can cast votes for the whole parcel.
 
 const OwnershipSchema = new SimpleSchema({
-  share: { type: Fraction },
+  share: { type: Fraction, defaultValue: new Fraction(1) },
   representor: { type: Boolean, optional: true },
 });
 
 const benefactorTypeValues = ['rental', 'favor', 'right'];
 const BenefactorshipSchema = new SimpleSchema({
-  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues) },
+  type: { type: String, allowedValues: benefactorTypeValues, autoform: allowedOptions() },
 });
 
-const idCardTypeValues = ['person', 'legal'];
-const IdCardSchema = new SimpleSchema({
-  type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues) },
-  name: { type: String },
-  address: { type: String },
-  identifier: { type: String }, // cegjegyzek szam vagy szig szam
-  mothersName: { type: String, optional: true },
-  dob: { type: Date, optional: true },
+const Ownerships = {};
+Ownerships.schema = new SimpleSchema({
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden', relation: '@property' } },
+  ownership: { type: OwnershipSchema },
+  role: { type: String, defaultValue: 'owner', autoform: { type: 'hidden', defaultValue: 'owner' } },
 });
 
-// Memberships are the Ownerships, Benefactorships and Roleships in a single collection
-Memberships.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); },
-    autoform: {
-      options() {
-        return Roles.find({}).map(function option(r) { return { label: __(r.name), value: r._id }; });
-      },
-    },
-  },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
-    autoform: {
-      options() {
-        const communityId = Meteor.isClient ? Session.get('activeCommunityId') : undefined;
-        return Communities.findOne(communityId).users().map(function option(u) { return { label: u.displayName(), value: u._id }; });
-      },
-    },
-  },
-  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
-  idCard: { type: IdCardSchema, optional: true },
-  // TODO should be conditional on role === 'owner'
-  ownership: { type: OwnershipSchema, optional: true },
-  // TODO should be conditional on role === 'benefactor'
-  benefactorship: { type: BenefactorshipSchema, optional: true },
+const Benefactorships = {};
+Benefactorships.schema = new SimpleSchema({
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden', relation: '@property' } },
+  benefactorship: { type: BenefactorshipSchema },
+  role: { type: String, defaultValue: 'benefactor', autoform: { type: 'hidden', defaultValue: 'benefactor' } },
+});
+
+const Officerships = {};
+Officerships.schema = new SimpleSchema({
+  rank: { type: String, max: 25, optional: true },
+});
+
+const Delegateships = {};
+Delegateships.schema = new SimpleSchema({
+  role: { type: String, defaultValue: 'delegate', autoform: { type: 'hidden', defaultValue: 'delegate' } },
+});
+
+Memberships.idSet = ['communityId', 'role', 'parcelId', 'partnerId'];
+
+Memberships.modifiableFields = [
+  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
+  'rank',
+  'ownership',
+  'ownership.share',
+  'ownership.representor',
+  'benefactorship',
+  'benefactorship.type',
+];
+
+Memberships.publicFields = {
+  // fields come from behaviours
+};
+
+Meteor.startup(function indexMemberships() {
+  Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
+  Memberships.ensureIndex({ userId: 1 }, { sparse: true });
+  Memberships.ensureIndex({ partnerId: 1 });
+  if (Meteor.isServer) {
+    Memberships._ensureIndex({ communityId: 1, parcelId: 1, approved: 1, active: 1, role: 1 });
+  }
 });
 
 // Statuses of members:
@@ -82,99 +117,157 @@ Memberships.schema = new SimpleSchema({
 // A megadott email címmel még nincs regisztrált felhasználó a rendszerben.
 // Küldjünk egy meghívót a címre?
 
+export function entityOf(role) {
+  if (role === 'owner') return 'ownership';
+  if (role === 'benefactor') return 'benefactorship';
+  if (role === 'delegate') return 'delegate';
+  return 'roleship';
+}
+
 Memberships.helpers({
-  hasVerifiedIdCard() {
-    return !!this.idCard;
-  },
-  hasUser() {
-    return !!this.userId;
-  },
-  user() {
-    if (this.userId) return Meteor.users.findOne(this.userId);
-    return undefined;
-  },
-  displayName() {
-    if (this.idCard) return this.idCard.name;
-    if (this.userId) return this.user().displayName();
-    if (this.userEmail) return this.userEmail;
-    return 'should never get here';
+  entityName() {
+    return entityOf(this.role);
   },
   community() {
-    const community = Communities.findOne(this.communityId);
-    debugAssert(community);
-    return community;
+    return Communities.findOne(this.communityId);
+  },
+  partner() {
+    if (!this.partnerId) return undefined;
+    return Partners.findOne(this.partnerId);
+  },
+  contract() {
+    return Contracts.findOneActive({ partnerId: this.partnerId, parcelId: this.parcelId });
+  },
+  user() {
+    debugAssert(this.userId);
+    return Meteor.users.findOne(this.userId);
   },
   parcel() {
-    const parcel = Parcels.findOne(this.parcelId);
-    return parcel;
-  },
-  totalunits() {
-    const community = this.community();
-    if (!community) return undefined;
-    return community.totalunits;
-  },
-  isOwnership() {
-    if (this.role === 'owner') return true;
-    debugAssert(!this.ownership);
-    return false;
-  },
-  hasOwnership() {
-    if (this.ownership) {
-      debugAssert(this.role === 'owner');
-      return true;
-    }
-    return false;
+    if (!this.parcelId) return undefined;
+    // parcelId is not changeable on the membership, so no need to be reactive here
+    return Tracker.nonreactive(() => Parcels.findOne(this.parcelId));
   },
   isRepresentor() {
-    const parcel = this.parcel();
-    return (parcel.representor()._id === this._id);
+    return (this.ownership && this.ownership.representor);
+  },
+  isVoting() {
+    if (!this.ownership) return false;
+    debugAssert(this.parcelId);
+    const parcel = Parcels.findOne(this.parcelId);
+    if (parcel.isLed()) return false;
+    const representor = parcel.representor();
+    if (representor && representor._id !== this._id) return false;
+    return true;
   },
   votingUnits() {
-    // const votingUnits = this.parcel().units * this.ownership.share.toNumber();
-    const votingUnits = this.isRepresentor() ? this.parcel().units : 0;
+    if (!this.parcel()) return 0;
+    if (!this.parcel().approved) return 0;
+    if (this.parcel().isLed()) return 0;
+    const votingUnits = this.isRepresentor() ? this.parcel().ledUnits() : this.parcel().ledUnits() * this.ownership.share.toNumber();
     return votingUnits;
   },
   votingShare() {
-    // const votingShare = this.parcel().share().multiply(this.ownership.share);
-    const votingShare = this.isRepresentor() ? this.parcel().share() : 0;
+    if (!this.parcel()) return 0;
+    if (!this.parcel().approved) return 0;
+    if (this.parcel().isLed()) return 0;
+    const votingShare = this.isRepresentor() ? this.parcel().ledShare() : this.parcel().ledShare().multiply(this.ownership.share);
     return votingShare;
   },
-  toString() {
+  displayRole() {
     let result = __(this.role);
-    const parcel = this.parcel();
-    if (parcel) result += (' ' + parcel.toString());
+    const parcel = this.parcel(); // TODO Cannot always retrive parcel, needs to subscribe to parcel data
+    if (parcel) result += ` ${parcel.toString()}`;
     return result;
+  },
+  toString() {
+    const partner = this.partner();
+    const display = `${partner && partner.displayName('hu')}, ${this.displayRole()}`;
+    return display;
   },
 });
 
-Memberships.attachSchema(Memberships.schema);
-Memberships.attachSchema(Timestamps);
+Memberships.attachBaseSchema(Memberships.baseSchema);
+Memberships.attachBehaviour(ActivePeriod);
+Memberships.attachBehaviour(Timestamped);
+
+Memberships.attachVariantSchema(Ownerships.schema, { selector: { role: 'owner' } });
+Memberships.attachVariantSchema(Benefactorships.schema, { selector: { role: 'benefactor' } });
+officerRoles.forEach(role =>
+  Memberships.attachVariantSchema(Officerships.schema, { selector: { role } })
+);
+Memberships.attachVariantSchema(Delegateships.schema, { selector: { role: 'delegate' } });
+Memberships.attachVariantSchema(undefined, { selector: { role: 'guest' } });
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
 // and that happens earlier than TAPi18n extra comtype transaltions get added.
-Meteor.startup(function attach() {
-  Memberships.simpleSchema().i18n('schemaMemberships');
+nonOccupantRoles.forEach((role) => {
+  Memberships.simpleSchema({ role }).i18n('schemaMemberships');
 });
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Memberships.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
+// --- Before/after actions ---
 
-Memberships.modifiableFields = [
-  'userEmail',
-  'userId',
-  'role',
-  'ownership.share',
-  'ownership.representor',
-  'benefactorship.type',
-];
+if (Meteor.isServer) {
+  Memberships.before.insert(function (userId, doc) {
+    // If partner is provided, userId is being copied over, to have direct access to it
+    if (!doc.userId && doc.partnerId) {
+      const partner = Partners.findOne(doc.partnerId);
+      doc.userId = partner.userId;
+    }
+    // If partner is not provided, it can be created automatically
+    if (doc.userId && !doc.partnerId) {
+      const partnerObject = { communityId: doc.communityId, relation: ['member'], userId: doc.userId };
+      const partner = Partners.findOne(partnerObject);
+      const user = Meteor.users.findOne(doc.userId);
+      partnerObject.contact = { email: user.getPrimaryEmail() };
+      doc.partnerId = partner ? partner._id : Partners.insert(partnerObject);
+    }
+  });
+
+  Memberships.before.update(function (userId, doc, fieldNames, modifier, options) {
+  });
+
+  Memberships.after.update(function (userId, doc, fieldNames, modifier, options) {
+    const tdoc = this.transform(doc);
+    const contract = tdoc.contract();
+    if (contract) {  // keep contract's (active time) in sync
+      try { // throws Error: After filtering out keys not in the schema, your modifier is now empty
+        Contracts.update(contract._id, modifier, { selector: { relation: 'member' } });
+      } catch (err) {}
+    }
+  });
+
+  Memberships.after.remove(function (userId, doc) {
+  });
+}
 
 Factory.define('membership', Memberships, {
-  communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
   role: 'guest',
+});
+
+Factory.define('roleship', Memberships, {
+  userId: () => Factory.get('user'),
+  role: 'manager',
+});
+
+Factory.define('ownership', Memberships, {
+  userId: () => Factory.get('user'),
+  role: 'owner',
+  ownership: {
+    share: new Fraction(1),
+  },
+});
+
+Factory.define('benefactorship', Memberships, {
+  userId: () => Factory.get('user'),
+  role: 'benefactor',
+  benefactorship: {
+    type: 'rental',
+  },
+});
+
+Factory.define('delegate', Memberships, {
+  userId: () => Factory.get('user'),
+  role: 'delegate',
 });

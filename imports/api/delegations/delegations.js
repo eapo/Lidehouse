@@ -1,54 +1,129 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Timestamps } from '/imports/api/timestamps.js';
-import { Communities } from '/imports/api/communities/communities.js';
+
 import { debugAssert } from '/imports/utils/assert.js';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+import { __ } from '/imports/localization/i18n.js';
+import { allowedOptions } from '/imports/utils/autoform.js';
+
+import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Topics } from '/imports/api/topics/topics.js';
+
+const AutoForm = (Meteor.isClient) ? require('meteor/aldeed:autoform').AutoForm : { getFieldValue: () => undefined };
 
 export const Delegations = new Mongo.Collection('delegations');
 
-Delegations.scopeValues = ['general', 'community', 'topicGroup', 'topic'];
+Delegations.scopeValues = ['community', 'agenda', 'topic'];
 
-const chooseUser = {
+const chooseScopeObject = {
   options() {
-    return Meteor.users.find({}).map(function option(u) {
-      return { label: u.fullName(), value: u._id };
-    });
+    const user = Meteor.user();
+    const scope = AutoForm.getFieldValue('scope');
+    if (!scope) return [{ label: __('schemaDelegations.scopeObjectId.placeholder'), value: '' }];
+    let scopeSet;
+    if (scope === 'community') scopeSet = user.communities();
+    else {
+      const communityId = ModalStack.getVar('communityId');
+      if (scope === 'agenda') scopeSet = Agendas.find({ communityId });
+      if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', closed: false });
+    }
+    return scopeSet.map(function (o) { return { label: o.name || o.title, value: o._id }; });
   },
+  firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
 };
 
+function communityIdAutoValue() {
+  if (this.isSet || this.operator) return undefined;
+  const scope = this.field('scope').value;
+  const scopeObjectId = this.field('scopeObjectId').value;
+  if (scope === 'community') return scopeObjectId;
+  if (scope === 'agenda') return Agendas.findOne(scopeObjectId).communityId;
+  if (scope === 'topic') return Topics.findOne(scopeObjectId).communityId;
+  return undefined;
+}
+
+/*
+export const chooseUser = {
+  options() {
+    const users = Meteor.users.find({});
+    const options = users.map(function option(u) {
+      return { label: u.displayOfficialName(), value: u._id };
+    });
+    const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+    return sortedOptions;
+  },
+  firstOption: () => __('(Select one)'),
+};
+
+const PersonIdSchema = new SimpleSchema({
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
+  identifier: { type: String, optional: true },
+});
+*/
+
 Delegations.schema = new SimpleSchema({
-  sourceUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
-  targetUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
-  scope: { type: String, allowedValues: Delegations.scopeValues },
-  objectId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { type: 'hidden' } },
+  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: _.omit(choosePartner, ['value']) },
+  targetId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { ...choosePartner } },
+  scope: { type: String, allowedValues: Delegations.scopeValues, autoform: allowedOptions() },
+  scopeObjectId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseScopeObject },
+  sourcePersonId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for sourceId (partner)
+  targetPersonId: { type: String, optional: true, autoform: { omit: true } }, // deprecated for targetId (partner)
 });
 
+Meteor.startup(function indexDelegations() {
+  Delegations.ensureIndex({ sourceId: 1 });
+  Delegations.ensureIndex({ targetId: 1 });
+  if (Meteor.isServer) {
+    Delegations._ensureIndex({ communityId: 1, sourceId: 1 });
+  }
+});
+
+Delegations.renderScopeObject = function (o) {
+  return o ? (o.name || o.title) : '---';
+};
+
 Delegations.helpers({
-  object() {
-    debugAssert(this.scope === 'community');
-    return Communities.findOne(this.objectId);
+  scopeObject() {
+    if (this.scope === 'community') return Communities.findOne(this.scopeObjectId);
+    if (this.scope === 'agenda') return Agendas.findOne(this.scopeObjectId);
+    if (this.scope === 'topic') return Topics.findOne(this.scopeObjectId);
+    return undefined;
   },
-  sourceUser() {
-    return Meteor.users.findOne(this.sourceUserId);
+  sourcePerson() {
+    return Partners.findOne(this.sourceId);
   },
-  targetUser() {
-    return Meteor.users.findOne(this.targetUserId);
+  targetPerson() {
+    return Partners.findOne(this.targetId);
+  },
+  sourceUserId() {
+    return Partners.findOne(this.sourceId).userId;
+  },
+  targetUserId() {
+    return Partners.findOne(this.targetId).userId;
+  },
+  getAffectedVotings() {
+    if (this.scope === 'community') return Topics.find({ communityId: this.scopeObjectId, category: 'vote', closed: false });
+    if (this.scope === 'agenda') return Topics.find({ communityId: this.communityId, agendaId: this.scopeObjectId, category: 'vote', closed: false });
+    if (this.scope === 'topic') return Topics.find({ _id: this.scopeObjectId, category: 'vote', closed: false });
+    return undefined;
   },
 });
 
 Delegations.attachSchema(Delegations.schema);
-Delegations.attachSchema(Timestamps);
+Delegations.attachBehaviour(Timestamped);
 
-Meteor.startup(function attach() {
-  Delegations.simpleSchema().i18n('schemaDelegations');
-});
+Delegations.simpleSchema().i18n('schemaDelegations');
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Delegations.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
+Factory.define('delegation', Delegations, {
+  sourceId: () => Factory.get('partner'),
+  scope: 'community',
+  scopeObjectId: () => Factory.get('community'),
 });

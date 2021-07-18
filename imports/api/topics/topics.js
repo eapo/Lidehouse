@@ -3,100 +3,273 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+import { _ } from 'meteor/underscore';
 
-import { Timestamps } from '/imports/api/timestamps.js';
+import { debugAssert } from '/imports/utils/assert.js';
+import { imageUpload, documentUpload, attachmentUpload } from '/imports/utils/autoform.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Revisioned } from '/imports/api/behaviours/revisioned.js';
+import { Workflow } from '/imports/api/behaviours/workflow.js';
+import { Likeable } from '/imports/api/behaviours/likeable.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
+import { SerialId } from '/imports/api/behaviours/serial-id.js';
+import { AttachmentField } from '/imports/api/behaviours/attachment-field.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
+import { Attachments } from '/imports/api/attachments/attachments.js';
 
-class TopicsCollection extends Mongo.Collection {
-  insert(topic, callback) {
-    return super.insert(topic, callback);
-  }
-  remove(selector, callback) {
-    Comments.remove({ topicId: selector });
-    return super.remove(selector, callback);
-  }
-}
+import './category-helpers.js';
 
-export const Topics = new TopicsCollection('topics');
+export const Topics = new Mongo.Collection('topics');
 
-Topics.categoryValues = ['forum', 'vote', 'news', 'ticket', 'room', 'feedback'];
+// Topic categories in order of increasing importance
+Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
+Topics.categories = {};
+Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific categories will add their own specs
 
-Topics.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+Topics.extensionSchemas = {};
+
+Topics.baseSchema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
-  category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
+  category: { type: String, allowedValues: Topics.categoryValues, autoform: { type: 'hidden' } },
   title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 5000, optional: true },
-  closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
-  sticky: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
-  commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
+  text: { type: String, max: 5000, autoform: { type: 'markdown' } },
+  commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
+  movedTo: { type: String, optional: true, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+});
+
+Topics.extensionSchemas.news = new SimpleSchema({
+  category: { type: String, defaultValue: 'news', autoform: { type: 'hidden', defaultValue: 'news' } },
+  sticky: { type: Boolean, optional: true, defaultValue: false },
+});
+
+Topics.extensionSchemas.forum = new SimpleSchema({
+  category: { type: String, defaultValue: 'forum', autoform: { type: 'hidden', defaultValue: 'forum' } },
+});
+
+Topics.publicFields = {
+  communityId: 1,
+  category: 1,
+  title: 1,
+  text: 1,
+  agendaId: 1,
+  createdAt: 1,
+  updatedAt: 1,
+  creatorId: 1,
+  updaterId: 1,
+  participantIds: 1,
+  opensAt: 1,
+  closesAt: 1,
+  closed: 1,
+  sticky: 1,
+  likes: 1,
+  flags: 1,
+  commentCounter: 1,
+  movedTo: 1,
+  revision: 1,
+  status: 1,
+  serial: 1,
+  serialId: 1,
+};
+
+Topics.idSet = ['communityId', 'category', 'serial'];
+
+Meteor.startup(function indexTopics() {
+  Topics.ensureIndex({ communityId: 1, agendaId: 1 }, { sparse: true });
+  Topics.ensureIndex({ communityId: 1, category: 1, closed: 1, serial: 1 });
+  if (Meteor.isClient && MinimongoIndexing) {
+    Topics._collection._ensureIndex(['category', 'closed']);
+    Topics._collection._ensureIndex(['title', 'participantIds']);
+  } else if (Meteor.isServer) {
+    Topics._ensureIndex({ communityId: 1, category: 1, closed: 1, createdAt: -1 });
+    Topics._ensureIndex({ communityId: 1, participantIds: 1, closed: 1 });
+  }
 });
 
 Topics.helpers({
+  entityName() {
+    return this.category;
+  },
   community() {
     return Communities.findOne(this.communityId);
   },
-  createdBy() {
-    return Meteor.users.findOne(this.userId);
+  agenda() {
+    return Agendas.findOne(this.agendaId);
   },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
-  isUnseenBy(userId) {
+  getShareddocs() {
+    return Shareddocs.find({ topicId: this._id });
+  },
+  hasAttachment() {
+    return !!this.attachments?.length;
+  },
+  hiddenBy(userId) {
+    const author = this.creator();
+    if (this.creatorId === userId) return undefined;
+    return this.flaggedBy(userId, this.communityId) || (author && author.flaggedBy(userId, this.communityId));
+  },
+  isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
-    const lastSeenInfo = user.lastseens[this._id];
+    const lastSeenInfo = user && user.lastSeens()[seenType][this._id];
     return lastSeenInfo ? false : true;
   },
-  unseenCommentsBy(userId) {
+  commentsSince(timestamp) {
+    const sortByDate = { sort: { createdAt: 1 } };
+    const messages = timestamp ?
+      Comments.find({ topicId: this._id, createdAt: { $gt: timestamp } }, sortByDate) :
+      Comments.find({ topicId: this._id }, sortByDate);
+    return messages;
+  },
+  unseenCommentsBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
-/*    const lastseenTimestamp = user.lastseens[this._id];
-    const messages = lastseenTimestamp ?
-       Comments.find({ topicId: this._id, createdAt: { $gt: lastseenTimestamp } }) :
-       Comments.find({ topicId: this._id });
-    return messages.count();
-    */
-    const lastSeenInfo = user.lastseens[this._id];
-    const lastSeenCommentCounter = lastSeenInfo ? lastSeenInfo.commentCounter : 0;
-    const newCommentCounter = this.commentCounter - lastSeenCommentCounter;
-    return newCommentCounter;
+    const lastSeenTimestamp = user?.lastSeens()[seenType][this._id]?.timestamp;
+    return this.commentsSince(lastSeenTimestamp);
+  },
+  unseenCommentCountBy(userId, seenType) {
+    return this.unseenCommentsBy(userId, seenType).count();
+  },
+  unseenCommentListBy(userId, seenType) {
+    return this.unseenCommentsBy(userId, seenType).fetch();
+  },
+  // This goes into the UI badges
+  unseenCommentCount() {
+    debugAssert(Meteor.isClient);
+    return this.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
+  },
+  // This goes into the user's event feed
+  unseenEventsBy(userId, seenType) {
+    return {
+      topic: this,  // need the topic, even if its already seen
+      isUnseen: this.isUnseenBy(userId, seenType),
+      unseenComments: this.unseenCommentListBy(userId, seenType),
+      _hasThingsToDisplay: null,  // cached value
+      hasUnseenThings() {
+        return this.isUnseen || (this.unseenComments.length > 0);
+      },
+      hasThingsToDisplay() { // false if everything new with this topic is hidden for the user
+        if (this._hasThingsToDisplay === null) {
+          this._hasThingsToDisplay = false;
+          if (this.isUnseen && !this.topic.hiddenBy(userId)) {
+            this._hasThingsToDisplay = true;
+          } else {
+            this.unseenComments.forEach((comment) => {
+              if (!comment.hiddenBy(userId)) {
+                this._hasThingsToDisplay = true;
+                return false;
+              } else return true;
+            });
+          }
+        }
+        return this._hasThingsToDisplay;
+      },
+    };
+  },
+  isRelevantTo(userId) {
+    if (this.category === 'ticket') { // tickets are only relevant to members with parcels located within the ticket localizer
+      const user = Meteor.users.findOne(userId);
+      if (userId === this.creatorId || user.hasPermission('ticket.statusChange', this)) return true;
+      const localizer = this.ticket?.localizer;
+      if (!localizer) return false;
+      else {
+        const parcelCodes = user.memberships(this.communityId).map(m => m.parcel()?.code);
+        return _.any(parcelCodes, code => code.startsWith(localizer));
+      }
+    } else return true;
+  },
+  // This number goes into the red badge to show you how many work to do
+  needsAttention(userId, seenType = Meteor.users.SEEN_BY.EYES) {
+    if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
+    switch (this.category) {
+// These guys have been separated into the info badge
+//      case 'news':
+//        if (this.isUnseenBy(userId, seenType)) return 1;
+//        break;
+//      case 'room':
+//        if (this.unseenCommentCountBy(userId, seenType) > 0) return 1;
+//        break;
+//      case 'forum':
+//        if (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0) return 1;
+//        break;
+      case 'vote':
+        const user = Meteor.users.findOne(userId);
+        const partnerId = user.partnerId(this.communityId);
+        if (!this.closed && !this.hasVoted(partnerId)) return 1;
+        break;
+      case 'ticket':
+        if (!this.closed && Meteor.user().hasPermission(`ticket.statusChange.${this.status}.leave`, this)) return 1;
+        break;
+      case 'feedback':
+        if (this.isUnseenBy(userId, seenType)) return 1;
+        break;
+      default:
+        debugAssert(false);
+    }
+    return 0;
+  },
+  modifiableFields() {
+    return Topics.modifiableFields;
+  },
+  modifiableFieldsByStatus() {
+    return Topics.categories[this.category].statuses[this.status].data;
+  },
+  remove() {
+    Comments.remove({ topicId: this._id });
+    Topics.remove({ _id: this._id });
   },
 });
 
-Topics.attachSchema(Topics.schema);
-Topics.attachSchema(Timestamps);
-
-Meteor.startup(function attach() {
-  // Topics.schema is just the core schema, shared by all.
-  // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
-  Topics.schema.i18n('schemaTopics');
-  Topics.simpleSchema().i18n('schemaTopics');
-});
-
-// Deny all client-side updates since we will be using methods to manage this collection
-Topics.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
-
-// This represents the keys from Topics objects that should be published to the client.
-// If we add secret properties to Topic objects, don't list them here to keep them private to the server.
-Topics.publicFields = {
-  communityId: 1,
-  userId: 1,
-  category: 1,
-  title: 1,
-  text: 1,
-  createdAt: 1,
-  closed: 1,
-  sticky: 1,
-  commentCounter: 1,
+Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communityId, seenType) {
+  debugAssert(userId);
+  debugAssert(communityId);
+  debugAssert(seenType);
+  return Topics.find({ communityId, closed: false,
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: userId },
+    ],
+  }).fetch()
+    .filter(t => t.isRelevantTo(userId))
+    .map(topic => topic.unseenEventsBy(userId, seenType))
+    .filter(t => t.hasUnseenThings())
+    .sort((t1, t2) => Topics.categoryValues.indexOf(t2.topic.category) - Topics.categoryValues.indexOf(t1.topic.category));
 };
 
-Factory.define('topic', Topics, {
-  communityId: () => Factory.get('community'),
+Topics.attachBaseSchema(Topics.baseSchema);
+Topics.attachBehaviour(Timestamped);
+Topics.attachBehaviour(Revisioned(['text', 'title']));
+Topics.attachBehaviour(Likeable);
+Topics.attachBehaviour(Flagable);
+Topics.attachBehaviour(Workflow());
+Topics.attachBehaviour(SerialId(['category', 'ticket.type']));
+Topics.attachBehaviour(AttachmentField());
+
+Topics.attachVariantSchema(undefined, { selector: { category: 'room' } });
+Topics.attachVariantSchema(Topics.extensionSchemas.forum, { selector: { category: 'forum' } });
+Topics.attachVariantSchema(Topics.extensionSchemas.news, { selector: { category: 'news' } });
+
+Topics.categoryValues.forEach(category =>
+  Topics.simpleSchema({ category }).i18n('schemaTopics')
+);
+//  Topics.schema.i18n('schemaTopics');
+
+Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId'];
+Topics.modifiableFields.push('closed'); // comes from Workflow behaviour
+
+Topics.categoryValues.forEach((category) => {
+  Factory.define(category, Topics, {
+    category,
+    serial: 0,
+    title: () => `New ${(category)} about ${faker.random.word()}`,
+    text: faker.lorem.paragraph(),
+    status: 'opened',
+  });
 });

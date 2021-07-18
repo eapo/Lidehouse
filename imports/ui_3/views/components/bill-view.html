@@ -1,0 +1,171 @@
+<template name="Bill_partner">
+    <strong>{{partner.toString}}</strong>
+    {{#if this.partner.contact.address}}<br>{{this.partner.contact.address}}{{/if}}
+    {{#if this.partner.BAN}}<br>Bank: {{this.partner.BAN}}{{/if}}
+    {{#if this.partner.taxNo}}<br>{{_ 'schemaPartners.taxNo.label'}}: {{this.partner.taxNo}}{{/if}}
+    {{#if this.contract}}<br>[{{this.contract}}]{{/if}}
+</template>
+
+<template name="Bill_view">
+  {{#let rDoc=reactiveDoc}}
+    <div class="row">
+        <div class="col-xs-6">
+            <h5>{{_ 'issuer'}}:</h5>
+            <address>
+                {{>Bill_partner rDoc.issuer}}<br/>
+                {{#if (and isBill showAccounting)}}
+                {{#if (equals rDoc.relationSign -1)}}
+                    {{{displayAccount rDoc.relationAccount activeCommunityId}}}
+                {{/if}}
+                {{/if}}
+            </address>
+        </div>
+
+        <div class="col-xs-6 text-right">
+            <h4>
+              {{{displayTxStatus rDoc.status rDoc}}} 
+              {{_ (or rDoc.txdef.name 'schemaTransactions.serialId.label')}}:
+              <span class="text-navy">{{rDoc.serialId}}</span>
+            </h4>
+            <h5>{{_ 'receiver'}}:</h5>
+            <address>
+                {{>Bill_partner rDoc.receiver}}<br/>
+                {{#if (and isBill showAccounting)}}
+                {{#if (equals rDoc.relationSign 1)}}
+                    {{{displayAccount rDoc.relationAccount activeCommunityId}}}
+                {{/if}}
+                {{/if}}
+            </address>
+            <p>
+                {{#if isBill}}
+                    <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate rDoc.issueDate}}</span><br/>
+                    <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate rDoc.deliveryDate}}</span><br/>
+                    <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate rDoc.dueDate}}</span>
+                {{else}}
+                    <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate rDoc.valueDate}}</span><br/>
+                    <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount rDoc.payAccount}}}</span><br/>
+                {{/if}}
+            </p>
+        </div>
+    </div>
+
+    <div class="table-responsive m-t">
+        <table class="table invoice-table">
+            <thead>
+                <tr>
+                    <th>{{_ 'schemaBills.lines.$.title.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
+                    <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
+                    {{#if rDoc.disco}}
+                        <th>{{_ 'schemaBills.lines.$.discoPct.label'}}</th>
+                    {{/if}}
+                    {{#if rDoc.community.settings.subjectToVat}}
+                        <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                        {{/if}}
+                        <!--th>{{_ 'schemaBills.lines.$.tax.label'}}</th-->
+                    <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each line in rDoc.getLines}}
+                {{#if line}}
+                <tr>
+                    <td>
+                        <div>
+                        <strong>
+                            {{line.title}}
+                            {{#if (equals rDoc.relation 'member')}}
+                                {{#if line.parcelId}}{{parcelRef line.parcelId}}{{/if}} 
+                                {{#if line.billing}}{{line.billing.period}}{{/if}}
+                            {{/if}}
+                        </strong>
+                        </div>
+                        <small>{{line.details}}</small>
+                        {{#if showAccounting}}<br>
+                            {{{displayAccount line.account activeCommunityId}}}
+                            {{{displayLocalizer line.localizer activeCommunityId}}}
+                        {{/if}}
+                    </td>
+                    <td>{{_ line.uom}}</td>
+                    <td>{{line.unitPrice}}</td>
+                    <td>{{displayNumber line.quantity 3 false}}</td>
+                    {{#if rDoc.disco}}
+                        <td>{{displayNumber line.discoPct 3 false}}</td>
+                    {{/if}}
+                    {{#if rDoc.community.settings.subjectToVat}}
+                        <td>{{line.taxPct}}</td>
+                    {{/if}}
+                    <td class="nowrap">{{displayMoney line.amount}}</td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </tbody>
+        </table>
+    </div><!-- /table-responsive -->
+
+    <table class="table invoice-total">
+        <tbody>
+        {{#if rDoc.community.settings.subjectToVat}}
+        <tr>
+            <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
+        </tr>
+        <tr>
+            <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.tax}}</td>
+        </tr>
+        {{/if}}
+        {{#if rDoc.disco}}
+        <tr>
+            <td><strong>{{_ 'schemaBills.disco.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.disco}} </td>
+        </tr>
+        {{/if}}
+        {{#if rDoc.rounding}}
+        <tr>
+            <td><strong>{{_ 'schemaTransactions.rounding.label'}} :</strong></td>
+            <td class="js-autofill">{{displayMoney rDoc.rounding}} </td>
+        </tr>
+        {{/if}}  
+        <tr>
+            <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
+            <td class="nowrap">{{displayMoney rDoc.amount}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    {{#if showPayments}}
+    <table class="table invoice-total"> 
+      <tbody>
+      {{#each billPayment in rDoc.getPayments}}
+      {{#let paymentTx=(findTx billPayment.id)}}
+      <tr>
+          <td class="text-capitalize">
+            {{_ paymentTx.entityName}}: 
+            {{displayDate paymentTx.valueDate}}
+            {{>Action_buttons_group collection='transactions' doc=paymentTx actions='view' size='sm'}}
+          </td>
+          <td class="nowrap">{{displayMoney billPayment.amount}}</td>
+      </tr>
+      {{/let}}
+      {{/each}}
+      <tr>
+          <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>
+          <td class="nowrap">{{displayMoney rDoc.outstanding}}</td>
+      </tr>
+      </tbody>
+    </table>
+    {{/if}}
+
+    <div class="text-right" data-id="{{rDoc._id}}">
+      {{>Action_buttons_group collection='transactions' doc=rDoc actions='edit,post,delete,registerPayment' size='xl'}}
+    </div>
+
+    {{#if rDoc.notes}}
+    <div class="well m-t"><strong>{{_ 'schemaNoted.notes.label'}}:</strong><br>
+        {{rDoc.notes}}
+    </div>
+    {{/if}}
+  {{/let}}
+</template>

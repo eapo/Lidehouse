@@ -1,48 +1,128 @@
 {
+  "Try demo": "Kipróbálom egy demo házban",
+
   "demo": {
     "house": "Demo ház",
     "city": "Budapest",
     "street": "Kankalin utca",
+    "ground": "Fszt",
+    "groundCode": "F",
+    "attic": "Tetőtér",
+    "atticCode": "T",
+    "cellar": "Pince",
+    "cellarCode": "P",
     "user": {
       "0": {
         "firstName": "Imre",
-        "lastName": "Baltazár"
+        "lastName": "Baltazár"  
       },
       "1": {
-        "firstName": "Andor",
-        "lastName": "Bajor",
-        "benefactor": {
+        "firstName": "Mária",
+        "lastName": "Erdei",
+        "benefactor": { 
           "name": "Bíró Rozália",
           "address": "Szolnok, Kunigunda u 45.",
           "mothersName": "Perjés Katalin"
-        }
+          }  
       },
       "2": {
+        "firstName": "Péter",
+        "lastName": "Bokor"
+      },
+      "3": {
         "firstName": "Tímea",
         "lastName": "Bakocsi",
         "company": {
           "name": "ACME Kft.",
-          "address": "Jászkunszállás, Petfőfi Sándor u 124."
+          "address": "Jászkunszállás, Petőfi Sándor u 124.",
+          "regno": "Cg.: 21-09-658912"
         }
       },
-      "3": {
-        "firstName": "Péter",
-        "lastName": "Barna"
-      },
       "4": {
-        "firstName": "Emilia",
-        "lastName": "Barna"
-      }
+        "firstName": "Károly",
+        "lastName": "Kerekes"
+      },
+      "5": {
+        "firstName": "Andor",
+        "lastName": "Bajor"
+      },
+      "6": {
+        "firstName": "Istvánné",
+        "lastName": "Lőrincz"
+      },
+      "7": {
+        "firstName": "Endre",
+        "lastName": "Apró",
+        "benefactor": {
+          "name": "Apró Éva",
+          "address": "Bélapátfalva, Kossuth u. 124.",
+          "mothersName": "Lukács Erzsébet"
+        }
+      },
+      "8": {
+        "firstName": "Márta",
+        "lastName": "Sebők"
+      },
+      "9": {
+        "firstName": "Katalin",
+        "lastName": "Virág"
+      },
+      "10": {
+        "firstName": "Dániel",
+        "lastName": "Farkas"
+      },
+      "11": {
+        "firstName": "László",
+        "lastName": "Lovász"
+      },
+      "12": {
+        "firstName": "Eszter",
+        "lastName": "Bíró"
+      },
+      "13": {
+        "firstName": "Zoltán",
+        "lastName": "Boros",
+        "company": {
+          "name": "Virtual Choc Kft.",
+          "address": "1144 Budapest, Kankalin utca 86.",
+          "regno": "Cg.: 21-09-846231"
+        }
+      },
+      "14": {
+        "firstName": "Emília",
+        "lastName": "Bokor"
+      },
+      "15": {
+        "firstName": "Tamás",
+        "lastName": "Pásztor"
+      },
+      "16": {
+        "firstName": "Aranka",
+        "lastName": "Fodor"
+      },
+      "17": {
+        "firstName": "Ildikó",
+        "lastName": "Rózsa"
+      },
+      "firstNames": ["Aladár", "Boris", "Cecília", "Dávid", "Ede", "Ferenc", "Gabi", "Hedvig", "István", "Jolán", "Klára", "Lajos", "Margit", "Nándor", "Olivér", "Péter", "Róza", "Sarolta", "Tivadar", "Zsuzsanna"]
+    },
+    "manager": {
+      "firstName": "Levente",
+      "lastName": "Király",
+      "bio": "Társasház kezelés terén több mint 15 éves tapasztalattal rendelkezem.",
+      "message": "Mint a Demo ház közös képviselője, szeretettel üdvözlöm honline rendszerünkben!"
+    },
+    "admin": {
+      "firstName": "Patrik",
+      "lastName": "Juhász",
+      "bio": "Ebben a házban lakom már 8 éve. Informatikusként dolgozom, hobbim a búvárkodás. Azért hoztam létre házunkat a honline rendszerben, hogy hatékonyabban tudjunk információkat cserélni, ötletelni."
+    },
+    "maintainer": {
+      "firstName": "Zsigmond",
+      "lastName": "Láng"
     },
     "topic": {
       "0": {
-        "title": "Zár probléma",
-        "text": "Múlt héten megint benyomták a kaput, és azóta nem jól záródik a zár",
-        "comment": {
-          "0": "Igen, már bejelentettem. Jövő héten tudnak csak jönni javítani"
-        }
-      },
-      "1": {
         "title": "Fundamenta hitel",
         "text": "Most kedvezményes feltételekkel lehet felvenni fundamenta hitelt tatarozásra.",
         "comment": {
@@ -51,42 +131,84 @@
           "2": "Szerintem bocsássuk szavazásra!"
         }
       },
+      "1": {
+        "title": "Zár probléma",
+        "text": "Múlt héten megint benyomták a kaput, és azóta nem jól záródik a zár",
+        "comment": {
+          "0": "Igen, már bejelentettem. Jövő héten tudnak csak jönni javítani"
+        }
+      },
       "2": {
         "title": "Hangos kutya a negyediken",
         "text": "A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.",
         "comment": {
-          "0": "Engem is rohadtul idegesít!!!",
+          "0": "Engem is nagyon idegesít!!!",
           "1": "Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi sajnos három hétig kórházban, és szegény kutyus nagyon rosszul bírja az egyedüllétet.",
           "2": "Szerencsére a nagyit már hazaengedték, tegnap óta már otthon van. Úgyhogy nem lesz többet gond, és tényeg elnézést kérek mindenkitől."
+        }
+      },
+      "3": {
+        "title": "Segítség a vásárlásban",
+        "text": "Kedves szomszédaim! Tudtok nekem segíteni a bevásárlással? Nem szívesen mennék le a járvány idején a boltba.",
+        "comment": {
+          "0": "Persze, Joli néni, tessék átküldeni személyes üzenetben a listát és másnap már viszem is, ami kell.",
+          "1": "Én is szívesen segítek.",
+          "2": "Nagyon köszönöm!",
+          "3": "Nem tudjátok hol lehet lázmérőt kapni? A sarki patikában kifogyott."
         }
       }
     },
     "news": {
       "0": {
-        "title": "Lomtalanítás lesz május 4.-én",
-        "text": "A lomokat előző nap (tehát május 3.-án) 18 órától lehet kihelyezni az utcára, amit a FKFV 4.-én szállít el.\nA veszélyes hulladékokat a külön erre kijelölt helyre kell vinni. Azokat NEM szabad az utcára kitenni!"
+        "title": "Lomtalanítás lesz 29-én",
+        "text": "A lomokat előző nap (tehát 28-án) 18 órától lehet kihelyezni az utcára, amit a FKFV 29-én szállít el.\nA veszélyes hulladékokat a külön erre kijelölt helyre kell vinni. Azokat NEM szabad az utcára kitenni!"
       },
       "1": {
         "title": "Kémények ellenörzéséhez időpontot szükséges kérni",
-        "text": "Hónap végéig kötelező a kémények ellenőrzése. Három lehetséges időpont van. 2017.05.11, 2017.05.13, 2017.05.24.\nEzek közül lehet választani és a kéményseprőkkel egyeztetni a 06(20)2569875 telefonszámon hogy kinek melyik felel meg."
+        "text": "Hónap végéig kötelező a kémények ellenőrzése.\n Kérjük egyeztessenek a kéményseprőkkel a 06(20)2569875 telefonszámon hogy kinek melyik időpont felel meg."
       },
       "2": {
         "title": "Hasznos informáciok",
         "text": ""
+      },
+      "3": {
+        "title": "Járványhelyzet tájékoztató",
+        "text": ["Tisztelt Tulajdonosok, Lakók!",
+          "A koronavírus járvánnyal kapcsolatban házunkban az alábbi intézkedéseket vezetjük be:",
+          "- A napi rendszeres takarítás keretében a ház bejárati ajtajának kilincseit és a liftekben lévő nyomógombokat alkoholos fertőtlenítővel törli át a takarító személyzet.",
+          "- A lépcsőházi ablakokat napközben nyitva tartjuk.\n",
+          "Mindenkit kérünk, hogy fokozottan figyeljen a személyi higiénére, gyakran és alaposan mosson kezet szappannal vagy használjon alkoholos kézfertőtlenítőt, ne tartózkodjon nagyobb közösségben huzamosabb ideig, köhögéskor, tüsszentéskor használjon papírzsebkendőt és kövesse az Operatív Törzs ajánlásait.",
+          "Természetesen a társasház képviselete folyamatosan nyomon követi a járványügyi helyzettel kapcsolatos fejleményeket, figyelemmel kíséri az Operatív Törzs által kiadott közleményeket. Amennyiben bármilyen a társasházat érintő intézkedés elrendelésére kerülne sor, arról azonnal tájékoztatni fogjuk Önöket."]
       }
     },
     "vote": {
-      "0": {
+      "loan": {
         "title": "Fundamenta hitel felvétele",
-        "text": "Felvegyük-e az 5 millio forintos Fundamenta hitelt 10 évre 6%-os kamattal."
+        "text": ["A homlokzat tatarozását egy éven belül el kell kezdeni és egyéb felújítási munkálatok is akadnak a házban. A szükséges összeg nem áll rendelkezésünkre, a közös költség irreális megemelése helyett célszerű hitelt felvenni.",
+           "Határozati javaslat: A ház vegye fel az 5 millió forintos Fundamenta hitelt 10 évre 6%-os kamattal."]
       },
-      "1": {
-        "title": "Kerékpár tároló létesítéséről",
-        "text": "Létesítsen-e a ház kerékpár tárolót maximum 200,000 Ft-ból a garázsszinten.\nElfogadás esetén három különböző árajánlatot kérünk be, és a legjobbat választjuk."
+      "parking": {
+        "title": "Vendégparkoló",
+        "text": ["A ház előtti vendégparkolót nem csak a ház vendégei használják, célszerű lenne valamilyen módon korlátozni annak használatát.",
+          "Határozati javaslat: A ház két vendégparkolójában kerüljön felállításra teleszkópos parkolóőr, az eszközök és a telepítés költsége összesen 46.200.- Forint. Minden tulajdonostárs kap hozzá kulcsot."]
+
       },
-      "2": {
+      "cleaning": {
+        "title": "Téli takarítás",
+        "text": "A tél beálltával egyre több a lucsok a lépcsőházban. Javaslom, hogy ebben az időszakban a lépcsőház takarítás rendszeressége legyen heti kettő.",
+        "choice": {
+          "0": "Egyetértek",
+          "1": "Nem értek egyet"
+        }
+      },
+      "bicycleStorage": {
+        "title": "Kerékpártároló létesítése",
+        "text": ["A házban megoldatlan a kerékpárok biztonságos tárolása. Célszerű lenne a garázsszinten rendelkezésre álló közös tulajdonú területen kialakítani egy 12 férőhelyes tárolót. A javaslat elfogadása esetén három árajánlatot kérjünk be.",
+          "Határozati javaslat: Létesítsen a ház kerékpártárolót maximum bruttó 200.000 Ft-ból a garázsszinten. Az ajánlatok bekéréséért és a végrehajtásért a Közös képviselő a felelős. Határidő: elfogadástól számított 3 hónap."]
+      },
+      "wallColor": {
         "title": "Lépcsőház színéről",
-        "text": "Milyen színűre fessük a lépcsőház homlokzatát az augusztusi felújítás során.",
+        "text": "Milyen színűre fessük a lépcsőház homlokzatát az augusztusi felújítás során?",
         "choice": {
           "0": "semleges fehér",
           "1": "halvány rózsaszín",
@@ -97,37 +219,150 @@
           "0": "A halovány színek jobban mutatnak. Világosabb hatású lesz a lépcsőház.",
           "1": "Jajj csak szürke NE legyen. Akkor költözöm"
         }
+      },
+      "manager": {
+        "title": "Közös képviselő leváltása",
+        "text": "Kerüljön kiírásra írásos szavazás vagy tartsunk rendkívüli közgyűlést ebből a célból. Kérjük azokat, akik egyetértenek a közös képviselő leváltásával, támogassák ezt a javaslatot. Amennyiben a tulajdoni hányadok legalább 10%-a támogatja ezt a javaslatot, akkor a jelenlegi közös képviselőnek kötelező ebben a kérdésben szavazást kiírni. Amennyiben erre nem kerül sor ezen szavazás sikeres lezárását követő 30 napon belül, akkor a Számvizsgáló Bizottságnak kell ugyanezt megtennie."
+      },
+      "epidemic": {
+        "title": "Üzlethelyiség bérleti díjának csökkentése",
+        "text": ["A földszinti üzlethelyiségben a cukrászda a járványra tekintettel határozatlan időre bezárt. A tulajdonos kérte a bérleti díj elengedését a kieső időszakra, tekintettel arra, hogy ha nincs bevétele, nem tudja kitermelni a bérleti díjat.",
+          "Csökkentsük-e a cukrászda üzlethelyiség bérleti díját a járvány idejére?"],
+        "choice": {
+          "0": "Igen, csökkentsük a felére (50%)",
+          "1": "Igen, engedjük el teljesen",
+          "2": "Nem, fizessen, amíg tud"
+        },
+        "comment": {
+          "0": "Szerintem érdemes csökkenteni, hogy megtartsuk a jelenlegi bérlőt, mert nehéz lesz majd új bérlőt találni a kialakuló gazdasági helyzetben.",
+          "1": "Én szeretem ezt a cukrászdát, a tulajdonos is nagyon aranyos.",
+          "2": "Ki tudja, meddig tart ez a helyzet, ha amúgy is csődbe megy, mielőtt újra kinyitna, akkor nem nyerünk vele semmit, fölöslegesen mondunk le a pénzünkről."
+        }
+      }, 
+      "promo": {
+        "title": "Bevezessük a HONLINE rendszerét a házunkba?",
+        "text": ["A járvánnyal érintett időszakban praktikus, hogy jogilag is érvényes online szavazásokat tudjunk tartani a ház ügyeiről.", 
+          "A fórumon közvetlenebbül tudjuk megbeszélni a ház ügyeit, ha pedig valami elromlik a házban, online egyből jelenthetjük a hibát a közös képviselőnek, nem kell a nyitvatartási idejéhez alkalmazkodnunk.", 
+          "A program használata egyszerű, ráadásul a koronavírus miatt most 12 hónapra ingyenes hozzáférést biztosítanak hozzá!",
+          "Nincs vesztenivalónk. Bevezessük?"],
+        "choice": {
+          "0": "Igen, támogatom!",
+          "1": "Nem, nem érdekel az online társasházkezelés",
+          "2": "Tartózkodom"
+        }
       }
     },
     "agenda": {
       "0": {
-        "title": "Közgyűlés 2017-II."
+        "title": "Rendkívüli közgyűlés"
+      },
+      "1": {
+        "title": "Közgyűlés"
+      }
+    },
+    "contract": {
+      "0": {
+        "title": "Gondnoki szerződés",
+        "text": "Apróbb hibák javítása. Nagyobb hibák javításának kiszervezése. Gépészeti rendszerek havi ellenőrzése. Karbantartók fogadása. Ügyelet munkaszüneti napokon. Pontos munkaköri leírás a dokumentumtárban taláható.",
+        "partner": "Bokor Péter EV"
+      },
+      "1": {
+        "title": "Lift karbantartási szerződés",
+        "text": "Havi időszerű karbantartás és garanciális alkatrészellátás",
+        "partner": "Lift fix ultra",
+        "ticketTitle": "Lift karbantartás",
+        "ticketText": "Havi időszerű karbantartás"
+      },
+      "2": {
+        "title": "Takarítási szerződés",
+        "text": "Épületek heti egyszeri, aula napi takarítása",
+        "partner": "Super-Clean Kft",
+        "ticketTitle": "Épület takarítás",
+        "ticketText": "Havi számlázás szerződés szerint"
+      },
+      "10": {
+        "title": "Reklám felület bérlet",
+        "text": "Homlokzati felület kiadása, éves díj",
+        "partner": "Info terjesztő Kft"
       }
     },
     "ticket": {
-      "0": {
+      "lift": {
         "title": "Elromlott a lift",
-        "text": "A hatodikon megállt. Semmilyen gombra nem reagál."
+        "text": "A hatodikon megállt. Semmilyen gombra nem reagál.",
+        "comment": {
+          "0": "Kihívtam a lift karbantartókat. Ha rutin javítási munkáról van csak szó, azt a karbantartási szerződésünk fedezi. Csak akkor kell fizetnünk, ha valami komolyabb probléma van.",
+          "1": "Úgy néz ki egyszerűen javítható, de el kellett vinniük az elektromos panelt, csak a műhelyben tudják javítani. Sajnos így egy pár napot várnunk kell mire visszahozzák."
+        }
       },
-      "1": {
-        "title": "Beázik a fürdőszobám a felettem lakótol.",
-        "text": "Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék."
+      "leak": {
+        "title": "Beázik a fürdőszobám a felettem lakótól.",
+        "text": "Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék.",
+        "comment": {
+          "0": "A biztosításunk szerencsére fedezi az ehhez hasonló eseteket. Azonnal hívom a biztosítót.",
+          "1": "A kibontás már megtörtént, a biztosító lefényképezett mindent. Holnapután fognak jönni visszaburkolni.",
+          "2": "A munka ma rendben el lett végezve. Már csak a biztosítótol várjuk az utálást",
+          "3": "A pénz is megjött. A számlát rendeztük."
+        }
       },
-      "2": {
+      "blackout": {
         "title": "Áramkimaradás éjjelente",
         "text": "Harmadszor fordul elő, hogy hirtelen áramkimaradás van éjjel.",
         "comment": {
           "0": "Igen, már jelentettem az elműnek. Azt mondták utánanéznek"
         }
       },
-      "3": {
+      "plaster": {
         "title": "A lépcsőházban hullik a vakolat",
-        "text": "A II. emeleti lépcsőfordulónál vettem észre."
+        "text": "A II. emeleti lépcsőfordulónál vettem észre.",
+        "comment": {
+          "0": "Jövő héten meg tudom csinálni. Csak a vakolóanyagot kell megvennünk hozzá.",
+          "1": "Le is festem, van is még egy kis maradék festék. De a nagy létrát csak kedden tudom elkérni.",
+          "2": "Hétvégén is volt időm dolgozgatni rajta. Így kicsit előbb készültem el, mint gondoltam.",
+          "3": "Nagyon szép lett Bokor úr! Olyan mintha profi festő csinálta volna.",
+          "4": "Talán még nem is említettem, hogy nagyapám festő volt."
+        }
       }
     },
     "messages": {
       "0": "Szervusz! Megtaláltam a postaláda kulcsodat. Benne hagytad a levélszekrény ajtajában. :)",
       "1": "Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után."
+    },
+    "transactions": {
+      "notes": {
+        "0": "Évközben elhatározott",
+        "1": "Önkormányzattól",
+        "2": "Hirdető tábla a homlokzaton",
+        "3": "Kártérítés, biztosítótól",
+        "4": "OTP hitel"
+      }
+    }
+  },
+  "test": {
+    "house": "Teszt ház"
+  },
+
+  "promo": {
+    "OneClickToLaunch": "Egy kattintás és kész a saját háza",
+    "InstructionsToLaunch": "Építse fel saját társasházát a HONLINE rendszerében, az alábbi 3 adat megadásával!",
+    "admin": {
+      "name": {
+        "label": "Az ön neve",
+        "placeholder": "... öntől fogják kapni a meghívót."
+      },
+      "email": {
+        "label": "Az ön email címe (ide fogjuk küldeni az elkészült ház linkjét)",
+        "placeholder": "(pl. tibi45@domain.hu)"
+      }
+    },
+    "community": {
+      "name" : {
+        "label": "A társasház neve",
+        "placeholder": "(pl. Kankalin utca 4)"
+      }
+    },
+    "parcelCount" : {
+      "label": "Hány lakás van ebben a házban? (ennyien csatlakozhatnak majd meghívóval)"
     }
   }
 }
